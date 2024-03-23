@@ -6,6 +6,17 @@
 
 enum TokenType {
   EOF_,
+
+  BinaryOperator,
+  Equal,
+  OpenParen,
+  ClosingParen,
+  SemiColon,
+
+  Number,
+  Identifier,
+  Var,
+  Mut,
 };
 
 struct Token {
@@ -20,6 +31,7 @@ private:
   std::string src;
 
 public:
+  Lexer() : src("") {}
   Lexer(std::string src) : src(src) {}
 
   std::vector<Token> Tokenize();
