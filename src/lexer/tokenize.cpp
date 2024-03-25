@@ -1,19 +1,20 @@
-#include "lexer.h"
+#include "lexer/lexer.h"
 #include <cctype>
 #include <cstdlib>
 #include <iostream>
 #include <map>
 
 std::vector<Token> Lexer::Tokenize() {
-  std::map<std::string, Token> reserve =
-      std::map<std::string, Token>{{
-                                       "var",
-                                       Token("var", TokenType::Var),
-                                   },
-                                   {
-                                       "mut",
-                                       Token("mut", TokenType::Mut),
-                                   }};
+  std::map<std::string, Token> reserve = std::map<std::string, Token>{
+      {
+          "var",
+          Token("var", TokenType::Var),
+      },
+      {
+          "mut",
+          Token("mut", TokenType::Mut),
+      },
+  };
 
   std::vector<Token> tokens = std::vector<Token>();
 
@@ -64,9 +65,10 @@ std::vector<Token> Lexer::Tokenize() {
 
       if (it != reserve.end()) {
         tokens.push_back(it->second);
-      } else {
-        tokens.push_back(Token(ident, TokenType::Identifier));
+        continue;
       }
+
+      tokens.push_back(Token(ident, TokenType::Identifier));
     } else {
 
       std::cerr << "Unexpected token " << curChar << std::endl;
