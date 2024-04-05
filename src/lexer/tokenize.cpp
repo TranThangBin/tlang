@@ -1,18 +1,18 @@
 #include "lexer/lexer.h"
 #include <cctype>
-#include <cstdlib>
-#include <iostream>
 #include <map>
+#include <stdexcept>
+#include <string>
 
 std::vector<Token> Lexer::Tokenize() {
   std::map<std::string, Token> reserve = std::map<std::string, Token>{
       {
           "var",
-          Token("var", TokenType::Var),
+          Token("var", TokenType::Tk_Var),
       },
       {
           "mut",
-          Token("mut", TokenType::Mut),
+          Token("mut", TokenType::Tk_Mut),
       },
   };
 
@@ -28,21 +28,21 @@ std::vector<Token> Lexer::Tokenize() {
       continue;
     } else if (curChar == '=') {
 
-      tokens.push_back(Token(std::string(1, curChar), TokenType::Equal));
+      tokens.push_back(Token(std::string(1, curChar), TokenType::Tk_Equal));
     } else if (curChar == '(') {
 
-      tokens.push_back(Token(std::string(1, curChar), TokenType::OpenParen));
+      tokens.push_back(Token(std::string(1, curChar), TokenType::Tk_OpenParen));
     } else if (curChar == ')') {
 
-      tokens.push_back(Token(std::string(1, curChar), TokenType::ClosingParen));
+      tokens.push_back(
+          Token(std::string(1, curChar), TokenType::Tk_ClosingParen));
     } else if (curChar == ';') {
 
-      tokens.push_back(Token(std::string(1, curChar), TokenType::SemiColon));
+      tokens.push_back(Token(std::string(1, curChar), TokenType::Tk_SemiColon));
     } else if (curChar == '+' || curChar == '-' || curChar == '*' ||
                curChar == '/' || curChar == '%') {
 
-      tokens.push_back(
-          Token(std::string(1, curChar), TokenType::BinaryOperator));
+      tokens.push_back(Token(std::string(1, curChar), TokenType::Tk_Binop));
     } else if (isdigit(curChar) != 0) {
 
       std::string number = std::string(1, curChar);
@@ -51,7 +51,7 @@ std::vector<Token> Lexer::Tokenize() {
         number += src[++i];
       }
 
-      tokens.push_back(Token(number, TokenType::Number));
+      tokens.push_back(Token(number, TokenType::Tk_Number));
     } else if (isalpha(curChar) != 0 || curChar == '_') {
 
       std::string ident = std::string(1, curChar);
@@ -68,15 +68,14 @@ std::vector<Token> Lexer::Tokenize() {
         continue;
       }
 
-      tokens.push_back(Token(ident, TokenType::Identifier));
+      tokens.push_back(Token(ident, TokenType::Tk_Identifier));
     } else {
 
-      std::cerr << "Unexpected token " << curChar << std::endl;
-      exit(1);
+      throw std::runtime_error("Unexpected symbol " + std::string(1, curChar));
     }
   }
 
-  tokens.push_back(Token("EOF", TokenType::EOF_));
+  tokens.push_back(Token("EOF", TokenType::Tk_EOF));
 
   return tokens;
 }

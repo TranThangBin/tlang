@@ -3,18 +3,18 @@
 
 #include <string>
 enum TokenType {
-  EOF_,
+  Tk_EOF,
 
-  BinaryOperator,
-  Equal,
-  OpenParen,
-  ClosingParen,
-  SemiColon,
+  Tk_Binop,
+  Tk_Equal,
+  Tk_OpenParen,
+  Tk_ClosingParen,
+  Tk_SemiColon,
 
-  Number,
-  Identifier,
-  Var,
-  Mut,
+  Tk_Number,
+  Tk_Identifier,
+  Tk_Var,
+  Tk_Mut,
 };
 
 struct Token {

@@ -1,5 +1,6 @@
 #include "lexer/lexer.h"
 #include <iostream>
+#include <stdexcept>
 #include <string>
 #include <vector>
 
@@ -7,21 +8,35 @@ using namespace std;
 
 int main(int argc, char *argv[]) {
   string src;
+  Lexer lexer = Lexer();
 
-  getline(cin, src);
+  cout << "Lexer explorer v0.0.1" << endl;
 
-  Lexer lexer = Lexer(src);
+  while (true) {
+    cout << "> ";
+    getline(cin, src);
 
-  vector<Token> tokens = lexer.Tokenize();
+    lexer.SetSrc(src);
 
-  int tkSize = tokens.size();
+    vector<Token> tokens;
 
-  for (int i = 0; i < tkSize; i++) {
-    Token token = tokens[i];
+    try {
+      tokens = lexer.Tokenize();
+    } catch (runtime_error err) {
+      cerr << err.what() << endl;
+      continue;
+    }
 
-    cout << "Token type: " << token.getTkType()
-         << " Token value: " << token.getValue() << endl;
+    int tkSize = tokens.size();
+
+    for (int i = 0; i < tkSize; i++) {
+      Token token = tokens[i];
+
+      cout << "{" << endl
+           << "\tToken type: " << token.getTkType() << endl
+           << "\tToken value: " << token.getValue() << endl
+           << "}," << endl;
+    }
   }
-
   return 0;
 }

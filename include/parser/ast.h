@@ -1,74 +1,68 @@
 #ifndef AST_H
 #define AST_H
 
+#include "abstraction.h"
+#include <iostream>
 #include <memory>
 #include <string>
 #include <utility>
 #include <vector>
 
-enum NodeType {
-  // Stmt
-  Program,
-  VariableDeclaration,
-
-  // Expr
-  BinaryExpr,
-  NumericLiteral,
-};
-
-class Stmt {
+class ProgramNode : public Stmt {
 private:
-  NodeType kind;
+  std::vector<std::unique_ptr<Stmt>> stmts;
 
 public:
-  Stmt(NodeType kind) : kind(kind) {}
+  NodeType Kind() override { return NodeType::Nt_Program; }
+
+  ProgramNode(std::vector<std::unique_ptr<Stmt>> stmts)
+      : stmts(std::move(stmts)) {}
+
+  void Display() {
+    int stmtsLen = stmts.size();
+
+    for (int i = 0; i < stmtsLen; i++) {
+      std::cout << stmts[i]->Kind() << std::endl;
+    }
+  }
 };
 
-class Expr : Stmt {
-public:
-  Expr(NodeType kind) : Stmt(kind) {}
-};
-
-class ProgramNode : Stmt {
-private:
-  std::vector<Stmt> stmts;
-
-public:
-  ProgramNode(std::vector<Stmt> stmts) : Stmt(Program), stmts(stmts) {}
-};
-
-class VariableDeclarationNode : Stmt {
+class VariableDeclarationNode : public Stmt {
 private:
   bool mut;
   std::string identifier;
   std::unique_ptr<Expr> value;
 
 public:
+  NodeType Kind() override { return NodeType::Nt_VarDec; }
+
   VariableDeclarationNode(bool mut, std::string identifier,
                           std::unique_ptr<Expr> value)
-      : Stmt(VariableDeclaration), mut(mut), identifier(identifier),
-        value(std::move(value)) {}
+      : mut(mut), identifier(identifier), value(std::move(value)) {}
 };
 
-class BinaryExprNode : Expr {
+class BinaryExprNode : public Expr {
 private:
   std::unique_ptr<Expr> left;
   std::unique_ptr<Expr> right;
   std::string op;
 
 public:
+  NodeType Kind() override { return NodeType::Nt_BinExpr; }
+
   BinaryExprNode(std::unique_ptr<Expr> left, std::unique_ptr<Expr> right,
                  std::string op)
-      : Expr(BinaryExpr), left(std::move(left)), right(std::move(right)),
-        op(op) {}
+      : left(std::move(left)), right(std::move(right)), op(op) {}
 };
 
-class NumericLiteralNode : Expr {
+class NumericLiteralNode : public Expr {
 private:
   float value;
 
 public:
-  NumericLiteralNode(double value) : Expr(NumericLiteral), value(value) {}
+  NodeType Kind() override { return NodeType::Nt_NumericLiteral; }
+
+  NumericLiteralNode(float value) : value(value) {}
 };
 
 #endif // !AST_H
