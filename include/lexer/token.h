@@ -33,8 +33,8 @@ public:
   std::string Yaml() {
     std::stringstream oss;
     oss << "Token:" << std::endl
-        << "\tValue " << value << std::endl
-        << "\tTokenType " << tkType;
+        << "\tValue: " << value << std::endl
+        << "\tTokenType: " << tkType;
     return oss.str();
   }
 };

@@ -24,6 +24,6 @@ std::unique_ptr<Stmt> Parser::parseVarDec() {
 
   expect(TokenType::Tk_Equal);
   std::unique_ptr<Expr> value = parseExpr();
-  return std::make_unique<VariableDeclarationNode>(true, ident.GetValue(),
+  return std::make_unique<VariableDeclarationNode>(mut, ident.GetValue(),
                                                    std::move(value));
 }

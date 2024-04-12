@@ -22,7 +22,7 @@ int main(int argc, char *argv[]) {
     try {
       unique_ptr<ProgramNode> program = parser.ProduceAST();
 
-      program->Display();
+      cout << program->Yaml(0);
 
     } catch (runtime_error err) {
       cerr << err.what() << endl;

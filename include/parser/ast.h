@@ -14,17 +14,10 @@ private:
 
 public:
   NodeType Kind() override { return NodeType::Nt_Program; }
+  std::string Yaml(int) override;
 
   ProgramNode(std::vector<std::unique_ptr<Stmt>> stmts)
       : stmts(std::move(stmts)) {}
-
-  void Display() {
-    int stmtsLen = stmts.size();
-
-    for (int i = 0; i < stmtsLen; i++) {
-      std::cout << stmts[i]->Kind() << std::endl;
-    }
-  }
 };
 
 class VariableDeclarationNode : public Stmt {
@@ -35,6 +28,7 @@ private:
 
 public:
   NodeType Kind() override { return NodeType::Nt_VarDec; }
+  std::string Yaml(int) override;
 
   VariableDeclarationNode(bool mut, std::string identifier,
                           std::unique_ptr<Expr> value)
@@ -49,6 +43,7 @@ private:
 
 public:
   NodeType Kind() override { return NodeType::Nt_BinExpr; }
+  std::string Yaml(int) override;
 
   BinaryExprNode(std::unique_ptr<Expr> left, std::unique_ptr<Expr> right,
                  std::string op)
@@ -61,6 +56,7 @@ private:
 
 public:
   NodeType Kind() override { return NodeType::Nt_NumericLiteral; }
+  std::string Yaml(int) override;
 
   NumericLiteralNode(float value) : value(value) {}
 };

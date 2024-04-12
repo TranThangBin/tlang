@@ -45,8 +45,8 @@ std::unique_ptr<Expr> Parser::parsePrimaryExpr() {
     return std::make_unique<NumericLiteralNode>(std::stod(eat().GetValue()));
 
   case TokenType::Tk_OpenParen: {
+    eat();
     std::unique_ptr<Expr> expr = parseExpr();
-
     expect(TokenType::Tk_ClosingParen);
 
     return expr;

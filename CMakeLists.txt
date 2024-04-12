@@ -11,8 +11,9 @@ include_directories(include)
 
 add_library(lexer ./src/lexer/tokenize.cpp ./src/lexer/construct.cpp)
 
-add_library(parser ./src/parser/produce-ast.cpp ./src/parser/utils.cpp
-                   ./src/parser/stmt.cpp ./src/parser/expr.cpp)
+add_library(
+  parser ./src/parser/produce-ast.cpp ./src/parser/utils.cpp
+         ./src/parser/stmt.cpp ./src/parser/expr.cpp ./src/parser/yaml.cpp)
 
 add_executable(lexer-repl ./src/cmd/lexer-repl.cpp)
 target_link_libraries(lexer-repl lexer)
