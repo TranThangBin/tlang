@@ -3,21 +3,16 @@ cmake_minimum_required(VERSION 3.10)
 project(my_lang)
 
 set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD_REQUIRED true)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 include_directories(include)
 
-add_library(lexer
-    ./src/lexer/tokenize.cpp
-)
+add_library(lexer ./src/lexer/tokenize.cpp ./src/lexer/construct.cpp)
 
-add_library(parser
-    ./src/parser/produce-ast.cpp
-    ./src/parser/utils.cpp
-    ./src/parser/stmt.cpp
-    ./src/parser/expr.cpp
-)
+add_library(parser ./src/parser/produce-ast.cpp ./src/parser/utils.cpp
+                   ./src/parser/stmt.cpp ./src/parser/expr.cpp)
 
 add_executable(lexer-repl ./src/cmd/lexer-repl.cpp)
 target_link_libraries(lexer-repl lexer)

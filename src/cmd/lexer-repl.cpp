@@ -32,11 +32,9 @@ int main(int argc, char *argv[]) {
     for (int i = 0; i < tkSize; i++) {
       Token token = tokens[i];
 
-      cout << "{" << endl
-           << "\tToken type: " << token.getTkType() << endl
-           << "\tToken value: " << token.getValue() << endl
-           << "}," << endl;
+      cout << token.Yaml() << endl;
     }
+    cout << endl;
   }
   return 0;
 }

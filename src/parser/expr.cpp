@@ -9,8 +9,8 @@
 std::unique_ptr<Expr> Parser::parseAdditiveExpr() {
   std::unique_ptr<Expr> left = parseMultiplicativeExpr();
 
-  while (at().getValue() == "+" || at().getValue() == "-") {
-    std::string op = eat().getValue();
+  while (at().GetValue() == "+" || at().GetValue() == "-") {
+    std::string op = eat().GetValue();
 
     std::unique_ptr<Expr> right = parseMultiplicativeExpr();
 
@@ -24,9 +24,9 @@ std::unique_ptr<Expr> Parser::parseAdditiveExpr() {
 std::unique_ptr<Expr> Parser::parseMultiplicativeExpr() {
   std::unique_ptr<Expr> left = parsePrimaryExpr();
 
-  while (at().getValue() == "*" || at().getValue() == "/" ||
-         at().getValue() == "%") {
-    std::string op = eat().getValue();
+  while (at().GetValue() == "*" || at().GetValue() == "/" ||
+         at().GetValue() == "%") {
+    std::string op = eat().GetValue();
 
     std::unique_ptr<Expr> right = parsePrimaryExpr();
 
@@ -40,9 +40,9 @@ std::unique_ptr<Expr> Parser::parseMultiplicativeExpr() {
 std::unique_ptr<Expr> Parser::parsePrimaryExpr() {
   Token tk = at();
 
-  switch (tk.getTkType()) {
+  switch (tk.GetTkType()) {
   case TokenType::Tk_Number:
-    return std::make_unique<NumericLiteralNode>(std::stod(eat().getValue()));
+    return std::make_unique<NumericLiteralNode>(std::stod(eat().GetValue()));
 
   case TokenType::Tk_OpenParen: {
     std::unique_ptr<Expr> expr = parseExpr();
@@ -53,6 +53,6 @@ std::unique_ptr<Expr> Parser::parsePrimaryExpr() {
   }
 
   default:
-    throw std::runtime_error("Unexpected token " + tk.getValue());
+    throw std::runtime_error("Unexpected token " + tk.GetValue());
   }
 }

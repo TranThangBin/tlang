@@ -1,6 +1,8 @@
 #ifndef TOKEN_H
 #define TOKEN_H
 
+#include <ostream>
+#include <sstream>
 #include <string>
 enum TokenType {
   Tk_EOF,
@@ -25,8 +27,16 @@ private:
 public:
   Token(std::string value, TokenType tkType) : value(value), tkType(tkType) {}
 
-  std::string getValue() { return value; }
-  TokenType getTkType() { return tkType; }
+  std::string GetValue() { return value; }
+  TokenType GetTkType() { return tkType; }
+
+  std::string Yaml() {
+    std::stringstream oss;
+    oss << "Token:" << std::endl
+        << "\tValue " << value << std::endl
+        << "\tTokenType " << tkType;
+    return oss.str();
+  }
 };
 
 #endif // !TOKEN_H

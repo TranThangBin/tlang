@@ -2,7 +2,7 @@
 #include "parser/parser.h"
 #include <stdexcept>
 
-bool Parser::notEOF() { return tokens[0].getTkType() != TokenType::Tk_EOF; }
+bool Parser::notEOF() { return tokens[0].GetTkType() != TokenType::Tk_EOF; }
 
 Token Parser::at() { return tokens[0]; }
 
@@ -14,8 +14,8 @@ Token Parser::eat() {
 
 Token Parser::expect(TokenType tkType) {
   Token tk = eat();
-  if (tk.getTkType() != tkType) {
-    throw std::runtime_error("Unexpected token " + at().getValue());
+  if (tk.GetTkType() != tkType) {
+    throw std::runtime_error("Unexpected token " + at().GetValue());
   }
   return tk;
 }
