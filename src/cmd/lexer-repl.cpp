@@ -1,8 +1,9 @@
 #include "lexer/lexer.h"
 #include <iostream>
+#include <queue>
 #include <stdexcept>
 #include <string>
-#include <vector>
+#include <utility>
 
 using namespace std;
 
@@ -18,10 +19,10 @@ int main(int argc, char *argv[]) {
 
     lexer.SetSrc(src);
 
-    vector<Token> tokens;
+    queue<Token> tokens;
 
     try {
-      tokens = lexer.Tokenize();
+      tokens = std::move(lexer.Tokenize());
     } catch (runtime_error err) {
       cerr << err.what() << endl;
       continue;
@@ -29,11 +30,11 @@ int main(int argc, char *argv[]) {
 
     int tkSize = tokens.size();
 
-    for (int i = 0; i < tkSize; i++) {
-      Token token = tokens[i];
-
-      cout << token.Yaml() << endl;
+    while (tokens.size() != 0) {
+      cout << tokens.front().Yaml() << endl;
+      tokens.pop();
     }
+
     cout << endl;
   }
   return 0;

@@ -4,7 +4,7 @@
 #include <string>
 
 std::string getIndent(int indentLevel) {
-  return std::string(indentLevel, '\t');
+  return std::string(indentLevel * 4, ' ');
 }
 
 std::string ProgramNode::Yaml(int indentLevel) {

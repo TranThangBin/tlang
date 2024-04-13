@@ -3,22 +3,22 @@
 #include <sstream>
 #include <stdexcept>
 
-bool Parser::notEOF() { return tokens[0].GetTkType() != TokenType::eof; }
+bool Parser::notEOF() { return tokens.front().GetTokenType() != TokenType::eof; }
 
-Token Parser::at() { return tokens[0]; }
+Token Parser::at() { return tokens.front(); }
 
 Token Parser::eat() {
-  Token front = tokens.front();
-  tokens.erase(tokens.begin());
-  return front;
+  Token token = tokens.front();
+  tokens.pop();
+  return token;
 }
 
 Token Parser::expect(TokenType tkType) {
   Token tk = eat();
 
-  if (tk.GetTkType() != tkType) {
+  if (tk.GetTokenType() != tkType) {
     std::stringstream ss;
-    ss << "Expected " << (int)tkType << " but get " << (int)tk.GetTkType();
+    ss << "Expected " << (int)tkType << " but get " << (int)tk.GetTokenType();
     throw std::runtime_error(ss.str());
   }
 

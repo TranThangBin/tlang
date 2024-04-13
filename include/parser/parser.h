@@ -6,17 +6,18 @@
 #include "parser/abstraction.h"
 #include "parser/ast.h"
 #include <memory>
-#include <vector>
+#include <queue>
 
 struct Parser {
 private:
   std::shared_ptr<Lexer> lexer;
-  std::vector<Token> tokens;
+  std::queue<Token> tokens;
 
   bool notEOF();
   Token at();
   Token eat();
   Token expect(TokenType);
+
   std::unique_ptr<Stmt> parseStmt();
   std::unique_ptr<Stmt> parseVarDec();
   std::unique_ptr<Expr> parseExpr();

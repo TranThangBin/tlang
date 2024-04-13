@@ -40,7 +40,7 @@ std::unique_ptr<Expr> Parser::parseMultiplicativeExpr() {
 std::unique_ptr<Expr> Parser::parsePrimaryExpr() {
   Token tk = at();
 
-  switch (tk.GetTkType()) {
+  switch (tk.GetTokenType()) {
   case TokenType::Number:
     return std::make_unique<NumericLiteralNode>(std::stod(eat().GetValue()));
 

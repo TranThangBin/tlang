@@ -1,24 +1,24 @@
 #include "lexer/lexer.h"
 #include "lexer/token.h"
 #include <cctype>
-#include <map>
+#include <queue>
 #include <sstream>
 #include <stdexcept>
 #include <string>
 
-std::vector<Token> Lexer::Tokenize() {
-  std::vector<Token> tokens = std::vector<Token>();
+std::queue<Token> Lexer::Tokenize() {
+  std::queue<Token> tokens;
 
   int srcLen = src.length();
 
   for (int i = 0; i < srcLen; i++) {
     char curChar = src[i];
-    auto checkLiteral = literal.find(std::string(1, curChar));
+    Token checkToken = checkReserve(std::string(1, curChar));
 
     if (curChar >= 0 && curChar <= 32) {
       continue;
-    } else if (checkLiteral != literal.end()) {
-      tokens.push_back(checkLiteral->second);
+    } else if (checkToken.GetTokenType() != TokenType::Invalid) {
+      tokens.push(checkToken);
     } else if (isdigit(curChar) != 0) {
 
       std::stringstream number;
@@ -28,7 +28,7 @@ std::vector<Token> Lexer::Tokenize() {
         number << src[++i];
       }
 
-      tokens.push_back(Token(number.str(), TokenType::Number));
+      tokens.push(Token(number.str(), TokenType::Number));
 
     } else if (isalpha(curChar) != 0 || curChar == '_') {
 
@@ -40,21 +40,21 @@ std::vector<Token> Lexer::Tokenize() {
         ident << src[++i];
       }
 
-      auto checkReserve = reserve.find(ident.str());
+      checkToken = checkReserve(ident.str());
 
-      if (checkReserve != reserve.end()) {
-        tokens.push_back(checkReserve->second);
+      if (checkToken.GetTokenType() != TokenType::Invalid) {
+        tokens.push(checkToken);
         continue;
       }
 
-      tokens.push_back(Token(ident.str(), TokenType::Identifier));
+      tokens.push(Token(ident.str(), TokenType::Identifier));
 
     } else {
       throw std::runtime_error("Unexpected symbol " + std::string(1, curChar));
     }
   }
 
-  tokens.push_back(Token("EOF", TokenType::eof));
+  tokens.push(Token("EOF", TokenType::eof));
 
   return tokens;
 }

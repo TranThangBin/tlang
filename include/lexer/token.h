@@ -17,24 +17,28 @@ enum class TokenType {
   Identifier,
   Var,
   Mut,
+
+  Invalid,
 };
 
 struct Token {
 private:
   std::string value;
-  TokenType tkType;
+  TokenType tokenType;
 
 public:
-  Token(std::string value, TokenType tkType) : value(value), tkType(tkType) {}
+  Token() : value(""), tokenType(TokenType::Invalid) {}
+  Token(std::string value, TokenType tkType)
+      : value(value), tokenType(tkType) {}
 
   std::string GetValue() { return value; }
-  TokenType GetTkType() { return tkType; }
+  TokenType GetTokenType() { return tokenType; }
 
   std::string Yaml() {
     std::stringstream oss;
     oss << "Token:" << std::endl
         << "\tValue: " << value << std::endl
-        << "\tTokenType: " << (int)tkType;
+        << "\tTokenType: " << (int)tokenType;
     return oss.str();
   }
 };

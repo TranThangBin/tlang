@@ -2,21 +2,20 @@
 #define LEXER_H
 
 #include "token.h"
-#include <map>
+#include <queue>
 #include <string>
-#include <vector>
+
+Token checkReserve(std::string);
 
 struct Lexer {
 private:
-  std::map<std::string, Token> literal;
-  std::map<std::string, Token> reserve;
   std::string src;
 
 public:
-  Lexer();
-  Lexer(std::string);
+  Lexer() : src("") {}
+  Lexer(std::string src) : src(src) {}
 
-  std::vector<Token> Tokenize();
+  std::queue<Token> Tokenize();
   void SetSrc(std::string src) { this->src = src; }
 };
 

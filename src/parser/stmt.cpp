@@ -9,14 +9,14 @@ std::unique_ptr<Stmt> Parser::parseVarDec() {
   eat();
   bool mut = false;
 
-  if (at().GetTkType() == TokenType::Mut) {
+  if (at().GetTokenType() == TokenType::Mut) {
     eat();
     mut = true;
   }
 
   Token ident = expect(TokenType::Identifier);
 
-  if (at().GetTkType() == TokenType::SemiColon) {
+  if (at().GetTokenType() == TokenType::SemiColon) {
     eat();
     return std::make_unique<VariableDeclarationNode>(mut, ident.GetValue(),
                                                      nullptr);
