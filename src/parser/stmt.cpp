@@ -9,20 +9,20 @@ std::unique_ptr<Stmt> Parser::parseVarDec() {
   eat();
   bool mut = false;
 
-  if (at().GetTkType() == TokenType::Tk_Mut) {
+  if (at().GetTkType() == TokenType::Mut) {
     eat();
     mut = true;
   }
 
-  Token ident = expect(TokenType::Tk_Identifier);
+  Token ident = expect(TokenType::Identifier);
 
-  if (at().GetTkType() == TokenType::Tk_SemiColon) {
+  if (at().GetTkType() == TokenType::SemiColon) {
     eat();
     return std::make_unique<VariableDeclarationNode>(mut, ident.GetValue(),
                                                      nullptr);
   }
 
-  expect(TokenType::Tk_Equal);
+  expect(TokenType::Equal);
   std::unique_ptr<Expr> value = parseExpr();
   return std::make_unique<VariableDeclarationNode>(mut, ident.GetValue(),
                                                    std::move(value));

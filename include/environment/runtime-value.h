@@ -1,10 +1,10 @@
 #ifndef RUNTIME_VALUE_H
 #define RUNTIME_VALUE_H
 
-enum DataType {
-  Dt_Null,
-  Dt_Number,
-  Dt_Boolean,
+enum class DataType {
+  Null,
+  Number,
+  Boolean,
 };
 
 struct RuntimeValue {

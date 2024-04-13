@@ -4,19 +4,19 @@
 #include <ostream>
 #include <sstream>
 #include <string>
-enum TokenType {
-  Tk_EOF,
+enum class TokenType {
+  eof,
 
-  Tk_Binop,
-  Tk_Equal,
-  Tk_OpenParen,
-  Tk_ClosingParen,
-  Tk_SemiColon,
+  Binop,
+  Equal,
+  OpenParen,
+  ClosingParen,
+  SemiColon,
 
-  Tk_Number,
-  Tk_Identifier,
-  Tk_Var,
-  Tk_Mut,
+  Number,
+  Identifier,
+  Var,
+  Mut,
 };
 
 struct Token {
@@ -34,7 +34,7 @@ public:
     std::stringstream oss;
     oss << "Token:" << std::endl
         << "\tValue: " << value << std::endl
-        << "\tTokenType: " << tkType;
+        << "\tTokenType: " << (int)tkType;
     return oss.str();
   }
 };

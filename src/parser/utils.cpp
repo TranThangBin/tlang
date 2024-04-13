@@ -3,7 +3,7 @@
 #include <sstream>
 #include <stdexcept>
 
-bool Parser::notEOF() { return tokens[0].GetTkType() != TokenType::Tk_EOF; }
+bool Parser::notEOF() { return tokens[0].GetTkType() != TokenType::eof; }
 
 Token Parser::at() { return tokens[0]; }
 
@@ -18,7 +18,7 @@ Token Parser::expect(TokenType tkType) {
 
   if (tk.GetTkType() != tkType) {
     std::stringstream ss;
-    ss << "Expected " << tkType << " but get " << tk.GetTkType();
+    ss << "Expected " << (int)tkType << " but get " << (int)tk.GetTkType();
     throw std::runtime_error(ss.str());
   }
 

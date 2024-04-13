@@ -2,7 +2,6 @@
 #define AST_H
 
 #include "abstraction.h"
-#include <iostream>
 #include <memory>
 #include <string>
 #include <utility>
@@ -13,7 +12,7 @@ private:
   std::vector<std::unique_ptr<Stmt>> stmts;
 
 public:
-  NodeType Kind() override { return NodeType::Nt_Program; }
+  NodeType Kind() override { return NodeType::Program; }
   std::string Yaml(int) override;
 
   ProgramNode(std::vector<std::unique_ptr<Stmt>> stmts)
@@ -27,7 +26,7 @@ private:
   std::unique_ptr<Expr> value;
 
 public:
-  NodeType Kind() override { return NodeType::Nt_VarDec; }
+  NodeType Kind() override { return NodeType::VarDec; }
   std::string Yaml(int) override;
 
   VariableDeclarationNode(bool mut, std::string identifier,
@@ -42,7 +41,7 @@ private:
   std::string op;
 
 public:
-  NodeType Kind() override { return NodeType::Nt_BinExpr; }
+  NodeType Kind() override { return NodeType::BinExpr; }
   std::string Yaml(int) override;
 
   BinaryExprNode(std::unique_ptr<Expr> left, std::unique_ptr<Expr> right,
@@ -55,7 +54,7 @@ private:
   float value;
 
 public:
-  NodeType Kind() override { return NodeType::Nt_NumericLiteral; }
+  NodeType Kind() override { return NodeType::NumericLiteral; }
   std::string Yaml(int) override;
 
   NumericLiteralNode(float value) : value(value) {}

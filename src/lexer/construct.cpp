@@ -7,39 +7,39 @@ std::map<std::string, Token> getLiteral() {
   return std::map<std::string, Token>{
       {
           "=",
-          Token("=", TokenType::Tk_Equal),
+          Token("=", TokenType::Equal),
       },
       {
           "(",
-          Token("(", TokenType::Tk_OpenParen),
+          Token("(", TokenType::OpenParen),
       },
       {
           ")",
-          Token(")", TokenType::Tk_ClosingParen),
+          Token(")", TokenType::ClosingParen),
       },
       {
           ";",
-          Token(";", TokenType::Tk_SemiColon),
+          Token(";", TokenType::SemiColon),
       },
       {
           "+",
-          Token("+", TokenType::Tk_Binop),
+          Token("+", TokenType::Binop),
       },
       {
           "-",
-          Token("-", TokenType::Tk_Binop),
+          Token("-", TokenType::Binop),
       },
       {
           "*",
-          Token("*", TokenType::Tk_Binop),
+          Token("*", TokenType::Binop),
       },
       {
           "/",
-          Token("/", TokenType::Tk_Binop),
+          Token("/", TokenType::Binop),
       },
       {
           "%",
-          Token("%", TokenType::Tk_Binop),
+          Token("%", TokenType::Binop),
       },
   };
 }
@@ -48,11 +48,11 @@ std::map<std::string, Token> getReserve() {
   return std::map<std::string, Token>{
       {
           "var",
-          Token("var", TokenType::Tk_Var),
+          Token("var", TokenType::Var),
       },
       {
           "mut",
-          Token("mut", TokenType::Tk_Mut),
+          Token("mut", TokenType::Mut),
       },
   };
 }

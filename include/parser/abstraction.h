@@ -2,15 +2,13 @@
 #define ABSTRACTION_H
 
 #include <string>
-enum NodeType {
-  // Stmt
-  Nt_Program,
-  Nt_VarDec,
+enum class NodeType {
+  Program,
+  VarDec,
 
-  // Expr
-  Nt_BinExpr,
-  Nt_NumericLiteral,
-  Nt_Identifier,
+  BinExpr,
+  NumericLiteral,
+  Identifier,
 };
 
 class Stmt {

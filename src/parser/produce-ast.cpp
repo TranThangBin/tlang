@@ -19,7 +19,7 @@ std::unique_ptr<ProgramNode> Parser::ProduceAST() {
 
 std::unique_ptr<Stmt> Parser::parseStmt() {
   switch (at().GetTkType()) {
-  case TokenType::Tk_Var:
+  case TokenType::Var:
     return parseVarDec();
 
   default:
@@ -30,7 +30,7 @@ std::unique_ptr<Stmt> Parser::parseStmt() {
 std::unique_ptr<Expr> Parser::parseExpr() {
   std::unique_ptr<Expr> expr = parseAdditiveExpr();
 
-  if (at().GetTkType() == TokenType::Tk_SemiColon) {
+  if (at().GetTkType() == TokenType::SemiColon) {
     eat();
   }
 

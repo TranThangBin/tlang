@@ -28,7 +28,7 @@ std::vector<Token> Lexer::Tokenize() {
         number << src[++i];
       }
 
-      tokens.push_back(Token(number.str(), TokenType::Tk_Number));
+      tokens.push_back(Token(number.str(), TokenType::Number));
 
     } else if (isalpha(curChar) != 0 || curChar == '_') {
 
@@ -47,14 +47,14 @@ std::vector<Token> Lexer::Tokenize() {
         continue;
       }
 
-      tokens.push_back(Token(ident.str(), TokenType::Tk_Identifier));
+      tokens.push_back(Token(ident.str(), TokenType::Identifier));
 
     } else {
       throw std::runtime_error("Unexpected symbol " + std::string(1, curChar));
     }
   }
 
-  tokens.push_back(Token("EOF", TokenType::Tk_EOF));
+  tokens.push_back(Token("EOF", TokenType::eof));
 
   return tokens;
 }
