@@ -2,7 +2,6 @@
 #include "lexer/token.h"
 #include <cctype>
 #include <queue>
-#include <sstream>
 #include <stdexcept>
 #include <string>
 
@@ -13,45 +12,48 @@ std::queue<Token> Lexer::Tokenize() {
 
   for (int i = 0; i < srcLen; i++) {
     char curChar = src[i];
-    Token checkToken = checkReserve(std::string(1, curChar));
 
     if (curChar >= 0 && curChar <= 32) {
       continue;
-    } else if (checkToken.GetTokenType() != TokenType::Invalid) {
+    }
+
+    Token checkToken = checkReserve(std::string(1, curChar));
+
+    if (checkToken.GetTokenType() != TokenType::Invalid) {
       tokens.push(checkToken);
-    } else if (isdigit(curChar) != 0) {
+      continue;
+    }
 
-      std::stringstream number;
-      number << curChar;
-
+    if (isdigit(curChar) != 0) {
+      int start = i;
       while (i < srcLen && isdigit(src[i + 1]) != 0) {
-        number << src[++i];
+        i++;
       }
+      tokens.push(Token(src.substr(start, i - start + 1), TokenType::Number));
+      continue;
+    }
 
-      tokens.push(Token(number.str(), TokenType::Number));
-
-    } else if (isalpha(curChar) != 0 || curChar == '_') {
-
-      std::stringstream ident;
-      ident << curChar;
+    if (isalpha(curChar) != 0 || curChar == '_') {
+      int start = i;
 
       while (i < srcLen && isalpha(src[i + 1]) != 0 || src[i + 1] == '_' ||
              isdigit(src[i + 1]) != 0) {
-        ident << src[++i];
+        i++;
       }
 
-      checkToken = checkReserve(ident.str());
+      std::string ident = src.substr(start, i - start + 1);
+      checkToken = checkReserve(ident);
 
       if (checkToken.GetTokenType() != TokenType::Invalid) {
         tokens.push(checkToken);
         continue;
       }
 
-      tokens.push(Token(ident.str(), TokenType::Identifier));
-
-    } else {
-      throw std::runtime_error("Unexpected symbol " + std::string(1, curChar));
+      tokens.push(Token(ident, TokenType::Identifier));
+      continue;
     }
+
+    throw std::runtime_error("Unexpected symbol " + std::string(1, curChar));
   }
 
   tokens.push(Token("EOF", TokenType::eof));
