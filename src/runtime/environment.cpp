@@ -1,5 +1,5 @@
-#include "environment/environment.h"
-#include "environment/runtime-value.h"
+#include "runtime/environment.h"
+#include "runtime/runtime-value.h"
 #include <memory>
 #include <stdexcept>
 #include <string>
@@ -46,7 +46,7 @@ Environment::AssignVariable(std::string varname,
     throw std::runtime_error(varname + " is immutable");
   }
 
-  env->variables[varname] = value;
+  env->variables.find(varname)->second = value;
   return value;
 }
 

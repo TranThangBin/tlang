@@ -4,7 +4,6 @@
 #include <iostream>
 #include <memory>
 #include <string>
-#include <utility>
 
 using namespace std;
 
@@ -21,7 +20,7 @@ int main(int argc, char *argv[]) {
     lexer->SetSrc(src);
 
     try {
-      unique_ptr<ProgramNode> program = std::move(parser.ProduceAST());
+      shared_ptr<ProgramNode> program = parser.ProduceAST();
 
       cout << program->Yaml(0);
 

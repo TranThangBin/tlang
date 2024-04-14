@@ -4,9 +4,10 @@
 #include <string>
 enum class NodeType {
   Program,
-  VarDec,
+  VariableDeclaration,
 
-  BinExpr,
+  AssignmentExpr,
+  BinaryExpr,
   NumericLiteral,
   Identifier,
 };

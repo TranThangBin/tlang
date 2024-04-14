@@ -2,10 +2,13 @@
 #define VALUE_H
 
 #include "runtime-value.h"
+#include <sstream>
+#include <string>
 
 struct NullValue : public RuntimeValue {
 public:
   DataType DataTypeID() override { return DataType::Null; }
+  std::string str() override { return "null"; }
 };
 
 struct BooleanValue : public RuntimeValue {
@@ -18,6 +21,7 @@ public:
   BooleanValue(bool value) : value(value) {}
 
   bool GetValue() { return value; }
+  std::string str() override { return value ? "true" : "false"; }
 };
 
 struct NumberValue : public RuntimeValue {
@@ -30,6 +34,11 @@ public:
   NumberValue(float value) : value(value) {}
 
   float GetValue() { return value; }
+  std::string str() override {
+    std::stringstream ss;
+    ss << value;
+    return ss.str();
+  }
 };
 
 #endif // !VALUE_H

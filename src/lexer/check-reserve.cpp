@@ -26,27 +26,27 @@ std::map<std::string, Token> reserve = std::map<std::string, Token>{
 
     {
         "+",
-        Token("+", TokenType::Binop),
+        Token("+", TokenType::BinaryOperator),
     },
 
     {
         "-",
-        Token("-", TokenType::Binop),
+        Token("-", TokenType::BinaryOperator),
     },
 
     {
         "*",
-        Token("*", TokenType::Binop),
+        Token("*", TokenType::BinaryOperator),
     },
 
     {
         "/",
-        Token("/", TokenType::Binop),
+        Token("/", TokenType::BinaryOperator),
     },
 
     {
         "%",
-        Token("%", TokenType::Binop),
+        Token("%", TokenType::BinaryOperator),
     },
 
     {

@@ -39,6 +39,27 @@ std::string VariableDeclarationNode::Yaml(int indentLevel) {
   return ss.str();
 }
 
+std::string AssignmentExprNode::Yaml(int indentLevel) {
+  std::stringstream ss;
+
+  ss << getIndent(indentLevel) << "AssignmentExprNode:" << std::endl
+     << getIndent(indentLevel + 1) << "Assignee:" << std::endl
+     << assignee->Yaml(indentLevel + 2) << std::endl
+     << getIndent(indentLevel + 1) << "Value:" << std::endl
+     << value->Yaml(indentLevel + 2);
+
+  return ss.str();
+}
+
+std::string IdentifierNode::Yaml(int indentLevel) {
+  std::stringstream ss;
+
+  ss << getIndent(indentLevel) << "IdentifierNode:" << std::endl
+     << getIndent(indentLevel + 1) << "Symbol: " << symbol;
+
+  return ss.str();
+}
+
 std::string BinaryExprNode::Yaml(int indentLevel) {
   std::stringstream ss;
 

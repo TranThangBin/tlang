@@ -7,7 +7,7 @@
 enum class TokenType {
   eof,
 
-  Binop,
+  BinaryOperator,
   Equal,
   OpenParen,
   ClosingParen,

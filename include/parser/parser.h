@@ -18,17 +18,18 @@ private:
   Token eat();
   Token expect(TokenType);
 
-  std::unique_ptr<Stmt> parseStmt();
-  std::unique_ptr<Stmt> parseVarDec();
-  std::unique_ptr<Expr> parseExpr();
-  std::unique_ptr<Expr> parseAdditiveExpr();
-  std::unique_ptr<Expr> parseMultiplicativeExpr();
-  std::unique_ptr<Expr> parsePrimaryExpr();
+  std::shared_ptr<Stmt> parseStmt();
+  std::shared_ptr<Stmt> parseVariableDeclaration();
+  std::shared_ptr<Expr> parseExpr();
+  std::shared_ptr<Expr> parseAssignmentExpr();
+  std::shared_ptr<Expr> parseAdditiveExpr();
+  std::shared_ptr<Expr> parseMultiplicativeExpr();
+  std::shared_ptr<Expr> parsePrimaryExpr();
 
 public:
   Parser(std::shared_ptr<Lexer> lexer) : lexer(lexer) {}
 
-  std::unique_ptr<ProgramNode> ProduceAST();
+  std::shared_ptr<ProgramNode> ProduceAST();
 };
 
 #endif // !PARSER_H
