@@ -35,11 +35,11 @@ public:
   TokenType GetTokenType() { return tokenType; }
 
   std::string Yaml() {
-    std::stringstream oss;
-    oss << "Token:" << std::endl
+    std::stringstream ss;
+    ss << "Token:" << std::endl
         << "\tValue: " << value << std::endl
         << "\tTokenType: " << (int)tokenType;
-    return oss.str();
+    return ss.str();
   }
 };
 

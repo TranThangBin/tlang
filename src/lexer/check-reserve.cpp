@@ -67,5 +67,5 @@ Token checkReserve(std::string str) {
     return Token();
   }
 
-  return Token(it->second);
+  return it->second;
 }

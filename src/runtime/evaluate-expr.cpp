@@ -2,7 +2,6 @@
 #include "runtime/environment.h"
 #include "runtime/interpreter.h"
 #include "runtime/runtime-value.h"
-#include "runtime/value.h"
 #include <memory>
 #include <sstream>
 #include <stdexcept>
@@ -46,11 +45,10 @@ Interpreter::evaluateBinaryExpr(std::shared_ptr<BinaryExprNode> binaryExprNode,
     return evaluateNumberOperation(std::static_pointer_cast<NumberValue>(left),
                                    std::static_pointer_cast<NumberValue>(right),
                                    binaryExprNode->GetOperator());
-  default: {
+  default:
     std::stringstream ss;
     ss << "No operator " << binaryExprNode->GetOperator() << " for "
        << (int)leftDt;
     throw std::runtime_error(ss.str());
-  }
   }
 }

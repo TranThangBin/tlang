@@ -1,9 +1,7 @@
 #include "runtime/interpreter.h"
-#include "parser/abstraction.h"
 #include "parser/ast.h"
 #include "runtime/environment.h"
 #include "runtime/runtime-value.h"
-#include "runtime/value.h"
 #include <memory>
 #include <sstream>
 #include <stdexcept>
@@ -52,11 +50,10 @@ Interpreter::evaluate(std::shared_ptr<Stmt> astNode,
     return std::make_shared<NumberValue>(numericLiteralNode->GetValue());
   }
 
-  default: {
+  default:
     std::stringstream ss;
     ss << (int)astNode->Kind()
        << " node is currently not supported for interpretation";
     throw std::runtime_error(ss.str());
-  }
   }
 }

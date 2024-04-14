@@ -12,8 +12,9 @@ include_directories(include)
 add_library(lexer ./src/lexer/tokenize.cpp ./src/lexer/check-reserve.cpp)
 
 add_library(
-  parser ./src/parser/produce-ast.cpp ./src/parser/utils.cpp
-         ./src/parser/stmt.cpp ./src/parser/expr.cpp ./src/parser/yaml.cpp)
+  parser
+  ./src/parser/produce-ast.cpp ./src/parser/utils.cpp
+  ./src/parser/parse-stmt.cpp ./src/parser/parse-expr.cpp ./src/parser/yaml.cpp)
 
 add_library(
   runtime

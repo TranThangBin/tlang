@@ -4,7 +4,7 @@
 #include <stdexcept>
 #include <string>
 
-Environment *Environment::Resolve(std::string varname) {
+Environment *Environment::resolve(std::string varname) {
   auto it = variables.find(varname);
 
   if (it != variables.end()) {
@@ -15,7 +15,7 @@ Environment *Environment::Resolve(std::string varname) {
     throw std::runtime_error(varname + " doesn't exist in this scope");
   }
 
-  return parent->Resolve(varname);
+  return parent->resolve(varname);
 }
 
 std::shared_ptr<RuntimeValue>
@@ -40,7 +40,7 @@ Environment::DeclareVariable(std::string varname,
 std::shared_ptr<RuntimeValue>
 Environment::AssignVariable(std::string varname,
                             std::shared_ptr<RuntimeValue> value) {
-  Environment *env = Resolve(varname);
+  Environment *env = resolve(varname);
 
   if (env->mutables.find(varname) == mutables.end()) {
     throw std::runtime_error(varname + " is immutable");
@@ -51,9 +51,7 @@ Environment::AssignVariable(std::string varname,
 }
 
 std::shared_ptr<RuntimeValue> Environment::LookUpVar(std::string varname) {
-  Environment *env = Resolve(varname);
+  Environment *env = resolve(varname);
 
-  auto it = env->variables.find(varname);
-
-  return it->second;
+  return env->variables.find(varname)->second;
 }

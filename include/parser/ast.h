@@ -1,18 +1,36 @@
 #ifndef AST_H
 #define AST_H
 
-#include "abstraction.h"
 #include <memory>
 #include <string>
 #include <vector>
+
+enum class NodeType {
+  Program,
+  VariableDeclaration,
+
+  AssignmentExpr,
+  BinaryExpr,
+  NumericLiteral,
+  Identifier,
+};
+
+class Stmt {
+public:
+  virtual std::string Yaml(int) = 0;
+  virtual NodeType Kind() = 0;
+};
+
+class Expr : public Stmt {};
 
 class ProgramNode : public Stmt {
 private:
   std::vector<std::shared_ptr<Stmt>> stmts;
 
 public:
-  NodeType Kind() override { return NodeType::Program; }
   std::string Yaml(int) override;
+
+  NodeType Kind() override { return NodeType::Program; }
   std::vector<std::shared_ptr<Stmt>> GetStmts() { return stmts; }
 
   ProgramNode(std::vector<std::shared_ptr<Stmt>> stmts) : stmts(stmts) {}
@@ -25,8 +43,8 @@ private:
   std::shared_ptr<Expr> value;
 
 public:
-  NodeType Kind() override { return NodeType::VariableDeclaration; }
   std::string Yaml(int) override;
+  NodeType Kind() override { return NodeType::VariableDeclaration; }
 
   bool GetMut() { return mut; }
   std::string GetIdentifier() { return identifier; }
@@ -43,9 +61,9 @@ private:
   std::shared_ptr<Expr> value;
 
 public:
-  NodeType Kind() override { return NodeType::AssignmentExpr; }
   std::string Yaml(int) override;
 
+  NodeType Kind() override { return NodeType::AssignmentExpr; }
   std::shared_ptr<Expr> GetAssignee() { return assignee; }
   std::shared_ptr<Expr> GetValue() { return value; }
 
@@ -59,9 +77,9 @@ private:
   std::string symbol;
 
 public:
-  NodeType Kind() override { return NodeType::Identifier; }
   std::string Yaml(int) override;
 
+  NodeType Kind() override { return NodeType::Identifier; }
   std::string GetSymbol() { return symbol; }
 
   IdentifierNode(std::string symbol) : symbol(symbol) {}
@@ -74,9 +92,9 @@ private:
   std::string op;
 
 public:
-  NodeType Kind() override { return NodeType::BinaryExpr; }
   std::string Yaml(int) override;
 
+  NodeType Kind() override { return NodeType::BinaryExpr; }
   std::shared_ptr<Expr> GetLeft() { return left; }
   std::shared_ptr<Expr> GetRight() { return right; }
   std::string GetOperator() { return op; }
@@ -91,9 +109,9 @@ private:
   float value;
 
 public:
-  NodeType Kind() override { return NodeType::NumericLiteral; }
   std::string Yaml(int) override;
 
+  NodeType Kind() override { return NodeType::NumericLiteral; }
   float GetValue() { return value; }
 
   NumericLiteralNode(float value) : value(value) {}

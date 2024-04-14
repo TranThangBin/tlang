@@ -1,8 +1,8 @@
 #include "lexer/token.h"
-#include "parser/abstraction.h"
 #include "parser/ast.h"
 #include "parser/parser.h"
 #include <memory>
+#include <sstream>
 #include <stdexcept>
 #include <string>
 
@@ -68,6 +68,8 @@ std::shared_ptr<Expr> Parser::parsePrimaryExpr() {
   }
 
   default:
-    throw std::runtime_error("Unexpected token " + tk.GetValue());
+    std::stringstream ss;
+    ss << "Unexpected token " << (int)tk.GetTokenType();
+    throw std::runtime_error(ss.str());
   }
 }

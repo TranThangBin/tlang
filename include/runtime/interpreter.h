@@ -1,12 +1,10 @@
 #ifndef INTERPRETER_H
 #define INTERPRETER_H
 
-#include "parser/abstraction.h"
 #include "parser/ast.h"
 #include "parser/parser.h"
+#include "runtime-value.h"
 #include "runtime/environment.h"
-#include "runtime/runtime-value.h"
-#include "runtime/value.h"
 #include <memory>
 #include <string>
 

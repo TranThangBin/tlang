@@ -2,7 +2,6 @@
 #define ENVIRONMENT_H
 
 #include "runtime-value.h"
-#include "value.h"
 #include <map>
 #include <memory>
 #include <set>
@@ -15,6 +14,8 @@ private:
   std::map<std::string, std::shared_ptr<RuntimeValue>> variables;
   std::set<std::string> mutables;
 
+  Environment *resolve(std::string);
+
 public:
   Environment() : parent(nullptr) {
     DeclareVariable("true", std::make_shared<BooleanValue>(true), false);
@@ -24,8 +25,6 @@ public:
 
   Environment(std::unique_ptr<Environment> parent)
       : parent(std::move(parent)) {}
-
-  Environment *Resolve(std::string);
 
   std::shared_ptr<RuntimeValue>
   DeclareVariable(std::string, std::shared_ptr<RuntimeValue>, bool);
