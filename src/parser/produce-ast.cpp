@@ -2,21 +2,22 @@
 #include "parser/ast.h"
 #include "parser/parser.h"
 #include <memory>
+#include <utility>
 #include <vector>
 
-std::shared_ptr<ProgramNode> Parser::ProduceAST() {
-  tokens = lexer->Tokenize();
+std::unique_ptr<ProgramNode> Parser::ProduceAST() {
+  tokens = std::move(lexer->Tokenize());
 
-  std::vector<std::shared_ptr<Stmt>> stmts;
+  std::vector<std::unique_ptr<Stmt>> stmts;
 
   while (notEOF()) {
     stmts.push_back(parseStmt());
   }
 
-  return std::make_shared<ProgramNode>(stmts);
+  return std::make_unique<ProgramNode>(std::move(stmts));
 }
 
-std::shared_ptr<Stmt> Parser::parseStmt() {
+std::unique_ptr<Stmt> Parser::parseStmt() {
   switch (at().GetTokenType()) {
   case TokenType::Var:
     return parseVariableDeclaration();
@@ -26,8 +27,8 @@ std::shared_ptr<Stmt> Parser::parseStmt() {
   }
 }
 
-std::shared_ptr<Expr> Parser::parseExpr() {
-  std::shared_ptr<Expr> expr = parseAssignmentExpr();
+std::unique_ptr<Expr> Parser::parseExpr() {
+  std::unique_ptr<Expr> expr = parseAssignmentExpr();
 
   if (at().GetTokenType() == TokenType::SemiColon) {
     eat();

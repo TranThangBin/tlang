@@ -6,33 +6,35 @@
 #include <sstream>
 #include <stdexcept>
 #include <string>
+#include <utility>
 
 std::shared_ptr<RuntimeValue> Interpreter::evaluateAssignmentExpr(
-    std::shared_ptr<AssignmentExprNode> assignmentExprNode,
-    std::shared_ptr<Environment> environment) {
+    std::unique_ptr<AssignmentExprNode> assignmentExprNode,
+    std::unique_ptr<Environment> &environment) {
 
-  std::shared_ptr<IdentifierNode> identifier =
-      std::static_pointer_cast<IdentifierNode>(
-          assignmentExprNode->GetAssignee());
+  std::unique_ptr<IdentifierNode> identifier =
+      std::unique_ptr<IdentifierNode>(static_cast<IdentifierNode *>(
+          assignmentExprNode->GetAssignee().release()));
 
   return environment->AssignVariable(
       identifier->GetSymbol(),
-      evaluate(assignmentExprNode->GetValue(), environment));
+      evaluate(std::move(assignmentExprNode->GetValue()), environment));
 }
 
 std::shared_ptr<RuntimeValue>
-Interpreter::evaluateIdentifier(std::shared_ptr<IdentifierNode> identifierNode,
-                                std::shared_ptr<Environment> environment) {
+Interpreter::evaluateIdentifier(std::unique_ptr<IdentifierNode> identifierNode,
+                                std::unique_ptr<Environment> &environment) {
   return environment->LookUpVar(identifierNode->GetSymbol());
 }
 
 std::shared_ptr<RuntimeValue>
-Interpreter::evaluateBinaryExpr(std::shared_ptr<BinaryExprNode> binaryExprNode,
-                                std::shared_ptr<Environment> environment) {
+Interpreter::evaluateBinaryExpr(std::unique_ptr<BinaryExprNode> binaryExprNode,
+                                std::unique_ptr<Environment> &environment) {
+
   std::shared_ptr<RuntimeValue> left =
-      evaluate(binaryExprNode->GetLeft(), environment);
+      evaluate(std::move(binaryExprNode->GetLeft()), environment);
   std::shared_ptr<RuntimeValue> right =
-      evaluate(binaryExprNode->GetRight(), environment);
+      evaluate(std::move(binaryExprNode->GetRight()), environment);
 
   DataType leftDt = left->DataTypeID();
 

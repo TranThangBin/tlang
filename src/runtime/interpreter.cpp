@@ -5,48 +5,67 @@
 #include <memory>
 #include <sstream>
 #include <stdexcept>
+#include <utility>
 
 std::shared_ptr<RuntimeValue> Interpreter::Evaluate() {
   return evaluate(parser->ProduceAST(), environment);
 }
 
 std::shared_ptr<RuntimeValue>
-Interpreter::evaluate(std::shared_ptr<Stmt> astNode,
-                      std::shared_ptr<Environment> environment) {
+Interpreter::evaluate(std::unique_ptr<Stmt> astNode,
+                      std::unique_ptr<Environment> &environment) {
   switch (astNode->Kind()) {
   case NodeType::Program: {
-    std::shared_ptr<ProgramNode> programNode =
-        std::static_pointer_cast<ProgramNode>(astNode);
-    return evaluateProgram(programNode, environment);
+
+    std::unique_ptr<ProgramNode> programNode = std::unique_ptr<ProgramNode>(
+        static_cast<ProgramNode *>(astNode.release()));
+
+    return evaluateProgram(std::move(programNode), environment);
   }
 
   case NodeType::VariableDeclaration: {
-    std::shared_ptr<VariableDeclarationNode> variableDeclarationNode =
-        std::static_pointer_cast<VariableDeclarationNode>(astNode);
-    return evaluateVariableDeclaration(variableDeclarationNode, environment);
+
+    std::unique_ptr<VariableDeclarationNode> variableDeclarationNode =
+        std::unique_ptr<VariableDeclarationNode>(
+            static_cast<VariableDeclarationNode *>(astNode.release()));
+
+    return evaluateVariableDeclaration(std::move(variableDeclarationNode),
+                                       environment);
   }
 
   case NodeType::AssignmentExpr: {
-    std::shared_ptr<AssignmentExprNode> assignmentExprNode =
-        std::static_pointer_cast<AssignmentExprNode>(astNode);
-    return evaluateAssignmentExpr(assignmentExprNode, environment);
+
+    std::unique_ptr<AssignmentExprNode> assignmentExprNode =
+        std::unique_ptr<AssignmentExprNode>(
+            static_cast<AssignmentExprNode *>(astNode.release()));
+
+    return evaluateAssignmentExpr(std::move(assignmentExprNode), environment);
   }
 
   case NodeType::Identifier: {
-    std::shared_ptr<IdentifierNode> identifierNode =
-        std::static_pointer_cast<IdentifierNode>(astNode);
-    return evaluateIdentifier(identifierNode, environment);
+
+    std::unique_ptr<IdentifierNode> identifierNode =
+        std::unique_ptr<IdentifierNode>(
+            static_cast<IdentifierNode *>(astNode.release()));
+
+    return evaluateIdentifier(std::move(identifierNode), environment);
   }
 
   case NodeType::BinaryExpr: {
-    std::shared_ptr<BinaryExprNode> binaryExprNode =
-        std::static_pointer_cast<BinaryExprNode>(astNode);
-    return evaluateBinaryExpr(binaryExprNode, environment);
+
+    std::unique_ptr<BinaryExprNode> binaryExprNode =
+        std::unique_ptr<BinaryExprNode>(
+            static_cast<BinaryExprNode *>(astNode.release()));
+
+    return evaluateBinaryExpr(std::move(binaryExprNode), environment);
   }
 
   case NodeType::NumericLiteral: {
-    std::shared_ptr<NumericLiteralNode> numericLiteralNode =
-        std::static_pointer_cast<NumericLiteralNode>(astNode);
+
+    std::unique_ptr<NumericLiteralNode> numericLiteralNode =
+        std::unique_ptr<NumericLiteralNode>(
+            static_cast<NumericLiteralNode *>(astNode.release()));
+
     return std::make_shared<NumberValue>(numericLiteralNode->GetValue());
   }
 

@@ -7,37 +7,44 @@
 #include "runtime/environment.h"
 #include <memory>
 #include <string>
+#include <utility>
 
 struct Interpreter {
 private:
   std::shared_ptr<Parser> parser;
-  std::shared_ptr<Environment> environment;
+  std::unique_ptr<Environment> environment;
 
-  std::shared_ptr<RuntimeValue> evaluate(std::shared_ptr<Stmt>,
-                                         std::shared_ptr<Environment>);
+  std::shared_ptr<RuntimeValue> evaluate(std::unique_ptr<Stmt>,
+                                         std::unique_ptr<Environment> &);
 
-  std::shared_ptr<RuntimeValue> evaluateProgram(std::shared_ptr<ProgramNode>,
-                                                std::shared_ptr<Environment>);
+  std::shared_ptr<RuntimeValue> evaluateProgram(std::unique_ptr<ProgramNode>,
+                                                std::unique_ptr<Environment> &);
+
   std::shared_ptr<RuntimeValue>
-      evaluateVariableDeclaration(std::shared_ptr<VariableDeclarationNode>,
-                                  std::shared_ptr<Environment>);
+  evaluateVariableDeclaration(std::unique_ptr<VariableDeclarationNode>,
+                              std::unique_ptr<Environment> &);
+
   std::shared_ptr<RuntimeValue>
-      evaluateAssignmentExpr(std::shared_ptr<AssignmentExprNode>,
-                             std::shared_ptr<Environment>);
+  evaluateAssignmentExpr(std::unique_ptr<AssignmentExprNode>,
+                         std::unique_ptr<Environment> &);
+
   std::shared_ptr<RuntimeValue>
-      evaluateIdentifier(std::shared_ptr<IdentifierNode>,
-                         std::shared_ptr<Environment>);
+  evaluateIdentifier(std::unique_ptr<IdentifierNode>,
+                     std::unique_ptr<Environment> &);
+
   std::shared_ptr<RuntimeValue>
-      evaluateBinaryExpr(std::shared_ptr<BinaryExprNode>,
-                         std::shared_ptr<Environment>);
+  evaluateBinaryExpr(std::unique_ptr<BinaryExprNode>,
+                     std::unique_ptr<Environment> &);
+
   std::shared_ptr<RuntimeValue>
       evaluateNumberOperation(std::shared_ptr<NumberValue>,
                               std::shared_ptr<NumberValue>, std::string);
 
 public:
   Interpreter(std::shared_ptr<Parser> parser,
-              std::shared_ptr<Environment> environment)
-      : parser(parser), environment(environment) {}
+              std::unique_ptr<Environment> environment)
+      : parser(parser), environment(std::move(environment)) {}
+
   std::shared_ptr<RuntimeValue> Evaluate();
 };
 

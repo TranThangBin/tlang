@@ -5,63 +5,67 @@
 #include <sstream>
 #include <stdexcept>
 #include <string>
+#include <utility>
 
-std::shared_ptr<Expr> Parser::parseAssignmentExpr() {
-  std::shared_ptr<Expr> assignee = parseAdditiveExpr();
+std::unique_ptr<Expr> Parser::parseAssignmentExpr() {
+  std::unique_ptr<Expr> assignee = std::move(parseAdditiveExpr());
 
   while (at().GetTokenType() == TokenType::Equal) {
     eat();
 
-    std::shared_ptr<Expr> value = parseAssignmentExpr();
+    std::unique_ptr<Expr> value = std::move(parseAssignmentExpr());
 
-    assignee = std::make_shared<AssignmentExprNode>(assignee, value);
+    assignee = std::make_unique<AssignmentExprNode>(std::move(assignee),
+                                                    std::move(value));
   }
 
   return assignee;
 }
 
-std::shared_ptr<Expr> Parser::parseAdditiveExpr() {
-  std::shared_ptr<Expr> left = parseMultiplicativeExpr();
+std::unique_ptr<Expr> Parser::parseAdditiveExpr() {
+  std::unique_ptr<Expr> left = std::move(parseMultiplicativeExpr());
 
   while (at().GetValue() == "+" || at().GetValue() == "-") {
     std::string op = eat().GetValue();
 
-    std::shared_ptr<Expr> right = parseMultiplicativeExpr();
+    std::unique_ptr<Expr> right = std::move(parseMultiplicativeExpr());
 
-    left = std::make_shared<BinaryExprNode>(left, right, op);
+    left =
+        std::make_unique<BinaryExprNode>(std::move(left), std::move(right), op);
   }
 
   return left;
 }
 
-std::shared_ptr<Expr> Parser::parseMultiplicativeExpr() {
-  std::shared_ptr<Expr> left = parsePrimaryExpr();
+std::unique_ptr<Expr> Parser::parseMultiplicativeExpr() {
+  std::unique_ptr<Expr> left = std::move(parsePrimaryExpr());
 
   while (at().GetValue() == "*" || at().GetValue() == "/" ||
          at().GetValue() == "%") {
     std::string op = eat().GetValue();
 
-    std::shared_ptr<Expr> right = parsePrimaryExpr();
+    std::unique_ptr<Expr> right = std::move(parsePrimaryExpr());
 
-    left = std::make_shared<BinaryExprNode>(left, right, op);
+    left =
+        std::make_unique<BinaryExprNode>(std::move(left), std::move(right), op);
   }
 
   return left;
 }
 
-std::shared_ptr<Expr> Parser::parsePrimaryExpr() {
+std::unique_ptr<Expr> Parser::parsePrimaryExpr() {
   Token tk = at();
 
   switch (tk.GetTokenType()) {
   case TokenType::Number:
-    return std::make_shared<NumericLiteralNode>(std::stof(eat().GetValue()));
+    return std::make_unique<NumericLiteralNode>(std::stof(eat().GetValue()));
 
   case TokenType::Identifier:
-    return std::make_shared<IdentifierNode>(eat().GetValue());
+    return std::make_unique<IdentifierNode>(eat().GetValue());
 
   case TokenType::OpenParen: {
     eat();
-    std::shared_ptr<Expr> expr = parseExpr();
+    std::unique_ptr<Expr> expr = std::move(parseExpr());
     expect(TokenType::ClosingParen);
 
     return expr;

@@ -2,8 +2,9 @@
 #include "parser/ast.h"
 #include "parser/parser.h"
 #include <memory>
+#include <utility>
 
-std::shared_ptr<Stmt> Parser::parseVariableDeclaration() {
+std::unique_ptr<Stmt> Parser::parseVariableDeclaration() {
   eat();
   bool mut = false;
 
@@ -21,7 +22,7 @@ std::shared_ptr<Stmt> Parser::parseVariableDeclaration() {
   }
 
   expect(TokenType::Equal);
-  std::shared_ptr<Expr> value = parseExpr();
-  return std::make_shared<VariableDeclarationNode>(mut, ident.GetValue(),
-                                                   value);
+  std::unique_ptr<Expr> value = std::move(parseExpr());
+  return std::make_unique<VariableDeclarationNode>(mut, ident.GetValue(),
+                                                   std::move(value));
 }

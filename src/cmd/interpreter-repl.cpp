@@ -7,6 +7,7 @@
 #include <memory>
 #include <stdexcept>
 #include <string>
+#include <utility>
 
 using namespace std;
 
@@ -14,8 +15,10 @@ int main(int argc, char *argv[]) {
   string src;
   std::shared_ptr<Lexer> lexer = std::make_shared<Lexer>();
   std::shared_ptr<Parser> parser = std::make_shared<Parser>(lexer);
-  std::shared_ptr<Environment> environment = std::make_shared<Environment>();
-  Interpreter interpreter = Interpreter(parser, environment);
+  std::unique_ptr<Environment> environment = std::make_unique<Environment>();
+  Interpreter interpreter = Interpreter(parser, std::move(environment));
+
+  cout << "Interpreter explorer v0.0.1" << endl;
 
   while (true) {
     cout << "> ";

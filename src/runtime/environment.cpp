@@ -3,6 +3,7 @@
 #include <memory>
 #include <stdexcept>
 #include <string>
+#include <utility>
 
 Environment *Environment::resolve(std::string varname) {
   auto it = variables.find(varname);
