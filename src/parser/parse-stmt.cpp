@@ -22,7 +22,7 @@ std::unique_ptr<Stmt> Parser::parseVariableDeclaration() {
   }
 
   expect(TokenType::Equal);
-  std::unique_ptr<Expr> value = std::move(parseExpr());
+  std::unique_ptr<Expr> value = parseExpr();
   return std::make_unique<VariableDeclarationNode>(mut, ident.GetValue(),
                                                    std::move(value));
 }

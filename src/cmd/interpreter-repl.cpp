@@ -14,9 +14,10 @@ using namespace std;
 int main(int argc, char *argv[]) {
   string src;
   std::shared_ptr<Lexer> lexer = std::make_shared<Lexer>();
-  std::shared_ptr<Parser> parser = std::make_shared<Parser>(lexer);
+  std::unique_ptr<Parser> parser = std::make_unique<Parser>(lexer);
   std::unique_ptr<Environment> environment = std::make_unique<Environment>();
-  Interpreter interpreter = Interpreter(parser, std::move(environment));
+  Interpreter interpreter =
+      Interpreter(std::move(parser), std::move(environment));
 
   cout << "Interpreter explorer v0.0.1" << endl;
 

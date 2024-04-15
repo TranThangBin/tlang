@@ -3,7 +3,6 @@
 #include <queue>
 #include <stdexcept>
 #include <string>
-#include <utility>
 
 using namespace std;
 
@@ -22,7 +21,7 @@ int main(int argc, char *argv[]) {
     queue<Token> tokens;
 
     try {
-      tokens = std::move(lexer.Tokenize());
+      tokens = lexer.Tokenize();
     } catch (runtime_error err) {
       cerr << err.what() << endl;
       continue;

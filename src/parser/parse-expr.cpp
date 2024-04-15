@@ -8,12 +8,12 @@
 #include <utility>
 
 std::unique_ptr<Expr> Parser::parseAssignmentExpr() {
-  std::unique_ptr<Expr> assignee = std::move(parseAdditiveExpr());
+  std::unique_ptr<Expr> assignee = parseAdditiveExpr();
 
   while (at().GetTokenType() == TokenType::Equal) {
     eat();
 
-    std::unique_ptr<Expr> value = std::move(parseAssignmentExpr());
+    std::unique_ptr<Expr> value = parseAssignmentExpr();
 
     assignee = std::make_unique<AssignmentExprNode>(std::move(assignee),
                                                     std::move(value));
@@ -23,12 +23,12 @@ std::unique_ptr<Expr> Parser::parseAssignmentExpr() {
 }
 
 std::unique_ptr<Expr> Parser::parseAdditiveExpr() {
-  std::unique_ptr<Expr> left = std::move(parseMultiplicativeExpr());
+  std::unique_ptr<Expr> left = parseMultiplicativeExpr();
 
   while (at().GetValue() == "+" || at().GetValue() == "-") {
     std::string op = eat().GetValue();
 
-    std::unique_ptr<Expr> right = std::move(parseMultiplicativeExpr());
+    std::unique_ptr<Expr> right = parseMultiplicativeExpr();
 
     left =
         std::make_unique<BinaryExprNode>(std::move(left), std::move(right), op);
@@ -38,13 +38,13 @@ std::unique_ptr<Expr> Parser::parseAdditiveExpr() {
 }
 
 std::unique_ptr<Expr> Parser::parseMultiplicativeExpr() {
-  std::unique_ptr<Expr> left = std::move(parsePrimaryExpr());
+  std::unique_ptr<Expr> left = parsePrimaryExpr();
 
   while (at().GetValue() == "*" || at().GetValue() == "/" ||
          at().GetValue() == "%") {
     std::string op = eat().GetValue();
 
-    std::unique_ptr<Expr> right = std::move(parsePrimaryExpr());
+    std::unique_ptr<Expr> right = parsePrimaryExpr();
 
     left =
         std::make_unique<BinaryExprNode>(std::move(left), std::move(right), op);
@@ -65,11 +65,12 @@ std::unique_ptr<Expr> Parser::parsePrimaryExpr() {
 
   case TokenType::OpenParen: {
     eat();
-    std::unique_ptr<Expr> expr = std::move(parseExpr());
+    std::unique_ptr<Expr> expr = parseExpr();
     expect(TokenType::ClosingParen);
 
     return expr;
   }
+  case TokenType::BinaryOperator:
 
   default:
     std::stringstream ss;

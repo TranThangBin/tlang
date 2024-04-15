@@ -18,9 +18,9 @@ private:
 
 public:
   Environment() : parent(nullptr) {
-    DeclareVariable("true", std::make_unique<BooleanValue>(true), false);
-    DeclareVariable("false", std::make_unique<BooleanValue>(false), false);
-    DeclareVariable("null", std::make_unique<NullValue>(), false);
+    DeclareVariable("true", std::make_shared<BooleanValue>(true), false);
+    DeclareVariable("false", std::make_shared<BooleanValue>(false), false);
+    DeclareVariable("null", std::make_shared<NullValue>(), false);
   }
 
   Environment(std::unique_ptr<Environment> parent)

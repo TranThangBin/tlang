@@ -11,7 +11,7 @@
 
 struct Interpreter {
 private:
-  std::shared_ptr<Parser> parser;
+  std::unique_ptr<Parser> parser;
   std::unique_ptr<Environment> environment;
 
   std::shared_ptr<RuntimeValue> evaluate(std::unique_ptr<Stmt>,
@@ -41,9 +41,9 @@ private:
                               std::shared_ptr<NumberValue>, std::string);
 
 public:
-  Interpreter(std::shared_ptr<Parser> parser,
+  Interpreter(std::unique_ptr<Parser> parser,
               std::unique_ptr<Environment> environment)
-      : parser(parser), environment(std::move(environment)) {}
+      : parser(std::move(parser)), environment(std::move(environment)) {}
 
   std::shared_ptr<RuntimeValue> Evaluate();
 };

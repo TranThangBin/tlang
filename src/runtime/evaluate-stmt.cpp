@@ -30,7 +30,7 @@ std::shared_ptr<RuntimeValue> Interpreter::evaluateVariableDeclaration(
       throw std::runtime_error("Immutables must be assigned when initialized");
     }
     return environment->DeclareVariable(
-        variableDeclarationNode->GetIdentifier(), std::make_unique<NullValue>(),
+        variableDeclarationNode->GetIdentifier(), std::make_shared<NullValue>(),
         variableDeclarationNode->GetMut());
   }
 
