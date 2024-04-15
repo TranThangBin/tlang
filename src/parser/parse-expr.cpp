@@ -70,7 +70,14 @@ std::unique_ptr<Expr> Parser::parsePrimaryExpr() {
 
     return expr;
   }
-  case TokenType::BinaryOperator:
+
+  case TokenType::BinaryOperator: {
+    if (tk.GetValue() == "-") {
+      eat();
+      Token value = expect(TokenType::Number);
+      return std::make_unique<NumericLiteralNode>(-std::stof(value.GetValue()));
+    }
+  }
 
   default:
     std::stringstream ss;
