@@ -73,10 +73,11 @@ std::unique_ptr<Expr> Parser::parsePrimaryExpr() {
     return expr;
   }
 
+  case TokenType::Plus:
   case TokenType::Minus: {
-    eat();
-    Token value = expect(TokenType::Number);
-    return std::make_unique<NumericLiteralNode>(-std::stof(value.GetValue()));
+    std::string op = eat().GetValue();
+
+    return std::make_unique<UnaryExprNode>(parseExpr(), op);
   }
 
   default:

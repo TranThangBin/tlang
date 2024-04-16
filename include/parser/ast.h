@@ -14,6 +14,7 @@ enum class NodeType {
   BinaryExpr,
   NumericLiteral,
   Identifier,
+  UnaryExpr,
 };
 
 class Stmt {
@@ -117,6 +118,22 @@ public:
   float GetValue() { return value; }
 
   NumericLiteralNode(float value) : value(value) {}
+};
+
+class UnaryExprNode : public Expr {
+private:
+  std::unique_ptr<Expr> value;
+  std::string op;
+
+public:
+  std::string Yaml(int) override;
+
+  NodeType Kind() override { return NodeType::UnaryExpr; }
+  std::unique_ptr<Expr> &GetValue() { return value; }
+  std::string GetOperator() { return op; }
+
+  UnaryExprNode(std::unique_ptr<Expr> value, std::string op)
+      : value(std::move(value)), op(op) {}
 };
 
 #endif // !AST_H

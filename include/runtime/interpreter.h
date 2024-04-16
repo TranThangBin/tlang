@@ -37,8 +37,15 @@ private:
                      std::unique_ptr<Environment> &);
 
   std::shared_ptr<RuntimeValue>
-      evaluateNumberOperation(std::shared_ptr<NumberValue>,
-                              std::shared_ptr<NumberValue>, std::string);
+      evaluateBinaryOperation(std::shared_ptr<RuntimeValue>,
+                              std::shared_ptr<RuntimeValue>, std::string);
+
+  std::shared_ptr<RuntimeValue>
+  evaluateUnaryExpr(std::unique_ptr<UnaryExprNode>,
+                    std::unique_ptr<Environment> &);
+
+  std::shared_ptr<RuntimeValue>
+      evaluateUnaryOperation(std::shared_ptr<RuntimeValue>, std::string);
 
 public:
   Interpreter(std::unique_ptr<Parser> parser,

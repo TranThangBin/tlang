@@ -18,9 +18,12 @@ add_library(
 
 add_library(
   runtime
-  ./src/runtime/environment.cpp ./src/runtime/interpreter.cpp
-  ./src/runtime/evaluate-expr.cpp ./src/runtime/evaluate-stmt.cpp
-  ./src/runtime/evaluate-operation.cpp)
+  ./src/runtime/environment.cpp
+  ./src/runtime/interpreter.cpp
+  ./src/runtime/evaluate-expr.cpp
+  ./src/runtime/evaluate-stmt.cpp
+  ./src/runtime/evaluate-binary-operation.cpp
+  ./src/runtime/evaluate-unary-operation.cpp)
 
 add_executable(lexer-repl ./src/cmd/lexer-repl.cpp)
 target_link_libraries(lexer-repl lexer)

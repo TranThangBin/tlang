@@ -69,6 +69,14 @@ Interpreter::evaluate(std::unique_ptr<Stmt> astNode,
     return std::make_shared<NumberValue>(numericLiteralNode->GetValue());
   }
 
+  case NodeType::UnaryExpr: {
+    std::unique_ptr<UnaryExprNode> unaryExprNode =
+        std::unique_ptr<UnaryExprNode>(
+            static_cast<UnaryExprNode *>(astNode.release()));
+
+    return evaluateUnaryExpr(std::move(unaryExprNode), environment);
+  }
+
   default:
     std::stringstream ss;
     ss << (int)astNode->Kind()
