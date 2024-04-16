@@ -77,11 +77,14 @@ std::unique_ptr<Expr> Parser::parsePrimaryExpr() {
       Token value = expect(TokenType::Number);
       return std::make_unique<NumericLiteralNode>(-std::stof(value.GetValue()));
     }
+    break;
   }
 
   default:
-    std::stringstream ss;
-    ss << "Unexpected token " << (int)tk.GetTokenType();
-    throw std::runtime_error(ss.str());
+    break;
   }
+
+  std::stringstream ss;
+  ss << "Unexpected token " << (int)tk.GetTokenType();
+  throw std::runtime_error(ss.str());
 }

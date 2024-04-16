@@ -18,21 +18,21 @@ std::unique_ptr<ProgramNode> Parser::ProduceAST() {
 }
 
 std::unique_ptr<Stmt> Parser::parseStmt() {
+  std::unique_ptr<Stmt> node;
+
   switch (at().GetTokenType()) {
   case TokenType::Var:
-    return parseVariableDeclaration();
+    node = parseVariableDeclaration();
+    break;
 
   default:
-    return parseExpr();
-  }
-}
-
-std::unique_ptr<Expr> Parser::parseExpr() {
-  std::unique_ptr<Expr> expr = parseAssignmentExpr();
-
-  if (at().GetTokenType() == TokenType::SemiColon) {
-    eat();
+    node = parseExpr();
+    break;
   }
 
-  return expr;
+  expect(TokenType::SemiColon);
+
+  return node;
 }
+
+std::unique_ptr<Expr> Parser::parseExpr() { return parseAssignmentExpr(); }
