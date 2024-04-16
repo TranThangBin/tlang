@@ -74,7 +74,8 @@ std::unique_ptr<Expr> Parser::parsePrimaryExpr() {
   }
 
   case TokenType::Plus:
-  case TokenType::Minus: {
+  case TokenType::Minus:
+  case TokenType::Exclamation: {
     std::string op = eat().GetValue();
 
     return std::make_unique<UnaryExprNode>(parseExpr(), op);

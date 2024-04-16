@@ -12,6 +12,7 @@ enum class TokenType {
   Asterisk,
   FowardSlash,
   Percent,
+  Exclamation,
   Equal,
   OpenParen,
   ClosingParen,

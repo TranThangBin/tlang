@@ -45,7 +45,6 @@ public:
   NumberValue(float value) : value(value) {}
 
   float GetValue() { return value; }
-  void SetValue(float value) { this->value = value; }
   std::string str() override {
     std::stringstream ss;
     ss << value;

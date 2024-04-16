@@ -50,6 +50,11 @@ std::map<std::string, Token> reserve = std::map<std::string, Token>{
     },
 
     {
+        "!",
+        Token("!", TokenType::Exclamation),
+    },
+
+    {
         "var",
         Token("var", TokenType::Var),
     },
