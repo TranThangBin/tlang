@@ -25,7 +25,8 @@ std::unique_ptr<Expr> Parser::parseAssignmentExpr() {
 std::unique_ptr<Expr> Parser::parseAdditiveExpr() {
   std::unique_ptr<Expr> left = parseMultiplicativeExpr();
 
-  while (at().GetValue() == "+" || at().GetValue() == "-") {
+  while (at().GetTokenType() == TokenType::Plus ||
+         at().GetTokenType() == TokenType::Minus) {
     std::string op = eat().GetValue();
 
     std::unique_ptr<Expr> right = parseMultiplicativeExpr();
@@ -40,8 +41,9 @@ std::unique_ptr<Expr> Parser::parseAdditiveExpr() {
 std::unique_ptr<Expr> Parser::parseMultiplicativeExpr() {
   std::unique_ptr<Expr> left = parsePrimaryExpr();
 
-  while (at().GetValue() == "*" || at().GetValue() == "/" ||
-         at().GetValue() == "%") {
+  while (at().GetTokenType() == TokenType::Asterisk ||
+         at().GetTokenType() == TokenType::FowardSlash ||
+         at().GetTokenType() == TokenType::Percent) {
     std::string op = eat().GetValue();
 
     std::unique_ptr<Expr> right = parsePrimaryExpr();
@@ -71,20 +73,15 @@ std::unique_ptr<Expr> Parser::parsePrimaryExpr() {
     return expr;
   }
 
-  case TokenType::BinaryOperator: {
-    if (tk.GetValue() == "-") {
-      eat();
-      Token value = expect(TokenType::Number);
-      return std::make_unique<NumericLiteralNode>(-std::stof(value.GetValue()));
-    }
-    break;
+  case TokenType::Minus: {
+    eat();
+    Token value = expect(TokenType::Number);
+    return std::make_unique<NumericLiteralNode>(-std::stof(value.GetValue()));
   }
 
   default:
-    break;
+    std::stringstream ss;
+    ss << "Unexpected token " << (int)tk.GetTokenType();
+    throw std::runtime_error(ss.str());
   }
-
-  std::stringstream ss;
-  ss << "Unexpected token " << (int)tk.GetTokenType();
-  throw std::runtime_error(ss.str());
 }

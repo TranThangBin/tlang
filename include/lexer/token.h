@@ -7,7 +7,11 @@
 enum class TokenType {
   eof,
 
-  BinaryOperator,
+  Plus,
+  Minus,
+  Asterisk,
+  FowardSlash,
+  Percent,
   Equal,
   OpenParen,
   ClosingParen,
@@ -37,8 +41,8 @@ public:
   std::string Yaml() {
     std::stringstream ss;
     ss << "Token:" << std::endl
-        << "\tValue: " << value << std::endl
-        << "\tTokenType: " << (int)tokenType;
+       << "\tValue: " << value << std::endl
+       << "\tTokenType: " << (int)tokenType;
     return ss.str();
   }
 };
