@@ -11,6 +11,7 @@ enum class NodeType {
   VariableDeclaration,
 
   AssignmentExpr,
+  BinaryAssignmentExpr,
   BinaryExpr,
   NumericLiteral,
   Identifier,
@@ -33,6 +34,7 @@ public:
   std::string Yaml(int) override;
 
   NodeType Kind() override { return NodeType::Program; }
+
   std::vector<std::unique_ptr<Stmt>> &GetStmts() { return stmts; }
 
   ProgramNode(std::vector<std::unique_ptr<Stmt>> stmts)
@@ -47,10 +49,13 @@ private:
 
 public:
   std::string Yaml(int) override;
+
   NodeType Kind() override { return NodeType::VariableDeclaration; }
 
   bool GetMut() { return mut; }
+
   std::string GetIdentifier() { return identifier; }
+
   std::unique_ptr<Expr> &GetValue() { return value; }
 
   VariableDeclarationNode(bool mut, std::string identifier,
@@ -67,12 +72,36 @@ public:
   std::string Yaml(int) override;
 
   NodeType Kind() override { return NodeType::AssignmentExpr; }
+
   std::unique_ptr<Expr> &GetAssignee() { return assignee; }
+
   std::unique_ptr<Expr> &GetValue() { return value; }
 
   AssignmentExprNode(std::unique_ptr<Expr> assignee,
                      std::unique_ptr<Expr> value)
       : assignee(std::move(assignee)), value(std::move(value)) {}
+};
+
+class BinaryAssignmentExprNode : public Expr {
+private:
+  std::unique_ptr<Expr> assignee;
+  std::unique_ptr<Expr> value;
+  std::string op;
+
+public:
+  std::string Yaml(int) override;
+
+  NodeType Kind() override { return NodeType::BinaryAssignmentExpr; }
+
+  std::unique_ptr<Expr> &GetAssignee() { return assignee; }
+
+  std::unique_ptr<Expr> &GetValue() { return value; }
+
+  std::string GetOperator() { return op; }
+
+  BinaryAssignmentExprNode(std::unique_ptr<Expr> assignee,
+                           std::unique_ptr<Expr> value, std::string op)
+      : assignee(std::move(assignee)), value(std::move(value)), op(op) {}
 };
 
 class IdentifierNode : public Expr {
@@ -83,6 +112,7 @@ public:
   std::string Yaml(int) override;
 
   NodeType Kind() override { return NodeType::Identifier; }
+
   std::string GetSymbol() { return symbol; }
 
   IdentifierNode(std::string symbol) : symbol(symbol) {}
@@ -98,8 +128,11 @@ public:
   std::string Yaml(int) override;
 
   NodeType Kind() override { return NodeType::BinaryExpr; }
+
   std::unique_ptr<Expr> &GetLeft() { return left; }
+
   std::unique_ptr<Expr> &GetRight() { return right; }
+
   std::string GetOperator() { return op; }
 
   BinaryExprNode(std::unique_ptr<Expr> left, std::unique_ptr<Expr> right,
@@ -115,6 +148,7 @@ public:
   std::string Yaml(int) override;
 
   NodeType Kind() override { return NodeType::NumericLiteral; }
+
   float GetValue() { return value; }
 
   NumericLiteralNode(float value) : value(value) {}
@@ -129,7 +163,9 @@ public:
   std::string Yaml(int) override;
 
   NodeType Kind() override { return NodeType::UnaryExpr; }
+
   std::unique_ptr<Expr> &GetValue() { return value; }
+
   std::string GetOperator() { return op; }
 
   UnaryExprNode(std::unique_ptr<Expr> value, std::string op)

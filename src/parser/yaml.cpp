@@ -51,6 +51,19 @@ std::string AssignmentExprNode::Yaml(int indentLevel) {
   return ss.str();
 }
 
+std::string BinaryAssignmentExprNode::Yaml(int indentLevel) {
+  std::stringstream ss;
+
+  ss << getIndent(indentLevel) << "BinaryAssignmentExprNode:" << std::endl
+     << getIndent(indentLevel + 1) << "Assignee:" << std::endl
+     << assignee->Yaml(indentLevel + 2) << std::endl
+     << getIndent(indentLevel + 1) << "Value:" << std::endl
+     << value->Yaml(indentLevel + 2) << std::endl
+     << getIndent(indentLevel + 1) << "Operator: " << op;
+
+  return ss.str();
+}
+
 std::string IdentifierNode::Yaml(int indentLevel) {
   std::stringstream ss;
 

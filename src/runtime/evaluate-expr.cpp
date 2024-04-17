@@ -7,6 +7,12 @@
 #include <string>
 #include <utility>
 
+std::shared_ptr<RuntimeValue>
+Interpreter::evaluateIdentifier(std::unique_ptr<IdentifierNode> identifierNode,
+                                std::unique_ptr<Environment> &environment) {
+  return environment->LookUpVar(identifierNode->GetSymbol());
+}
+
 std::shared_ptr<RuntimeValue> Interpreter::evaluateAssignmentExpr(
     std::unique_ptr<AssignmentExprNode> assignmentExprNode,
     std::unique_ptr<Environment> &environment) {
@@ -15,15 +21,31 @@ std::shared_ptr<RuntimeValue> Interpreter::evaluateAssignmentExpr(
       std::unique_ptr<IdentifierNode>(static_cast<IdentifierNode *>(
           assignmentExprNode->GetAssignee().release()));
 
-  return environment->AssignVariable(
-      identifier->GetSymbol(),
-      evaluate(std::move(assignmentExprNode->GetValue()), environment));
+  std::shared_ptr<RuntimeValue> value =
+      evaluate(std::move(assignmentExprNode->GetValue()), environment);
+
+  return environment->AssignVariable(identifier->GetSymbol(), std::move(value));
 }
 
-std::shared_ptr<RuntimeValue>
-Interpreter::evaluateIdentifier(std::unique_ptr<IdentifierNode> identifierNode,
-                                std::unique_ptr<Environment> &environment) {
-  return environment->LookUpVar(identifierNode->GetSymbol());
+std::shared_ptr<RuntimeValue> Interpreter::evaluateBinaryAssignmentExpr(
+    std::unique_ptr<BinaryAssignmentExprNode> binaryAssignmentExprNode,
+    std::unique_ptr<Environment> &environment) {
+
+  std::unique_ptr<IdentifierNode> identifier =
+      std::unique_ptr<IdentifierNode>(static_cast<IdentifierNode *>(
+          binaryAssignmentExprNode->GetAssignee().release()));
+
+  std::string varname = identifier->GetSymbol();
+
+  std::shared_ptr<RuntimeValue> value =
+      evaluate(std::move(binaryAssignmentExprNode->GetValue()), environment);
+
+  std::string op = binaryAssignmentExprNode->GetOperator();
+  op.erase(op.length() - 1);
+
+  return environment->AssignVariable(
+      varname,
+      evaluateBinaryOperation(environment->LookUpVar(varname), value, op));
 }
 
 std::shared_ptr<RuntimeValue>

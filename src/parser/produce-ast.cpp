@@ -18,7 +18,7 @@ std::unique_ptr<ProgramNode> Parser::ProduceAST() {
 }
 
 std::unique_ptr<Stmt> Parser::parseStmt() {
-  std::unique_ptr<Stmt> node;
+  std::unique_ptr<Stmt> node = nullptr;
 
   switch (at().GetTokenType()) {
   case TokenType::Var:

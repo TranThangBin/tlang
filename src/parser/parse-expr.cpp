@@ -10,10 +10,17 @@
 std::unique_ptr<Expr> Parser::parseAssignmentExpr() {
   std::unique_ptr<Expr> assignee = parseAdditiveExpr();
 
-  while (at().GetTokenType() == TokenType::Equal) {
-    eat();
+  while (at().GetTokenType() == TokenType::Equal ||
+         at().GetTokenType() == TokenType::BinaryAssignment) {
+    Token token = eat();
 
     std::unique_ptr<Expr> value = parseAssignmentExpr();
+
+    if (token.GetTokenType() == TokenType::BinaryAssignment) {
+      assignee = std::make_unique<BinaryAssignmentExprNode>(
+          std::move(assignee), std::move(value), token.GetValue());
+      continue;
+    }
 
     assignee = std::make_unique<AssignmentExprNode>(std::move(assignee),
                                                     std::move(value));

@@ -20,7 +20,16 @@ std::queue<Token> Lexer::Tokenize() {
     Token checkToken = checkReserve(std::string(1, curChar));
 
     if (checkToken.GetTokenType() != TokenType::Invalid) {
+      if (i < srcLen) {
+        Token token = checkReserve(src.substr(i, 2));
+
+        if (token.GetTokenType() != TokenType::Invalid) {
+          checkToken = token;
+        }
+      }
+
       tokens.push(checkToken);
+      i += checkToken.GetValue().length() - 1;
       continue;
     }
 

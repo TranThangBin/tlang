@@ -17,6 +17,7 @@ enum class TokenType {
   OpenParen,
   ClosingParen,
   SemiColon,
+  BinaryAssignment,
 
   Number,
   Identifier,

@@ -77,6 +77,15 @@ Interpreter::evaluate(std::unique_ptr<Stmt> astNode,
     return evaluateUnaryExpr(std::move(unaryExprNode), environment);
   }
 
+  case NodeType::BinaryAssignmentExpr: {
+    std::unique_ptr<BinaryAssignmentExprNode> binaryAssignmentExprNode =
+        std::unique_ptr<BinaryAssignmentExprNode>(
+            static_cast<BinaryAssignmentExprNode *>(astNode.release()));
+
+    return evaluateBinaryAssignmentExpr(std::move(binaryAssignmentExprNode),
+                                        environment);
+  }
+
   default:
     std::stringstream ss;
     ss << (int)astNode->Kind()

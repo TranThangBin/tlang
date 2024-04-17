@@ -29,6 +29,10 @@ private:
                          std::unique_ptr<Environment> &);
 
   std::shared_ptr<RuntimeValue>
+  evaluateBinaryAssignmentExpr(std::unique_ptr<BinaryAssignmentExprNode>,
+                               std::unique_ptr<Environment> &);
+
+  std::shared_ptr<RuntimeValue>
   evaluateIdentifier(std::unique_ptr<IdentifierNode>,
                      std::unique_ptr<Environment> &);
 
