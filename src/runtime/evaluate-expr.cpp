@@ -3,6 +3,7 @@
 #include "runtime/interpreter.h"
 #include "runtime/runtime-value.h"
 #include <memory>
+#include <sstream>
 #include <stdexcept>
 #include <string>
 #include <utility>
@@ -17,25 +18,49 @@ std::shared_ptr<RuntimeValue> Interpreter::evaluateAssignmentExpr(
     std::unique_ptr<AssignmentExprNode> assignmentExprNode,
     std::unique_ptr<Environment> &environment) {
 
-  std::unique_ptr<IdentifierNode> identifier =
-      std::unique_ptr<IdentifierNode>(static_cast<IdentifierNode *>(
-          assignmentExprNode->GetAssignee().release()));
+  std::string varname;
+
+  NodeType assigneeKind = assignmentExprNode->GetAssignee()->Kind();
+
+  switch (assigneeKind) {
+  case NodeType::Identifier:
+    varname = std::unique_ptr<IdentifierNode>(
+                  static_cast<IdentifierNode *>(
+                      assignmentExprNode->GetAssignee().release()))
+                  ->GetSymbol();
+    break;
+  default:
+    std::stringstream ss;
+    ss << "Unexpected node " << (int)assigneeKind;
+    throw std::runtime_error(ss.str());
+  }
 
   std::shared_ptr<RuntimeValue> value =
       evaluate(std::move(assignmentExprNode->GetValue()), environment);
 
-  return environment->AssignVariable(identifier->GetSymbol(), std::move(value));
+  return environment->AssignVariable(varname, std::move(value));
 }
 
 std::shared_ptr<RuntimeValue> Interpreter::evaluateBinaryAssignmentExpr(
     std::unique_ptr<BinaryAssignmentExprNode> binaryAssignmentExprNode,
     std::unique_ptr<Environment> &environment) {
 
-  std::unique_ptr<IdentifierNode> identifier =
-      std::unique_ptr<IdentifierNode>(static_cast<IdentifierNode *>(
-          binaryAssignmentExprNode->GetAssignee().release()));
+  std::string varname;
 
-  std::string varname = identifier->GetSymbol();
+  NodeType assigneeKind = binaryAssignmentExprNode->GetAssignee()->Kind();
+
+  switch (assigneeKind) {
+  case NodeType::Identifier:
+    varname = std::unique_ptr<IdentifierNode>(
+                  static_cast<IdentifierNode *>(
+                      binaryAssignmentExprNode->GetAssignee().release()))
+                  ->GetSymbol();
+    break;
+  default:
+    std::stringstream ss;
+    ss << "Unexpected node " << (int)assigneeKind;
+    throw std::runtime_error(ss.str());
+  }
 
   std::shared_ptr<RuntimeValue> value =
       evaluate(std::move(binaryAssignmentExprNode->GetValue()), environment);

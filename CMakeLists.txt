@@ -19,6 +19,7 @@ add_library(
 
 add_library(
   runtime
+  ./src/parser/ast.cpp
   ./src/runtime/environment.cpp
   ./src/runtime/interpreter.cpp
   ./src/runtime/evaluate-expr.cpp

@@ -1,6 +1,7 @@
 #ifndef AST_H
 #define AST_H
 
+#include "lexer/token.h"
 #include <memory>
 #include <string>
 #include <utility>
@@ -17,6 +18,23 @@ enum class NodeType {
   Identifier,
   UnaryExpr,
 };
+
+enum class BinaryOperator {
+  Addition,
+  Subtraction,
+  Multiplication,
+  Division,
+  Modulo,
+};
+
+enum class UnaryOperator {
+  Plus,
+  Minus,
+  Not,
+};
+
+BinaryOperator TokenTypeToBinaryOperator(TokenType);
+UnaryOperator TokenTypeToUnaryOperator(TokenType);
 
 class Stmt {
 public:
