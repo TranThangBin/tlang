@@ -5,7 +5,7 @@
 #include <sstream>
 #include <string>
 enum class TokenType {
-  eof,
+  Eof,
 
   Plus,
   Minus,
