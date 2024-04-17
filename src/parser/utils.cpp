@@ -1,6 +1,5 @@
 #include "lexer/token.h"
 #include "parser/parser.h"
-#include <sstream>
 #include <stdexcept>
 
 bool Parser::notEOF() {
@@ -19,9 +18,9 @@ Token Parser::expect(TokenType tkType) {
   Token tk = eat();
 
   if (tk.GetTokenType() != tkType) {
-    std::stringstream ss;
-    ss << "Expected " << (int)tkType << " but get " << (int)tk.GetTokenType();
-    throw std::runtime_error(ss.str());
+    throw std::runtime_error("Expected " + TokenTypeToString(tkType) +
+                             " but get " +
+                             TokenTypeToString(tk.GetTokenType()));
   }
 
   return tk;

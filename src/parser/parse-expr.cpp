@@ -2,7 +2,6 @@
 #include "parser/ast.h"
 #include "parser/parser.h"
 #include <memory>
-#include <sstream>
 #include <stdexcept>
 #include <string>
 #include <utility>
@@ -89,8 +88,7 @@ std::unique_ptr<Expr> Parser::parsePrimaryExpr() {
   }
 
   default:
-    std::stringstream ss;
-    ss << "Unexpected token " << (int)tk.GetTokenType();
-    throw std::runtime_error(ss.str());
+    throw std::runtime_error("Unexpected token " +
+                             TokenTypeToString(tk.GetTokenType()));
   }
 }
