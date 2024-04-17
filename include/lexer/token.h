@@ -4,6 +4,7 @@
 #include <ostream>
 #include <sstream>
 #include <string>
+
 enum class TokenType {
   Eof,
 
@@ -27,13 +28,14 @@ enum class TokenType {
   Invalid,
 };
 
+std::string TokenTypeToString(TokenType);
+
 struct Token {
 private:
   std::string value;
   TokenType tokenType;
 
 public:
-  Token() : value(""), tokenType(TokenType::Invalid) {}
   Token(std::string value, TokenType tkType)
       : value(value), tokenType(tkType) {}
 
@@ -44,7 +46,7 @@ public:
     std::stringstream ss;
     ss << "Token:" << std::endl
        << "\tValue: " << value << std::endl
-       << "\tTokenType: " << (int)tokenType;
+       << "\tTokenType: " << TokenTypeToString(tokenType);
     return ss.str();
   }
 };

@@ -9,7 +9,7 @@ using namespace std;
 
 int main(int argc, char *argv[]) {
   string src;
-  shared_ptr<Lexer> lexer = make_shared<Lexer>();
+  shared_ptr<Lexer> lexer = make_shared<Lexer>("");
   Parser parser = Parser(lexer);
   cout << "Parser explorer v0.0.1" << endl;
 

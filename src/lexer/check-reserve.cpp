@@ -94,7 +94,7 @@ Token checkReserve(std::string str) {
   auto it = reserve.find(str);
 
   if (it == reserve.end()) {
-    return Token();
+    return Token("", TokenType::Invalid);
   }
 
   return it->second;

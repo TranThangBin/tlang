@@ -13,7 +13,7 @@ using namespace std;
 
 int main(int argc, char *argv[]) {
   string src;
-  std::shared_ptr<Lexer> lexer = std::make_shared<Lexer>();
+  std::shared_ptr<Lexer> lexer = std::make_shared<Lexer>("");
   std::unique_ptr<Parser> parser = std::make_unique<Parser>(lexer);
   std::unique_ptr<Environment> environment = std::make_unique<Environment>();
   Interpreter interpreter =

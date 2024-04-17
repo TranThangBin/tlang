@@ -12,7 +12,6 @@ private:
   std::string src;
 
 public:
-  Lexer() : src("") {}
   Lexer(std::string src) : src(src) {}
 
   std::queue<Token> Tokenize();

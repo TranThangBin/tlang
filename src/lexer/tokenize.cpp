@@ -65,7 +65,7 @@ std::queue<Token> Lexer::Tokenize() {
     throw std::runtime_error("Unexpected symbol " + std::string(1, curChar));
   }
 
-  tokens.push(Token("EOF", TokenType::eof));
+  tokens.push(Token("EOF", TokenType::Eof));
 
   return tokens;
 }

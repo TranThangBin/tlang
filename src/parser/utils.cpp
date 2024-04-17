@@ -3,7 +3,9 @@
 #include <sstream>
 #include <stdexcept>
 
-bool Parser::notEOF() { return tokens.front().GetTokenType() != TokenType::eof; }
+bool Parser::notEOF() {
+  return tokens.front().GetTokenType() != TokenType::Eof;
+}
 
 Token Parser::at() { return tokens.front(); }
 

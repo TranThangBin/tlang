@@ -8,7 +8,7 @@ using namespace std;
 
 int main(int argc, char *argv[]) {
   string src;
-  Lexer lexer = Lexer();
+  Lexer lexer = Lexer("");
 
   cout << "Lexer explorer v0.0.1" << endl;
 
