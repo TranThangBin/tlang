@@ -18,6 +18,7 @@ enum class TokenType {
   OpenParen,
   ClosingParen,
   SemiColon,
+
   AdditionAssignment,
   SubtractionAssignment,
   MultiplicationAssignment,
