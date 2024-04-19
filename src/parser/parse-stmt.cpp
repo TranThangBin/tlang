@@ -20,7 +20,6 @@ std::unique_ptr<Stmt> Parser::parseVariableDeclaration() {
     if (!mut) {
       throw std::runtime_error("Immutables must be assigned when initialized");
     }
-    eat();
     return std::make_unique<VariableDeclarationNode>(mut, ident.GetValue(),
                                                      nullptr);
   }
