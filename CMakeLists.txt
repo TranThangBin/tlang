@@ -9,7 +9,7 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 include_directories(include)
 
-add_library(lexer ./src/lexer/tokenize.cpp ./src/lexer/check-reserve.cpp
+add_library(lexer ./src/lexer/tokenize.cpp ./src/lexer/lexer.cpp
                   ./src/lexer/token.cpp)
 
 add_library(

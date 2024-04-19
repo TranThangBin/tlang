@@ -10,18 +10,18 @@ std::queue<Token> Lexer::Tokenize() {
 
   int srcLen = src.length();
 
-  for (int i = 0; i < srcLen; i++) {
+  for (i = 0; i < srcLen; i++) {
     char curChar = src[i];
 
     if (curChar >= 0 && curChar <= 32) {
       continue;
     }
 
-    Token checkToken = checkReserve(std::string(1, curChar));
+    Token checkToken = checkLiteral(std::string(1, curChar));
 
     if (checkToken.GetTokenType() != TokenType::Invalid) {
       if (i < srcLen) {
-        Token token = checkReserve(src.substr(i, 2));
+        Token token = checkLiteral(src.substr(i, 2));
 
         if (token.GetTokenType() != TokenType::Invalid) {
           checkToken = token;
@@ -34,23 +34,13 @@ std::queue<Token> Lexer::Tokenize() {
     }
 
     if (isdigit(curChar) != 0) {
-      int start = i;
-      while (i < srcLen && isdigit(src[i + 1]) != 0) {
-        i++;
-      }
-      tokens.push(Token(src.substr(start, i - start + 1), TokenType::Number));
+      tokens.push(Token(getNumber(), TokenType::Number));
       continue;
     }
 
     if (isalpha(curChar) != 0 || curChar == '_') {
-      int start = i;
+      std::string ident = getIdent();
 
-      while (i < srcLen && isalpha(src[i + 1]) != 0 || src[i + 1] == '_' ||
-             isdigit(src[i + 1]) != 0) {
-        i++;
-      }
-
-      std::string ident = src.substr(start, i - start + 1);
       checkToken = checkReserve(ident);
 
       if (checkToken.GetTokenType() != TokenType::Invalid) {

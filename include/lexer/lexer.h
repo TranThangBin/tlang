@@ -5,11 +5,16 @@
 #include <queue>
 #include <string>
 
-Token checkReserve(std::string);
-
 struct Lexer {
 private:
   std::string src;
+  int srcLen;
+  int i;
+
+  std::string getNumber();
+  std::string getIdent();
+  Token checkLiteral(std::string);
+  Token checkReserve(std::string);
 
 public:
   Lexer(std::string src) : src(src) {}
