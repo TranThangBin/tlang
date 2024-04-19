@@ -1,49 +1,48 @@
+#include "parser/ast.h"
 #include "runtime/interpreter.h"
 #include "runtime/runtime-value.h"
 #include <memory>
+#include <sstream>
 #include <stdexcept>
-#include <string>
 
 std::shared_ptr<RuntimeValue>
 evaluateNumericOperation(std::shared_ptr<NumberValue> leftHand,
                          std::shared_ptr<NumberValue> rightHand,
-                         std::string op) {
-  if (op == "+") {
+                         BinaryOperator op) {
+  switch (op) {
+  case BinaryOperator::Addition:
     return std::make_shared<NumberValue>(leftHand->GetValue() +
                                          rightHand->GetValue());
-  }
 
-  if (op == "-") {
+  case BinaryOperator::Subtraction:
     return std::make_shared<NumberValue>(leftHand->GetValue() -
                                          rightHand->GetValue());
-  }
 
-  if (op == "*") {
+  case BinaryOperator::Multiplication:
     return std::make_shared<NumberValue>(leftHand->GetValue() *
                                          rightHand->GetValue());
-  }
 
-  if (op == "/") {
-    float rightValue = rightHand->GetValue();
-    if (rightValue == 0) {
+  case BinaryOperator::Division:
+    if (rightHand->GetValue() == 0) {
       throw std::runtime_error("Divide by 0 error");
     }
     return std::make_shared<NumberValue>(leftHand->GetValue() /
                                          rightHand->GetValue());
-  }
 
-  if (op == "%") {
+  case BinaryOperator::Modulo:
     return std::make_shared<NumberValue>((int)leftHand->GetValue() %
                                          (int)rightHand->GetValue());
-  }
 
-  throw std::runtime_error("Unexpected operator " + op);
+  default:
+    throw std::runtime_error("Unexpected binary operator " +
+                             BinaryOperatorToString(op));
+  }
 }
 
 std::shared_ptr<RuntimeValue>
 Interpreter::evaluateBinaryOperation(std::shared_ptr<RuntimeValue> left,
                                      std::shared_ptr<RuntimeValue> right,
-                                     std::string op) {
+                                     BinaryOperator op) {
   DataType leftDt = left->DataTypeID();
 
   switch (leftDt) {
@@ -54,7 +53,8 @@ Interpreter::evaluateBinaryOperation(std::shared_ptr<RuntimeValue> left,
 
   default:
     std::stringstream ss;
-    ss << "No operator " << op << " for " << (int)leftDt;
+    ss << "No binary operator " << BinaryOperatorToString(op) << " for "
+       << (int)leftDt;
     throw std::runtime_error(ss.str());
   }
 }

@@ -1,29 +1,34 @@
+#include "parser/ast.h"
 #include "runtime/interpreter.h"
 #include "runtime/runtime-value.h"
 #include <memory>
+#include <sstream>
 #include <stdexcept>
-#include <string>
 
-std::runtime_error GetError(std::string op) {
-  throw std::runtime_error("Unexpected operator " + op);
+std::runtime_error GetError(UnaryOperator op) {
+  std::stringstream ss;
+  ss << "Unexpected unary operator " << (int)op;
+  throw std::runtime_error(ss.str());
 }
 
 std::shared_ptr<RuntimeValue>
-evaluateNumericOperation(std::shared_ptr<NumberValue> value, std::string op) {
-  if (op == "+") {
+evaluateNumericOperation(std::shared_ptr<NumberValue> value, UnaryOperator op) {
+  switch (op) {
+  case UnaryOperator::Plus:
     return value;
-  }
 
-  if (op == "-") {
+  case UnaryOperator::Minus:
     return std::make_shared<NumberValue>(-value->GetValue());
-  }
 
-  throw GetError(op);
+  default:
+    throw GetError(op);
+  }
 }
 
 std::shared_ptr<RuntimeValue>
-evaluateBooleanOperation(std::shared_ptr<BooleanValue> value, std::string op) {
-  if (op == "!") {
+evaluateBooleanOperation(std::shared_ptr<BooleanValue> value,
+                         UnaryOperator op) {
+  if (op == UnaryOperator::Not) {
     return std::make_shared<BooleanValue>(!value->GetValue());
   }
 
@@ -32,7 +37,7 @@ evaluateBooleanOperation(std::shared_ptr<BooleanValue> value, std::string op) {
 
 std::shared_ptr<RuntimeValue>
 Interpreter::evaluateUnaryOperation(std::shared_ptr<RuntimeValue> value,
-                                    std::string op) {
+                                    UnaryOperator op) {
   DataType dt = value->DataTypeID();
   switch (dt) {
   case DataType::Number:
@@ -45,7 +50,8 @@ Interpreter::evaluateUnaryOperation(std::shared_ptr<RuntimeValue> value,
 
   default:
     std::stringstream ss;
-    ss << "No operator " << op << " for " << (int)dt;
+    ss << "No unary operator " << UnaryOperatorToString(op) << " for "
+       << (int)dt;
     throw std::runtime_error(ss.str());
   }
 }

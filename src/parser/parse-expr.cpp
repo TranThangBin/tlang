@@ -22,12 +22,12 @@ std::unique_ptr<Expr> Parser::parseAssignmentExpr() {
     case TokenType::MultiplicationAssignment:
     case TokenType::DivisionAssignment:
     case TokenType::ModulusAssignment: {
-      Token token = eat();
+      BinaryOperator op = TokenTypeToBinaryOperator(eat().GetTokenType());
 
       std::unique_ptr<Expr> value = parseAssignmentExpr();
 
       assignee = std::make_unique<BinaryAssignmentExprNode>(
-          std::move(assignee), std::move(value), token.GetValue());
+          std::move(assignee), std::move(value), op);
     }
 
     default:
@@ -43,7 +43,7 @@ std::unique_ptr<Expr> Parser::parseAdditiveExpr() {
 
   while (at().GetTokenType() == TokenType::Plus ||
          at().GetTokenType() == TokenType::Minus) {
-    std::string op = eat().GetValue();
+    BinaryOperator op = TokenTypeToBinaryOperator(eat().GetTokenType());
 
     std::unique_ptr<Expr> right = parseMultiplicativeExpr();
 
@@ -60,7 +60,7 @@ std::unique_ptr<Expr> Parser::parseMultiplicativeExpr() {
   while (at().GetTokenType() == TokenType::Asterisk ||
          at().GetTokenType() == TokenType::FowardSlash ||
          at().GetTokenType() == TokenType::Percent) {
-    std::string op = eat().GetValue();
+    BinaryOperator op = TokenTypeToBinaryOperator(eat().GetTokenType());
 
     std::unique_ptr<Expr> right = parsePrimaryExpr();
 
@@ -92,7 +92,7 @@ std::unique_ptr<Expr> Parser::parsePrimaryExpr() {
   case TokenType::Plus:
   case TokenType::Minus:
   case TokenType::Exclamation: {
-    std::string op = eat().GetValue();
+    UnaryOperator op = TokenTypeToUnaryOperator(eat().GetTokenType());
 
     return std::make_unique<UnaryExprNode>(parseExpr(), op);
   }

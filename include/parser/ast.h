@@ -35,7 +35,10 @@ enum class UnaryOperator {
 
 BinaryOperator TokenTypeToBinaryOperator(TokenType);
 UnaryOperator TokenTypeToUnaryOperator(TokenType);
+
 std::string NodeTypeToString(NodeType);
+std::string BinaryOperatorToString(BinaryOperator);
+std::string UnaryOperatorToString(UnaryOperator);
 
 class Stmt {
 public:
@@ -105,7 +108,7 @@ class BinaryAssignmentExprNode : public Expr {
 private:
   std::unique_ptr<Expr> assignee;
   std::unique_ptr<Expr> value;
-  std::string op;
+  BinaryOperator op;
 
 public:
   std::string Yaml(int) override;
@@ -116,10 +119,10 @@ public:
 
   std::unique_ptr<Expr> &GetValue() { return value; }
 
-  std::string GetOperator() { return op; }
+  BinaryOperator GetOperator() { return op; }
 
   BinaryAssignmentExprNode(std::unique_ptr<Expr> assignee,
-                           std::unique_ptr<Expr> value, std::string op)
+                           std::unique_ptr<Expr> value, BinaryOperator op)
       : assignee(std::move(assignee)), value(std::move(value)), op(op) {}
 };
 
@@ -141,7 +144,7 @@ class BinaryExprNode : public Expr {
 private:
   std::unique_ptr<Expr> left;
   std::unique_ptr<Expr> right;
-  std::string op;
+  BinaryOperator op;
 
 public:
   std::string Yaml(int) override;
@@ -152,10 +155,10 @@ public:
 
   std::unique_ptr<Expr> &GetRight() { return right; }
 
-  std::string GetOperator() { return op; }
+  BinaryOperator GetOperator() { return op; }
 
   BinaryExprNode(std::unique_ptr<Expr> left, std::unique_ptr<Expr> right,
-                 std::string op)
+                 BinaryOperator op)
       : left(std::move(left)), right(std::move(right)), op(op) {}
 };
 
@@ -176,7 +179,7 @@ public:
 class UnaryExprNode : public Expr {
 private:
   std::unique_ptr<Expr> value;
-  std::string op;
+  UnaryOperator op;
 
 public:
   std::string Yaml(int) override;
@@ -185,9 +188,9 @@ public:
 
   std::unique_ptr<Expr> &GetValue() { return value; }
 
-  std::string GetOperator() { return op; }
+  UnaryOperator GetOperator() { return op; }
 
-  UnaryExprNode(std::unique_ptr<Expr> value, std::string op)
+  UnaryExprNode(std::unique_ptr<Expr> value, UnaryOperator op)
       : value(std::move(value)), op(op) {}
 };
 

@@ -6,7 +6,6 @@
 #include "runtime-value.h"
 #include "runtime/environment.h"
 #include <memory>
-#include <string>
 #include <utility>
 
 struct Interpreter {
@@ -42,14 +41,14 @@ private:
 
   std::shared_ptr<RuntimeValue>
       evaluateBinaryOperation(std::shared_ptr<RuntimeValue>,
-                              std::shared_ptr<RuntimeValue>, std::string);
+                              std::shared_ptr<RuntimeValue>, BinaryOperator);
 
   std::shared_ptr<RuntimeValue>
   evaluateUnaryExpr(std::unique_ptr<UnaryExprNode>,
                     std::unique_ptr<Environment> &);
 
   std::shared_ptr<RuntimeValue>
-      evaluateUnaryOperation(std::shared_ptr<RuntimeValue>, std::string);
+      evaluateUnaryOperation(std::shared_ptr<RuntimeValue>, UnaryOperator);
 
 public:
   Interpreter(std::unique_ptr<Parser> parser,

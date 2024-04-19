@@ -65,12 +65,12 @@ std::shared_ptr<RuntimeValue> Interpreter::evaluateBinaryAssignmentExpr(
   std::shared_ptr<RuntimeValue> value =
       evaluate(std::move(binaryAssignmentExprNode->GetValue()), environment);
 
-  std::string op = binaryAssignmentExprNode->GetOperator();
-  op.erase(op.length() - 1);
+  BinaryOperator op = binaryAssignmentExprNode->GetOperator();
+
+  std::shared_ptr<RuntimeValue> varVal = environment->LookUpVar(varname);
 
   return environment->AssignVariable(
-      varname,
-      evaluateBinaryOperation(environment->LookUpVar(varname), value, op));
+      varname, evaluateBinaryOperation(varVal, value, op));
 }
 
 std::shared_ptr<RuntimeValue>

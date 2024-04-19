@@ -6,18 +6,23 @@
 BinaryOperator TokenTypeToBinaryOperator(TokenType tokenType) {
   switch (tokenType) {
   case TokenType::Plus:
+  case TokenType::AdditionAssignment:
     return BinaryOperator::Addition;
 
   case TokenType::Minus:
+  case TokenType::SubtractionAssignment:
     return BinaryOperator::Subtraction;
 
   case TokenType::Asterisk:
+  case TokenType::MultiplicationAssignment:
     return BinaryOperator::Multiplication;
 
   case TokenType::FowardSlash:
+  case TokenType::DivisionAssignment:
     return BinaryOperator::Division;
 
   case TokenType::Percent:
+  case TokenType::ModulusAssignment:
     return BinaryOperator::Modulo;
 
   default:
@@ -65,6 +70,44 @@ std::string NodeTypeToString(NodeType nodeType) {
 
   case NodeType::VariableDeclaration:
     return "variable declaratin";
+
+  default:
+    return "unidentified";
+  }
+}
+
+std::string BinaryOperatorToString(BinaryOperator binop) {
+  switch (binop) {
+  case BinaryOperator::Addition:
+    return "+";
+
+  case BinaryOperator::Subtraction:
+    return "-";
+
+  case BinaryOperator::Multiplication:
+    return "*";
+
+  case BinaryOperator::Division:
+    return "/";
+
+  case BinaryOperator::Modulo:
+    return "%";
+
+  default:
+    return "unidentified";
+  }
+}
+
+std::string UnaryOperatorToString(UnaryOperator unop) {
+  switch (unop) {
+  case UnaryOperator::Plus:
+    return "+";
+
+  case UnaryOperator::Minus:
+    return "-";
+
+  case UnaryOperator::Not:
+    return "!";
 
   default:
     return "unidentified";

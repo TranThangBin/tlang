@@ -15,11 +15,11 @@ add_library(lexer ./src/lexer/tokenize.cpp ./src/lexer/lexer.cpp
 add_library(
   parser
   ./src/parser/produce-ast.cpp ./src/parser/utils.cpp
-  ./src/parser/parse-stmt.cpp ./src/parser/parse-expr.cpp ./src/parser/yaml.cpp)
+  ./src/parser/parse-stmt.cpp ./src/parser/parse-expr.cpp ./src/parser/yaml.cpp
+  ./src/parser/ast.cpp)
 
 add_library(
   runtime
-  ./src/parser/ast.cpp
   ./src/runtime/environment.cpp
   ./src/runtime/interpreter.cpp
   ./src/runtime/evaluate-expr.cpp

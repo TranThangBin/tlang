@@ -59,7 +59,8 @@ std::string BinaryAssignmentExprNode::Yaml(int indentLevel) {
      << assignee->Yaml(indentLevel + 2) << std::endl
      << getIndent(indentLevel + 1) << "Value:" << std::endl
      << value->Yaml(indentLevel + 2) << std::endl
-     << getIndent(indentLevel + 1) << "Operator: " << op;
+     << getIndent(indentLevel + 1)
+     << "Operator: " << BinaryOperatorToString(op);
 
   return ss.str();
 }
@@ -79,7 +80,8 @@ std::string BinaryExprNode::Yaml(int indentLevel) {
   ss << getIndent(indentLevel) << "BinaryExprNode:" << std::endl
      << getIndent(indentLevel + 1) << "Left:" << std::endl
      << left->Yaml(indentLevel + 2) << std::endl
-     << getIndent(indentLevel + 1) << "Operator: " << op << std::endl
+     << getIndent(indentLevel + 1) << "Operator: " << BinaryOperatorToString(op)
+     << std::endl
      << getIndent(indentLevel + 1) << "Right:" << std::endl
      << right->Yaml(indentLevel + 2);
 
@@ -101,7 +103,7 @@ std::string UnaryExprNode::Yaml(int indentLevel) {
   ss << getIndent(indentLevel) << "UnaryExprNode:" << std::endl
      << getIndent(indentLevel + 1) << "Value:" << std::endl
      << value->Yaml(indentLevel + 2) << std::endl
-     << getIndent(indentLevel + 1) << "Operator: " << op;
+     << getIndent(indentLevel + 1) << "Operator: " << UnaryOperatorToString(op);
 
   return ss.str();
 }
