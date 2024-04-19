@@ -4,63 +4,63 @@
 
 Token Lexer::checkLiteral(std::string str) {
   if (str == "=") {
-    return Token("=", TokenType::Equal);
+    return Token("", TokenType::Equal);
   }
 
   if (str == "(") {
-    return Token("(", TokenType::OpenParen);
+    return Token("", TokenType::OpenParen);
   }
 
   if (str == ")") {
-    Token(")", TokenType::ClosingParen);
+    Token("", TokenType::ClosingParen);
   }
 
   if (str == ";") {
-    return Token(";", TokenType::SemiColon);
+    return Token("", TokenType::SemiColon);
   }
 
   if (str == "+") {
-    return Token("+", TokenType::Plus);
+    return Token("", TokenType::Plus);
   }
 
   if (str == "-") {
-    return Token("-", TokenType::Minus);
+    return Token("", TokenType::Minus);
   }
 
   if (str == "*") {
-    return Token("*", TokenType::Asterisk);
+    return Token("", TokenType::Asterisk);
   }
 
   if (str == "/") {
-    return Token("/", TokenType::FowardSlash);
+    return Token("", TokenType::FowardSlash);
   }
 
   if (str == "%") {
-    return Token("%", TokenType::Percent);
+    return Token("", TokenType::Percent);
   }
 
   if (str == "+=") {
-    return Token("+=", TokenType::AdditionAssignment);
+    return Token("", TokenType::AdditionAssignment);
   }
 
   if (str == "-=") {
-    return Token("-=", TokenType::SubtractionAssignment);
+    return Token("", TokenType::SubtractionAssignment);
   }
 
   if (str == "*=") {
-    return Token("*=", TokenType::MultiplicationAssignment);
+    return Token("", TokenType::MultiplicationAssignment);
   }
 
   if (str == "/=") {
-    return Token("/=", TokenType::DivisionAssignment);
+    return Token("", TokenType::DivisionAssignment);
   }
 
   if (str == "%=") {
-    return Token("%=", TokenType::ModulusAssignment);
+    return Token("", TokenType::ModulusAssignment);
   }
 
   if (str == "!") {
-    return Token("!", TokenType::Exclamation);
+    return Token("", TokenType::Exclamation);
   }
 
   return Token("", TokenType::Invalid);
@@ -68,11 +68,11 @@ Token Lexer::checkLiteral(std::string str) {
 
 Token Lexer::checkReserve(std::string str) {
   if (str == "var") {
-    return Token("var", TokenType::Var);
+    return Token("", TokenType::Var);
   }
 
   if (str == "mut") {
-    return Token("mut", TokenType::Mut);
+    return Token("", TokenType::Mut);
   }
 
   return Token("", TokenType::Invalid);

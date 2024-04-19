@@ -45,6 +45,21 @@ std::string TokenTypeToString(TokenType tokenType) {
   case TokenType::Invalid:
     return "invalid";
 
+  case TokenType::AdditionAssignment:
+    return "+=";
+
+  case TokenType::SubtractionAssignment:
+    return "-=";
+
+  case TokenType::MultiplicationAssignment:
+    return "*=";
+
+  case TokenType::DivisionAssignment:
+    return "/=";
+
+  case TokenType::ModulusAssignment:
+    return "%=";
+
   default:
     return "unidentified";
   }

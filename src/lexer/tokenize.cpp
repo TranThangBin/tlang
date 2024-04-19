@@ -20,21 +20,21 @@ std::queue<Token> Lexer::Tokenize() {
     Token checkToken = checkLiteral(std::string(1, curChar));
 
     if (checkToken.GetTokenType() != TokenType::Invalid) {
-      int offset = 1;
+      int nextCharIndex = 1;
 
-      while (i + offset < srcLen) {
-        Token token = checkLiteral(src.substr(i, offset + 1));
+      while (i + nextCharIndex < srcLen) {
+        Token token = checkLiteral(src.substr(i, nextCharIndex + 1));
 
         if (token.GetTokenType() == TokenType::Invalid) {
           break;
         }
 
         checkToken = token;
-        offset++;
+        nextCharIndex++;
       }
 
       tokens.push(checkToken);
-      i += checkToken.GetValue().length() - 1;
+      i += nextCharIndex - 1;
       continue;
     }
 
