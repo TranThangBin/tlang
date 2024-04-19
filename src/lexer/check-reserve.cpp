@@ -51,27 +51,27 @@ std::map<std::string, Token> reserve = std::map<std::string, Token>{
 
     {
         "+=",
-        Token("+=", TokenType::BinaryAssignment),
+        Token("+=", TokenType::AdditionAssignment),
     },
 
     {
         "-=",
-        Token("-=", TokenType::BinaryAssignment),
+        Token("-=", TokenType::SubtractionAssignment),
     },
 
     {
         "*=",
-        Token("*=", TokenType::BinaryAssignment),
+        Token("*=", TokenType::MultiplicationAssignment),
     },
 
     {
         "/=",
-        Token("/=", TokenType::BinaryAssignment),
+        Token("/=", TokenType::DivisionAssignment),
     },
 
     {
         "%=",
-        Token("%=", TokenType::BinaryAssignment),
+        Token("%=", TokenType::ModulusAssignment),
     },
 
     {

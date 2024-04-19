@@ -9,20 +9,30 @@
 std::unique_ptr<Expr> Parser::parseAssignmentExpr() {
   std::unique_ptr<Expr> assignee = parseAdditiveExpr();
 
-  while (at().GetTokenType() == TokenType::Equal ||
-         at().GetTokenType() == TokenType::BinaryAssignment) {
-    Token token = eat();
-
-    std::unique_ptr<Expr> value = parseAssignmentExpr();
-
-    if (token.GetTokenType() == TokenType::BinaryAssignment) {
-      assignee = std::make_unique<BinaryAssignmentExprNode>(
-          std::move(assignee), std::move(value), token.GetValue());
-      continue;
+  while (true) {
+    switch (at().GetTokenType()) {
+    case TokenType::Equal: {
+      std::unique_ptr<Expr> value = parseAssignmentExpr();
+      assignee = std::make_unique<AssignmentExprNode>(std::move(assignee),
+                                                      std::move(value));
     }
 
-    assignee = std::make_unique<AssignmentExprNode>(std::move(assignee),
-                                                    std::move(value));
+    case TokenType::AdditionAssignment:
+    case TokenType::SubtractionAssignment:
+    case TokenType::MultiplicationAssignment:
+    case TokenType::DivisionAssignment:
+    case TokenType::ModulusAssignment: {
+      Token token = eat();
+
+      std::unique_ptr<Expr> value = parseAssignmentExpr();
+
+      assignee = std::make_unique<BinaryAssignmentExprNode>(
+          std::move(assignee), std::move(value), token.GetValue());
+    }
+
+    default:
+      return assignee;
+    }
   }
 
   return assignee;

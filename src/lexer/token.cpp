@@ -30,9 +30,6 @@ std::string TokenTypeToString(TokenType tokenType) {
   case TokenType::SemiColon:
     return ";";
 
-  case TokenType::BinaryAssignment:
-    return "binary assignment";
-
   case TokenType::Number:
     return "number";
 
