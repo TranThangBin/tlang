@@ -12,7 +12,15 @@ Token Lexer::checkLiteral(std::string str) {
   }
 
   if (str == ")") {
-    Token("", TokenType::ClosingParen);
+    return Token("", TokenType::ClosingParen);
+  }
+
+  if (str == "{") {
+    return Token("", TokenType::OpenCurly);
+  }
+
+  if (str == "}") {
+    return Token("", TokenType::ClosingCurly);
   }
 
   if (str == ";") {

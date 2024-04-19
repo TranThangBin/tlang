@@ -24,6 +24,10 @@ private:
                               std::unique_ptr<Environment> &);
 
   std::shared_ptr<RuntimeValue>
+  evaluateBlockStmt(std::unique_ptr<BlockStmtNode>,
+                    std::unique_ptr<Environment> &);
+
+  std::shared_ptr<RuntimeValue>
   evaluateAssignmentExpr(std::unique_ptr<AssignmentExprNode>,
                          std::unique_ptr<Environment> &);
 

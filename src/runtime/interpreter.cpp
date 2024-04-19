@@ -32,6 +32,14 @@ Interpreter::evaluate(std::unique_ptr<Stmt> astNode,
                                        environment);
   }
 
+  case NodeType::BlockStmt: {
+    std::unique_ptr<BlockStmtNode> blockStmtNode =
+        std::unique_ptr<BlockStmtNode>(
+            static_cast<BlockStmtNode *>(astNode.release()));
+
+    return evaluateBlockStmt(std::move(blockStmtNode), environment);
+  }
+
   case NodeType::AssignmentExpr: {
 
     std::unique_ptr<AssignmentExprNode> assignmentExprNode =

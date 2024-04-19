@@ -29,3 +29,17 @@ std::unique_ptr<Stmt> Parser::parseVariableDeclaration() {
   return std::make_unique<VariableDeclarationNode>(mut, ident.GetValue(),
                                                    std::move(value));
 }
+
+std::unique_ptr<Stmt> Parser::parseBlockStmt() {
+  eat();
+
+  std::vector<std::unique_ptr<Stmt>> stmts;
+
+  while (at().GetTokenType() != TokenType::ClosingCurly) {
+    stmts.push_back(parseStmt());
+  }
+
+  eat();
+
+  return std::make_unique<BlockStmtNode>(std::move(stmts));
+}

@@ -10,6 +10,7 @@
 enum class NodeType {
   Program,
   VariableDeclaration,
+  BlockStmt,
 
   AssignmentExpr,
   BinaryAssignmentExpr,
@@ -83,6 +84,21 @@ public:
   VariableDeclarationNode(bool mut, std::string identifier,
                           std::unique_ptr<Expr> value)
       : mut(mut), identifier(identifier), value(std::move(value)) {}
+};
+
+class BlockStmtNode : public Stmt {
+private:
+  std::vector<std::unique_ptr<Stmt>> stmts;
+
+public:
+  std::string Yaml(int) override;
+
+  NodeType Kind() override { return NodeType::BlockStmt; }
+
+  std::vector<std::unique_ptr<Stmt>> &GetStmts() { return stmts; }
+
+  BlockStmtNode(std::vector<std::unique_ptr<Stmt>> stmts)
+      : stmts(std::move(stmts)) {}
 };
 
 class AssignmentExprNode : public Expr {

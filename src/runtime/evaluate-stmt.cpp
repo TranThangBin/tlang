@@ -1,3 +1,4 @@
+#include "parser/ast.h"
 #include "runtime/environment.h"
 #include "runtime/interpreter.h"
 #include "runtime/runtime-value.h"
@@ -34,4 +35,25 @@ std::shared_ptr<RuntimeValue> Interpreter::evaluateVariableDeclaration(
       variableDeclarationNode->GetIdentifier(),
       evaluate(std::move(variableDeclarationNode->GetValue()), environment),
       variableDeclarationNode->GetMut());
+}
+
+std::shared_ptr<RuntimeValue>
+Interpreter::evaluateBlockStmt(std::unique_ptr<BlockStmtNode> blockStmtNode,
+                               std::unique_ptr<Environment> &environment) {
+  std::unique_ptr<Environment> blockEnvironment =
+      std::make_unique<Environment>(std::move(environment));
+
+  std::shared_ptr<RuntimeValue> lastEvaluated = std::make_shared<NullValue>();
+
+  std::vector<std::unique_ptr<Stmt>> stmts =
+      std::move(blockStmtNode->GetStmts());
+  int stmtCount = stmts.size();
+
+  for (int i = 0; i < stmtCount; i++) {
+    lastEvaluated = evaluate(std::move(stmts[i]), blockEnvironment);
+  }
+
+  environment = std::move(blockEnvironment->GetParent());
+
+  return lastEvaluated;
 }

@@ -19,6 +19,7 @@ private:
 
   std::unique_ptr<Stmt> parseStmt();
   std::unique_ptr<Stmt> parseVariableDeclaration();
+  std::unique_ptr<Stmt> parseBlockStmt();
   std::unique_ptr<Expr> parseExpr();
   std::unique_ptr<Expr> parseAssignmentExpr();
   std::unique_ptr<Expr> parseAdditiveExpr();

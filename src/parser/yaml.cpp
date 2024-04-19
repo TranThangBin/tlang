@@ -39,6 +39,21 @@ std::string VariableDeclarationNode::Yaml(int indentLevel) {
   return ss.str();
 }
 
+std::string BlockStmtNode::Yaml(int indentLevel) {
+  std::stringstream ss;
+
+  ss << getIndent(indentLevel) << "BlockStmtNode:" << std::endl
+     << getIndent(indentLevel + 1) << "Body:" << std::endl;
+
+  int stmtCount = stmts.size();
+
+  for (int i = 0; i < stmtCount; i++) {
+    ss << stmts[i]->Yaml(indentLevel + 2) << std::endl;
+  }
+
+  return ss.str();
+}
+
 std::string AssignmentExprNode::Yaml(int indentLevel) {
   std::stringstream ss;
 
