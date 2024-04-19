@@ -35,6 +35,7 @@ enum class UnaryOperator {
 
 BinaryOperator TokenTypeToBinaryOperator(TokenType);
 UnaryOperator TokenTypeToUnaryOperator(TokenType);
+std::string NodeTypeToString(NodeType);
 
 class Stmt {
 public:

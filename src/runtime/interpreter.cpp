@@ -3,7 +3,6 @@
 #include "runtime/environment.h"
 #include "runtime/runtime-value.h"
 #include <memory>
-#include <sstream>
 #include <stdexcept>
 #include <utility>
 
@@ -87,9 +86,8 @@ Interpreter::evaluate(std::unique_ptr<Stmt> astNode,
   }
 
   default:
-    std::stringstream ss;
-    ss << (int)astNode->Kind()
-       << " node is currently not supported for interpretation";
-    throw std::runtime_error(ss.str());
+    throw std::runtime_error(
+        NodeTypeToString(astNode->Kind()) +
+        " node is currently not supported for interpretation");
   }
 }

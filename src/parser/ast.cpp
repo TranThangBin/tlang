@@ -1,6 +1,7 @@
 #include "parser/ast.h"
 #include "lexer/token.h"
 #include <stdexcept>
+#include <string>
 
 BinaryOperator TokenTypeToBinaryOperator(TokenType tokenType) {
   switch (tokenType) {
@@ -39,5 +40,33 @@ UnaryOperator TokenTypeToUnaryOperator(TokenType tokenType) {
   default:
     throw std::runtime_error("Unexpected token type " +
                              TokenTypeToString(tokenType));
+  }
+}
+
+std::string NodeTypeToString(NodeType nodeType) {
+  switch (nodeType) {
+  case NodeType::Program:
+    return "program";
+
+  case NodeType::UnaryExpr:
+    return "unary expression";
+
+  case NodeType::BinaryExpr:
+    return "binary expression";
+
+  case NodeType::Identifier:
+    return "identifier";
+
+  case NodeType::AssignmentExpr:
+    return "assignment expression";
+
+  case NodeType::NumericLiteral:
+    return "numeric literal";
+
+  case NodeType::VariableDeclaration:
+    return "variable declaratin";
+
+  default:
+    return "unidentified";
   }
 }
