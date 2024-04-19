@@ -2,7 +2,6 @@
 #include "runtime/interpreter.h"
 #include "runtime/runtime-value.h"
 #include <memory>
-#include <stdexcept>
 #include <utility>
 #include <vector>
 
@@ -26,9 +25,6 @@ std::shared_ptr<RuntimeValue> Interpreter::evaluateVariableDeclaration(
     std::unique_ptr<Environment> &environment) {
 
   if (variableDeclarationNode->GetValue() == nullptr) {
-    if (!variableDeclarationNode->GetMut()) {
-      throw std::runtime_error("Immutables must be assigned when initialized");
-    }
     return environment->DeclareVariable(
         variableDeclarationNode->GetIdentifier(), std::make_shared<NullValue>(),
         variableDeclarationNode->GetMut());

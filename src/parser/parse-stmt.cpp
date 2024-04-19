@@ -2,6 +2,7 @@
 #include "parser/ast.h"
 #include "parser/parser.h"
 #include <memory>
+#include <stdexcept>
 #include <utility>
 
 std::unique_ptr<Stmt> Parser::parseVariableDeclaration() {
@@ -16,6 +17,9 @@ std::unique_ptr<Stmt> Parser::parseVariableDeclaration() {
   Token ident = expect(TokenType::Identifier);
 
   if (at().GetTokenType() == TokenType::SemiColon) {
+    if (!mut) {
+      throw std::runtime_error("Immutables must be assigned when initialized");
+    }
     eat();
     return std::make_unique<VariableDeclarationNode>(mut, ident.GetValue(),
                                                      nullptr);
