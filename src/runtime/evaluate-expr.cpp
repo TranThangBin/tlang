@@ -3,7 +3,6 @@
 #include "runtime/interpreter.h"
 #include "runtime/runtime-value.h"
 #include <memory>
-#include <sstream>
 #include <stdexcept>
 #include <string>
 #include <utility>
@@ -30,9 +29,8 @@ std::shared_ptr<RuntimeValue> Interpreter::evaluateAssignmentExpr(
                   ->GetSymbol();
     break;
   default:
-    std::stringstream ss;
-    ss << "Unexpected node " << (int)assigneeKind;
-    throw std::runtime_error(ss.str());
+    throw std::runtime_error("Unexpected node " +
+                             NodeTypeToString(assigneeKind));
   }
 
   std::shared_ptr<RuntimeValue> value =
@@ -57,9 +55,8 @@ std::shared_ptr<RuntimeValue> Interpreter::evaluateBinaryAssignmentExpr(
                   ->GetSymbol();
     break;
   default:
-    std::stringstream ss;
-    ss << "Unexpected node " << (int)assigneeKind;
-    throw std::runtime_error(ss.str());
+    throw std::runtime_error("Unexpected node " +
+                             NodeTypeToString(assigneeKind));
   }
 
   std::shared_ptr<RuntimeValue> value =

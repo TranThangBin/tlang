@@ -28,43 +28,43 @@ Token Lexer::checkLiteral(std::string str) {
   }
 
   if (str == "+") {
-    return Token("", TokenType::Plus);
+    return Token("+", TokenType::Plus);
   }
 
   if (str == "-") {
-    return Token("", TokenType::Minus);
+    return Token("-", TokenType::Minus);
   }
 
   if (str == "*") {
-    return Token("", TokenType::Asterisk);
+    return Token("*", TokenType::Asterisk);
   }
 
   if (str == "/") {
-    return Token("", TokenType::FowardSlash);
+    return Token("/", TokenType::FowardSlash);
   }
 
   if (str == "%") {
-    return Token("", TokenType::Percent);
+    return Token("%", TokenType::Percent);
   }
 
   if (str == "+=") {
-    return Token("", TokenType::AdditionAssignment);
+    return Token("+", TokenType::Assignment);
   }
 
   if (str == "-=") {
-    return Token("", TokenType::SubtractionAssignment);
+    return Token("-", TokenType::Assignment);
   }
 
   if (str == "*=") {
-    return Token("", TokenType::MultiplicationAssignment);
+    return Token("*", TokenType::Assignment);
   }
 
   if (str == "/=") {
-    return Token("", TokenType::DivisionAssignment);
+    return Token("/", TokenType::Assignment);
   }
 
   if (str == "%=") {
-    return Token("", TokenType::ModulusAssignment);
+    return Token("%", TokenType::Assignment);
   }
 
   if (str == "!") {

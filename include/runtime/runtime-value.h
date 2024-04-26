@@ -1,7 +1,6 @@
 #ifndef VALUE_H
 #define VALUE_H
 
-#include <sstream>
 #include <string>
 
 enum class DataType {
@@ -9,6 +8,8 @@ enum class DataType {
   Number,
   Boolean,
 };
+
+std::string DataTypeToString(DataType);
 
 struct RuntimeValue {
 public:
@@ -45,11 +46,7 @@ public:
   NumberValue(float value) : value(value) {}
 
   float GetValue() { return value; }
-  std::string str() override {
-    std::stringstream ss;
-    ss << value;
-    return ss.str();
-  }
+  std::string str() override { return std::to_string(value); }
 };
 
 #endif // !VALUE_H

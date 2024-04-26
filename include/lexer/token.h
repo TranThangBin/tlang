@@ -21,11 +21,7 @@ enum class TokenType {
   OpenCurly,
   ClosingCurly,
 
-  AdditionAssignment,
-  SubtractionAssignment,
-  MultiplicationAssignment,
-  DivisionAssignment,
-  ModulusAssignment,
+  Assignment,
 
   Number,
   Identifier,

@@ -10,32 +10,25 @@ std::unique_ptr<Expr> Parser::parseAssignmentExpr() {
   std::unique_ptr<Expr> assignee = parseAdditiveExpr();
 
   while (true) {
-    switch (at().GetTokenType()) {
-    case TokenType::Equal: {
+    if (at().GetTokenType() == TokenType::Equal) {
       std::unique_ptr<Expr> value = parseAssignmentExpr();
       assignee = std::make_unique<AssignmentExprNode>(std::move(assignee),
                                                       std::move(value));
+      continue;
     }
 
-    case TokenType::AdditionAssignment:
-    case TokenType::SubtractionAssignment:
-    case TokenType::MultiplicationAssignment:
-    case TokenType::DivisionAssignment:
-    case TokenType::ModulusAssignment: {
-      BinaryOperator op = TokenTypeToBinaryOperator(eat().GetTokenType());
+    BinaryOperator op = StringToBinaryOperator(at().GetValue());
 
+    if (op != BinaryOperator::Invalid) {
+      eat();
       std::unique_ptr<Expr> value = parseAssignmentExpr();
-
       assignee = std::make_unique<BinaryAssignmentExprNode>(
           std::move(assignee), std::move(value), op);
+      continue;
     }
 
-    default:
-      return assignee;
-    }
+    return assignee;
   }
-
-  return assignee;
 }
 
 std::unique_ptr<Expr> Parser::parseAdditiveExpr() {
@@ -43,7 +36,7 @@ std::unique_ptr<Expr> Parser::parseAdditiveExpr() {
 
   while (at().GetTokenType() == TokenType::Plus ||
          at().GetTokenType() == TokenType::Minus) {
-    BinaryOperator op = TokenTypeToBinaryOperator(eat().GetTokenType());
+    BinaryOperator op = StringToBinaryOperator(eat().GetValue());
 
     std::unique_ptr<Expr> right = parseMultiplicativeExpr();
 
@@ -60,7 +53,7 @@ std::unique_ptr<Expr> Parser::parseMultiplicativeExpr() {
   while (at().GetTokenType() == TokenType::Asterisk ||
          at().GetTokenType() == TokenType::FowardSlash ||
          at().GetTokenType() == TokenType::Percent) {
-    BinaryOperator op = TokenTypeToBinaryOperator(eat().GetTokenType());
+    BinaryOperator op = StringToBinaryOperator(eat().GetValue());
 
     std::unique_ptr<Expr> right = parsePrimaryExpr();
 

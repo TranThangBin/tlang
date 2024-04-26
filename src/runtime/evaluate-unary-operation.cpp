@@ -2,13 +2,11 @@
 #include "runtime/interpreter.h"
 #include "runtime/runtime-value.h"
 #include <memory>
-#include <sstream>
 #include <stdexcept>
 
 std::runtime_error GetError(UnaryOperator op) {
-  std::stringstream ss;
-  ss << "Unexpected unary operator " << (int)op;
-  throw std::runtime_error(ss.str());
+  throw std::runtime_error("Unexpected unary operator " +
+                           UnaryOperatorToString(op));
 }
 
 std::shared_ptr<RuntimeValue>
@@ -49,9 +47,7 @@ Interpreter::evaluateUnaryOperation(std::shared_ptr<RuntimeValue> value,
         std::static_pointer_cast<BooleanValue>(value), op);
 
   default:
-    std::stringstream ss;
-    ss << "No unary operator " << UnaryOperatorToString(op) << " for "
-       << (int)dt;
-    throw std::runtime_error(ss.str());
+    throw std::runtime_error("No unary operator " + UnaryOperatorToString(op) +
+                             " for " + DataTypeToString(dt));
   }
 }

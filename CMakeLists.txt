@@ -20,6 +20,7 @@ add_library(
 
 add_library(
   runtime
+  ./src/runtime/runtime-value.cpp
   ./src/runtime/environment.cpp
   ./src/runtime/interpreter.cpp
   ./src/runtime/evaluate-expr.cpp

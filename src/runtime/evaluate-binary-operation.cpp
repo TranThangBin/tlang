@@ -2,7 +2,6 @@
 #include "runtime/interpreter.h"
 #include "runtime/runtime-value.h"
 #include <memory>
-#include <sstream>
 #include <stdexcept>
 
 std::shared_ptr<RuntimeValue>
@@ -52,9 +51,8 @@ Interpreter::evaluateBinaryOperation(std::shared_ptr<RuntimeValue> left,
         std::static_pointer_cast<NumberValue>(right), op);
 
   default:
-    std::stringstream ss;
-    ss << "No binary operator " << BinaryOperatorToString(op) << " for "
-       << (int)leftDt;
-    throw std::runtime_error(ss.str());
+    throw std::runtime_error("No binary operator " +
+                             BinaryOperatorToString(op) + " for " +
+                             DataTypeToString(leftDt));
   }
 }

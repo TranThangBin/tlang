@@ -30,6 +30,12 @@ std::string TokenTypeToString(TokenType tokenType) {
   case TokenType::SemiColon:
     return ";";
 
+  case TokenType::Percent:
+    return "%";
+
+  case TokenType::Exclamation:
+    return "!";
+
   case TokenType::Number:
     return "number";
 
@@ -42,25 +48,18 @@ std::string TokenTypeToString(TokenType tokenType) {
   case TokenType::Mut:
     return "mut";
 
+  case TokenType::Assignment:
+    return "assignment";
+
+  case TokenType::OpenCurly:
+    return "{";
+
+  case TokenType::ClosingCurly:
+    return "}";
+
   case TokenType::Invalid:
     return "invalid";
-
-  case TokenType::AdditionAssignment:
-    return "+=";
-
-  case TokenType::SubtractionAssignment:
-    return "-=";
-
-  case TokenType::MultiplicationAssignment:
-    return "*=";
-
-  case TokenType::DivisionAssignment:
-    return "/=";
-
-  case TokenType::ModulusAssignment:
-    return "%=";
-
-  default:
-    return "unidentified";
   }
+
+  return "unknown";
 }

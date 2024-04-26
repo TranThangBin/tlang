@@ -19,7 +19,7 @@ enum class NodeType {
   NumericLiteral,
   Identifier,
   UnaryExpr,
-  ObjectExpr,
+  ObjectLiteral,
 };
 
 enum class BinaryOperator {
@@ -28,15 +28,17 @@ enum class BinaryOperator {
   Multiplication,
   Division,
   Modulo,
+  Invalid,
 };
 
 enum class UnaryOperator {
   Plus,
   Minus,
   Not,
+  Invalid,
 };
 
-BinaryOperator TokenTypeToBinaryOperator(TokenType);
+BinaryOperator StringToBinaryOperator(std::string);
 UnaryOperator TokenTypeToUnaryOperator(TokenType);
 
 std::string NodeTypeToString(NodeType);
@@ -219,7 +221,7 @@ private:
 public:
   std::string Yaml(int) override;
 
-  NodeType Kind() override { return NodeType::ObjectExpr; }
+  NodeType Kind() override { return NodeType::ObjectLiteral; }
 
   ObjectExprNode(
       std::map<std::unique_ptr<IdentifierNode>, std::unique_ptr<Expr>>

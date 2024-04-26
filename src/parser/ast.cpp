@@ -1,34 +1,29 @@
 #include "parser/ast.h"
 #include "lexer/token.h"
-#include <stdexcept>
 #include <string>
 
-BinaryOperator TokenTypeToBinaryOperator(TokenType tokenType) {
-  switch (tokenType) {
-  case TokenType::Plus:
-  case TokenType::AdditionAssignment:
+BinaryOperator StringToBinaryOperator(std::string str) {
+  if (str == "+") {
     return BinaryOperator::Addition;
-
-  case TokenType::Minus:
-  case TokenType::SubtractionAssignment:
-    return BinaryOperator::Subtraction;
-
-  case TokenType::Asterisk:
-  case TokenType::MultiplicationAssignment:
-    return BinaryOperator::Multiplication;
-
-  case TokenType::FowardSlash:
-  case TokenType::DivisionAssignment:
-    return BinaryOperator::Division;
-
-  case TokenType::Percent:
-  case TokenType::ModulusAssignment:
-    return BinaryOperator::Modulo;
-
-  default:
-    throw std::runtime_error("Unexpected token type " +
-                             TokenTypeToString(tokenType));
   }
+
+  if (str == "-") {
+    return BinaryOperator::Subtraction;
+  }
+
+  if (str == "*") {
+    return BinaryOperator::Multiplication;
+  }
+
+  if (str == "/") {
+    return BinaryOperator::Division;
+  }
+
+  if (str == "%") {
+    return BinaryOperator::Modulo;
+  }
+
+  return BinaryOperator::Invalid;
 }
 
 UnaryOperator TokenTypeToUnaryOperator(TokenType tokenType) {
@@ -43,8 +38,7 @@ UnaryOperator TokenTypeToUnaryOperator(TokenType tokenType) {
     return UnaryOperator::Not;
 
   default:
-    throw std::runtime_error("Unexpected token type " +
-                             TokenTypeToString(tokenType));
+    return UnaryOperator::Invalid;
   }
 }
 
@@ -71,9 +65,17 @@ std::string NodeTypeToString(NodeType nodeType) {
   case NodeType::VariableDeclaration:
     return "variable declaratin";
 
-  default:
-    return "unidentified";
+  case NodeType::ObjectLiteral:
+    return "object literal";
+
+  case NodeType::BlockStmt:
+    return "block statement";
+
+  case NodeType::BinaryAssignmentExpr:
+    return "binary assignment expression";
   }
+
+  return "unknown";
 }
 
 std::string BinaryOperatorToString(BinaryOperator binop) {
@@ -93,9 +95,11 @@ std::string BinaryOperatorToString(BinaryOperator binop) {
   case BinaryOperator::Modulo:
     return "%";
 
-  default:
-    return "unidentified";
+  case BinaryOperator::Invalid:
+    return "invalid";
   }
+
+  return "unknown";
 }
 
 std::string UnaryOperatorToString(UnaryOperator unop) {
@@ -109,7 +113,9 @@ std::string UnaryOperatorToString(UnaryOperator unop) {
   case UnaryOperator::Not:
     return "!";
 
-  default:
-    return "unidentified";
+  case UnaryOperator::Invalid:
+    return "invalid";
   }
+
+  return "unknown";
 }
