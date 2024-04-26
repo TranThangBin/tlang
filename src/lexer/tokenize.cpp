@@ -10,58 +10,42 @@ std::queue<Token> Lexer::Tokenize() {
 
   srcLen = src.length();
 
-  for (i = 0; i < srcLen; i++) {
+  i = 0;
+
+  while (i < srcLen) {
     char curChar = src[i];
 
     if (curChar >= 0 && curChar <= 32) {
+      i++;
       continue;
     }
 
-    Token checkToken = checkLiteral(std::string(1, curChar));
+    Token literal = getLiteral();
 
-    if (checkToken.GetTokenType() != TokenType::Invalid) {
-      int nextCharIndex = 1;
-
-      while (i + nextCharIndex < srcLen) {
-        Token token = checkLiteral(src.substr(i, nextCharIndex + 1));
-
-        if (token.GetTokenType() == TokenType::Invalid) {
-          break;
-        }
-
-        checkToken = token;
-        nextCharIndex++;
-      }
-
-      tokens.push(checkToken);
-      i += nextCharIndex - 1;
+    if (literal.GetTokenType() != TokenType::Invalid) {
+      tokens.push(literal);
+      i += literal.GetValue().length();
       continue;
     }
 
     if (isdigit(curChar) != 0) {
-      std::string number = getNumber();
-      tokens.push(Token(number, TokenType::Number));
+      Token number = getNumber();
+      tokens.push(number);
+      i += number.GetValue().length();
       continue;
     }
 
     if (isalpha(curChar) != 0 || curChar == '_') {
-      std::string ident = getIdent();
-
-      checkToken = checkReserve(ident);
-
-      if (checkToken.GetTokenType() != TokenType::Invalid) {
-        tokens.push(checkToken);
-        continue;
-      }
-
-      tokens.push(Token(ident, TokenType::Identifier));
+      Token ident = getIdent();
+      tokens.push(ident);
+      i += ident.GetValue().length();
       continue;
     }
 
     throw std::runtime_error("Unexpected symbol " + std::string(1, curChar));
   }
 
-  tokens.push(Token("", TokenType::Eof));
+  tokens.push(Token("EOF", TokenType::Eof));
 
   return tokens;
 }

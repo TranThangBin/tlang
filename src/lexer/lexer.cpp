@@ -1,108 +1,77 @@
 #include "lexer/lexer.h"
 #include "lexer/token.h"
+#include <map>
 #include <string>
 
-Token Lexer::checkLiteral(std::string str) {
-  if (str == "=") {
-    return Token("", TokenType::Equal);
-  }
+Lexer::Lexer(std::string src) : src(src) {
+  literal = {
+      {"!", Token("!", TokenType::Exclamation)},
+      {"%=", Token("%=", TokenType::Assignment)},
+      {"/=", Token("/=", TokenType::Assignment)},
+      {"*=", Token("*=", TokenType::Assignment)},
+      {"-=", Token("-=", TokenType::Assignment)},
+      {"+=", Token("+=", TokenType::Assignment)},
+      {"%", Token("%", TokenType::Percent)},
+      {"/", Token("/", TokenType::FowardSlash)},
+      {"*", Token("*", TokenType::Asterisk)},
+      {"-", Token("-", TokenType::Minus)},
+      {"+", Token("+", TokenType::Plus)},
+      {";", Token(";", TokenType::SemiColon)},
+      {"}", Token("}", TokenType::ClosingCurly)},
+      {")", Token(")", TokenType::ClosingParen)},
+      {"(", Token("(", TokenType::OpenParen)},
+      {"=", Token("=", TokenType::Equal)},
+  };
 
-  if (str == "(") {
-    return Token("", TokenType::OpenParen);
-  }
-
-  if (str == ")") {
-    return Token("", TokenType::ClosingParen);
-  }
-
-  if (str == "{") {
-    return Token("", TokenType::OpenCurly);
-  }
-
-  if (str == "}") {
-    return Token("", TokenType::ClosingCurly);
-  }
-
-  if (str == ";") {
-    return Token("", TokenType::SemiColon);
-  }
-
-  if (str == "+") {
-    return Token("+", TokenType::Plus);
-  }
-
-  if (str == "-") {
-    return Token("-", TokenType::Minus);
-  }
-
-  if (str == "*") {
-    return Token("*", TokenType::Asterisk);
-  }
-
-  if (str == "/") {
-    return Token("/", TokenType::FowardSlash);
-  }
-
-  if (str == "%") {
-    return Token("%", TokenType::Percent);
-  }
-
-  if (str == "+=") {
-    return Token("+", TokenType::Assignment);
-  }
-
-  if (str == "-=") {
-    return Token("-", TokenType::Assignment);
-  }
-
-  if (str == "*=") {
-    return Token("*", TokenType::Assignment);
-  }
-
-  if (str == "/=") {
-    return Token("/", TokenType::Assignment);
-  }
-
-  if (str == "%=") {
-    return Token("%", TokenType::Assignment);
-  }
-
-  if (str == "!") {
-    return Token("", TokenType::Exclamation);
-  }
-
-  return Token("", TokenType::Invalid);
+  reserve = {
+      {"var", Token("var", TokenType::Var)},
+      {"mut", Token("mut", TokenType::Mut)},
+  };
 }
 
-Token Lexer::checkReserve(std::string str) {
-  if (str == "var") {
-    return Token("", TokenType::Var);
+Token Lexer::getLiteral() {
+  Token token = Token("", TokenType::Invalid);
+
+  int maxLiteralLen = 2;
+  int literalLen = 1;
+
+  while (i + literalLen - 1 < srcLen && literalLen <= maxLiteralLen) {
+    auto it = literal.find(src.substr(i, literalLen));
+
+    if (it != literal.end()) {
+      token = it->second;
+    }
+
+    literalLen++;
   }
 
-  if (str == "mut") {
-    return Token("", TokenType::Mut);
-  }
-
-  return Token("", TokenType::Invalid);
+  return token;
 }
 
-std::string Lexer::getNumber() {
-  int start = i;
+Token Lexer::getNumber() {
+  int end = i;
 
-  while (i < srcLen && isdigit(src[i + 1]) != 0) {
-    i++;
+  while (end < srcLen && isdigit(src[end + 1]) != 0) {
+    end++;
   }
 
-  return src.substr(start, i - start + 1);
+  return Token(src.substr(i, end - i + 1), TokenType::Number);
 }
 
-std::string Lexer::getIdent() {
-  int start = i;
+Token Lexer::getIdent() {
+  int end = i;
 
-  while (i < srcLen && isalpha(src[i + 1]) != 0 || src[i + 1] == '_' ||
-         isdigit(src[i + 1]) != 0) {
-    i++;
+  while (end < srcLen && isalpha(src[end + 1]) != 0 || src[end + 1] == '_' ||
+         isdigit(src[end + 1]) != 0) {
+    end++;
   }
 
-  return src.substr(start, i - start + 1);
+  std::string ident = src.substr(i, end - i + 1);
+  auto it = reserve.find(ident);
+
+  if (it != reserve.end()) {
+    return it->second;
+  }
+
+  return Token(ident, TokenType::Identifier);
 }

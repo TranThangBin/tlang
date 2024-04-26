@@ -2,6 +2,7 @@
 #define LEXER_H
 
 #include "token.h"
+#include <map>
 #include <queue>
 #include <string>
 
@@ -10,14 +11,15 @@ private:
   std::string src;
   int srcLen;
   int i;
+  std::map<std::string, Token> literal;
+  std::map<std::string, Token> reserve;
 
-  std::string getNumber();
-  std::string getIdent();
-  Token checkLiteral(std::string);
-  Token checkReserve(std::string);
+  Token getLiteral();
+  Token getNumber();
+  Token getIdent();
 
 public:
-  Lexer(std::string src) : src(src) {}
+  Lexer(std::string);
 
   std::queue<Token> Tokenize();
   void SetSrc(std::string src) { this->src = src; }

@@ -23,6 +23,26 @@ BinaryOperator StringToBinaryOperator(std::string str) {
     return BinaryOperator::Modulo;
   }
 
+  if (str == "+=") {
+    return BinaryOperator::Addition;
+  }
+
+  if (str == "-=") {
+    return BinaryOperator::Subtraction;
+  }
+
+  if (str == "*=") {
+    return BinaryOperator::Multiplication;
+  }
+
+  if (str == "/=") {
+    return BinaryOperator::Division;
+  }
+
+  if (str == "%=") {
+    return BinaryOperator::Modulo;
+  }
+
   return BinaryOperator::Invalid;
 }
 
