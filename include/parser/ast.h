@@ -2,6 +2,7 @@
 #define AST_H
 
 #include "lexer/token.h"
+#include <map>
 #include <memory>
 #include <string>
 #include <utility>
@@ -18,6 +19,7 @@ enum class NodeType {
   NumericLiteral,
   Identifier,
   UnaryExpr,
+  ObjectExpr,
 };
 
 enum class BinaryOperator {
@@ -208,6 +210,21 @@ public:
 
   UnaryExprNode(std::unique_ptr<Expr> value, UnaryOperator op)
       : value(std::move(value)), op(op) {}
+};
+
+class ObjectExprNode : public Expr {
+private:
+  std::map<std::unique_ptr<IdentifierNode>, std::unique_ptr<Expr>> properties;
+
+public:
+  std::string Yaml(int) override;
+
+  NodeType Kind() override { return NodeType::ObjectExpr; }
+
+  ObjectExprNode(
+      std::map<std::unique_ptr<IdentifierNode>, std::unique_ptr<Expr>>
+          properties)
+      : properties(std::move(properties)) {}
 };
 
 #endif // !AST_H
