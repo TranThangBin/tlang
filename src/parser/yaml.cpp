@@ -1,4 +1,5 @@
 #include "parser/ast.h"
+#include <iostream>
 #include <ostream>
 #include <sstream>
 #include <string>
@@ -119,6 +120,20 @@ std::string UnaryExprNode::Yaml(int indentLevel) {
      << getIndent(indentLevel + 1) << "Value:" << std::endl
      << value->Yaml(indentLevel + 2) << std::endl
      << getIndent(indentLevel + 1) << "Operator: " << UnaryOperatorToString(op);
+
+  return ss.str();
+}
+
+std::string ObjectLiteralNode::Yaml(int indentLevel) {
+  std::stringstream ss;
+
+  ss << getIndent(indentLevel) << "ObjectLiteralNode:" << std::endl
+     << getIndent(indentLevel + 1) << "Properties:" << std::endl;
+
+  for (auto it = properties.begin(); it != properties.end(); it++) {
+    ss << getIndent(indentLevel + 2) << it->first << ":" << std::endl
+       << it->second->Yaml(indentLevel + 3) << std::endl;
+  }
 
   return ss.str();
 }

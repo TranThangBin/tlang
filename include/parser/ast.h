@@ -38,7 +38,8 @@ enum class UnaryOperator {
   Invalid,
 };
 
-BinaryOperator StringToBinaryOperator(std::string);
+BinaryOperator AssignmentToBinaryOperator(std::string);
+BinaryOperator TokenTypeToBinaryOperator(TokenType);
 UnaryOperator TokenTypeToUnaryOperator(TokenType);
 
 std::string NodeTypeToString(NodeType);
@@ -214,18 +215,16 @@ public:
       : value(std::move(value)), op(op) {}
 };
 
-class ObjectExprNode : public Expr {
+class ObjectLiteralNode : public Expr {
 private:
-  std::map<std::unique_ptr<IdentifierNode>, std::unique_ptr<Expr>> properties;
+  std::map<std::string, std::unique_ptr<Expr>> properties;
 
 public:
   std::string Yaml(int) override;
 
   NodeType Kind() override { return NodeType::ObjectLiteral; }
 
-  ObjectExprNode(
-      std::map<std::unique_ptr<IdentifierNode>, std::unique_ptr<Expr>>
-          properties)
+  ObjectLiteralNode(std::map<std::string, std::unique_ptr<Expr>> properties)
       : properties(std::move(properties)) {}
 };
 

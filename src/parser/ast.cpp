@@ -2,27 +2,7 @@
 #include "lexer/token.h"
 #include <string>
 
-BinaryOperator StringToBinaryOperator(std::string str) {
-  if (str == "+") {
-    return BinaryOperator::Addition;
-  }
-
-  if (str == "-") {
-    return BinaryOperator::Subtraction;
-  }
-
-  if (str == "*") {
-    return BinaryOperator::Multiplication;
-  }
-
-  if (str == "/") {
-    return BinaryOperator::Division;
-  }
-
-  if (str == "%") {
-    return BinaryOperator::Modulo;
-  }
-
+BinaryOperator AssignmentToBinaryOperator(std::string str) {
   if (str == "+=") {
     return BinaryOperator::Addition;
   }
@@ -44,6 +24,28 @@ BinaryOperator StringToBinaryOperator(std::string str) {
   }
 
   return BinaryOperator::Invalid;
+}
+
+BinaryOperator TokenTypeToBinaryOperator(TokenType tkType) {
+  switch (tkType) {
+  case TokenType::Plus:
+    return BinaryOperator::Addition;
+
+  case TokenType::Minus:
+    return BinaryOperator::Subtraction;
+
+  case TokenType::Asterisk:
+    return BinaryOperator::Multiplication;
+
+  case TokenType::FowardSlash:
+    return BinaryOperator::Division;
+
+  case TokenType::Percent:
+    return BinaryOperator::Modulo;
+
+  default:
+    return BinaryOperator::Invalid;
+  }
 }
 
 UnaryOperator TokenTypeToUnaryOperator(TokenType tokenType) {

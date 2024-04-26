@@ -1,6 +1,7 @@
 #include "lexer/token.h"
 #include "parser/ast.h"
 #include "parser/parser.h"
+#include <map>
 #include <memory>
 #include <stdexcept>
 #include <string>
@@ -11,13 +12,14 @@ std::unique_ptr<Expr> Parser::parseAssignmentExpr() {
 
   while (true) {
     if (at().GetTokenType() == TokenType::Equal) {
+      eat();
       std::unique_ptr<Expr> value = parseAssignmentExpr();
       assignee = std::make_unique<AssignmentExprNode>(std::move(assignee),
                                                       std::move(value));
       continue;
     }
 
-    BinaryOperator op = StringToBinaryOperator(at().GetValue());
+    BinaryOperator op = AssignmentToBinaryOperator(at().GetValue());
 
     if (op != BinaryOperator::Invalid) {
       eat();
@@ -36,7 +38,7 @@ std::unique_ptr<Expr> Parser::parseAdditiveExpr() {
 
   while (at().GetTokenType() == TokenType::Plus ||
          at().GetTokenType() == TokenType::Minus) {
-    BinaryOperator op = StringToBinaryOperator(eat().GetValue());
+    BinaryOperator op = TokenTypeToBinaryOperator(eat().GetTokenType());
 
     std::unique_ptr<Expr> right = parseMultiplicativeExpr();
 
@@ -53,7 +55,7 @@ std::unique_ptr<Expr> Parser::parseMultiplicativeExpr() {
   while (at().GetTokenType() == TokenType::Asterisk ||
          at().GetTokenType() == TokenType::FowardSlash ||
          at().GetTokenType() == TokenType::Percent) {
-    BinaryOperator op = StringToBinaryOperator(eat().GetValue());
+    BinaryOperator op = AssignmentToBinaryOperator(eat().GetValue());
 
     std::unique_ptr<Expr> right = parsePrimaryExpr();
 
@@ -88,6 +90,30 @@ std::unique_ptr<Expr> Parser::parsePrimaryExpr() {
     UnaryOperator op = TokenTypeToUnaryOperator(eat().GetTokenType());
 
     return std::make_unique<UnaryExprNode>(parseExpr(), op);
+  }
+
+  case TokenType::OpenCurly: {
+    eat();
+
+    auto properties = std::map<std::string, std::unique_ptr<Expr>>();
+
+    while (at().GetTokenType() != TokenType::ClosingCurly) {
+      Token key = expect(TokenType::Identifier);
+
+      expect(TokenType::Colon);
+
+      std::unique_ptr<Expr> value = parseExpr();
+
+      properties.insert({key.GetValue(), std::move(value)});
+
+      if (at().GetTokenType() != TokenType::ClosingCurly) {
+        expect(TokenType::Comma);
+      }
+    }
+
+    eat();
+
+    return std::make_unique<ObjectLiteralNode>(std::move(properties));
   }
 
   default:

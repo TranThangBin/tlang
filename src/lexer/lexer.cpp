@@ -17,10 +17,13 @@ Lexer::Lexer(std::string src) : src(src) {
       {"-", Token("-", TokenType::Minus)},
       {"+", Token("+", TokenType::Plus)},
       {";", Token(";", TokenType::SemiColon)},
+      {"{", Token("{", TokenType::OpenCurly)},
       {"}", Token("}", TokenType::ClosingCurly)},
       {")", Token(")", TokenType::ClosingParen)},
       {"(", Token("(", TokenType::OpenParen)},
       {"=", Token("=", TokenType::Equal)},
+      {":", Token(":", TokenType::Colon)},
+      {",", Token(",", TokenType::Comma)},
   };
 
   reserve = {

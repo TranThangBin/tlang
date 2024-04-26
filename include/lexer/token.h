@@ -20,6 +20,8 @@ enum class TokenType {
   SemiColon,
   OpenCurly,
   ClosingCurly,
+  Colon,
+  Comma,
 
   Assignment,
 
