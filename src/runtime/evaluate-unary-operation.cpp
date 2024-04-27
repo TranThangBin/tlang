@@ -11,6 +11,7 @@ std::runtime_error GetError(UnaryOperator op) {
 
 std::shared_ptr<RuntimeValue>
 evaluateNumericOperation(std::shared_ptr<NumberValue> value, UnaryOperator op) {
+
   switch (op) {
   case UnaryOperator::Plus:
     return value;
@@ -26,6 +27,7 @@ evaluateNumericOperation(std::shared_ptr<NumberValue> value, UnaryOperator op) {
 std::shared_ptr<RuntimeValue>
 evaluateBooleanOperation(std::shared_ptr<BooleanValue> value,
                          UnaryOperator op) {
+
   if (op == UnaryOperator::Not) {
     return std::make_shared<BooleanValue>(!value->GetValue());
   }
@@ -36,8 +38,11 @@ evaluateBooleanOperation(std::shared_ptr<BooleanValue> value,
 std::shared_ptr<RuntimeValue>
 Interpreter::evaluateUnaryOperation(std::shared_ptr<RuntimeValue> value,
                                     UnaryOperator op) {
+
   DataType dt = value->DataTypeID();
+
   switch (dt) {
+
   case DataType::Number:
     return evaluateNumericOperation(
         std::static_pointer_cast<NumberValue>(value), op);

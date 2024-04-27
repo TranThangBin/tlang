@@ -10,7 +10,7 @@ struct Lexer {
 private:
   std::string src;
   int srcLen;
-  int i;
+  int pos;
   std::map<std::string, Token> literal;
   std::map<std::string, Token> reserve;
 
@@ -23,6 +23,7 @@ public:
   Lexer(std::string);
 
   std::queue<Token> Tokenize();
+
   void SetSrc(std::string src) { this->src = src; }
 };
 

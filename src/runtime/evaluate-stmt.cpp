@@ -8,52 +8,50 @@
 
 std::shared_ptr<RuntimeValue>
 Interpreter::evaluateProgram(std::unique_ptr<ProgramNode> program,
-                             std::unique_ptr<Environment> &environment) {
+                             std::unique_ptr<Environment> &env) {
   std::shared_ptr<RuntimeValue> lastEvaluated = std::make_shared<NullValue>();
 
   std::vector<std::unique_ptr<Stmt>> stmts = std::move(program->GetStmts());
+
   int stmtCount = stmts.size();
 
   for (int i = 0; i < stmtCount; i++) {
-    lastEvaluated = evaluate(std::move(stmts[i]), environment);
+    lastEvaluated = evaluate(std::move(stmts[i]), env);
   }
 
   return lastEvaluated;
 }
 
 std::shared_ptr<RuntimeValue> Interpreter::evaluateVariableDeclaration(
-    std::unique_ptr<VariableDeclarationNode> variableDeclarationNode,
-    std::unique_ptr<Environment> &environment) {
+    std::unique_ptr<VariableDeclarationNode> varDec,
+    std::unique_ptr<Environment> &env) {
 
-  if (variableDeclarationNode->GetValue() == nullptr) {
-    return environment->DeclareVariable(
-        variableDeclarationNode->GetIdentifier(), std::make_shared<NullValue>(),
-        variableDeclarationNode->GetMut());
+  if (varDec->GetValue() == nullptr) {
+    return env->DeclareVariable(varDec->GetIdentifier(),
+                                std::make_shared<NullValue>(),
+                                varDec->GetMut());
   }
 
-  return environment->DeclareVariable(
-      variableDeclarationNode->GetIdentifier(),
-      evaluate(std::move(variableDeclarationNode->GetValue()), environment),
-      variableDeclarationNode->GetMut());
+  return env->DeclareVariable(varDec->GetIdentifier(),
+                              evaluate(std::move(varDec->GetValue()), env),
+                              varDec->GetMut());
 }
 
 std::shared_ptr<RuntimeValue>
-Interpreter::evaluateBlockStmt(std::unique_ptr<BlockStmtNode> blockStmtNode,
-                               std::unique_ptr<Environment> &environment) {
-  std::unique_ptr<Environment> blockEnvironment =
-      std::make_unique<Environment>(std::move(environment));
+Interpreter::evaluateBlockStmt(std::unique_ptr<BlockStmtNode> block,
+                               std::unique_ptr<Environment> &env) {
+  auto blockEnvironment = std::make_unique<Environment>(std::move(env));
 
   std::shared_ptr<RuntimeValue> lastEvaluated = std::make_shared<NullValue>();
 
-  std::vector<std::unique_ptr<Stmt>> stmts =
-      std::move(blockStmtNode->GetStmts());
+  std::vector<std::unique_ptr<Stmt>> stmts = std::move(block->GetStmts());
   int stmtCount = stmts.size();
 
   for (int i = 0; i < stmtCount; i++) {
     lastEvaluated = evaluate(std::move(stmts[i]), blockEnvironment);
   }
 
-  environment = std::move(blockEnvironment->GetParent());
+  env = std::move(blockEnvironment->GetParent());
 
   return lastEvaluated;
 }

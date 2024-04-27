@@ -41,8 +41,8 @@ Token Lexer::getLiteral() {
   int maxLiteralLen = 2;
   int literalLen = 1;
 
-  while (i + literalLen - 1 < srcLen && literalLen <= maxLiteralLen) {
-    auto it = literal.find(src.substr(i, literalLen));
+  while (pos + literalLen - 1 < srcLen && literalLen <= maxLiteralLen) {
+    auto it = literal.find(src.substr(pos, literalLen));
 
     if (it != literal.end()) {
       token = it->second;
@@ -55,24 +55,24 @@ Token Lexer::getLiteral() {
 }
 
 Token Lexer::getNumber() {
-  int end = i;
+  int end = pos;
 
   while (end < srcLen && isdigit(src[end + 1]) != 0) {
     end++;
   }
 
-  return Token(src.substr(i, end - i + 1), TokenType::Number);
+  return Token(src.substr(pos, end - pos + 1), TokenType::Number);
 }
 
 Token Lexer::getIdent() {
-  int end = i;
+  int end = pos;
 
   while (end < srcLen && isalpha(src[end + 1]) != 0 || src[end + 1] == '_' ||
          isdigit(src[end + 1]) != 0) {
     end++;
   }
 
-  std::string ident = src.substr(i, end - i + 1);
+  std::string ident = src.substr(pos, end - pos + 1);
   auto it = reserve.find(ident);
 
   if (it != reserve.end()) {
@@ -83,7 +83,7 @@ Token Lexer::getIdent() {
 }
 
 Token Lexer::getString() {
-  int end = i;
+  int end = pos;
 
   while (end < srcLen && src[end + 1] != '"') {
     end++;
@@ -93,5 +93,5 @@ Token Lexer::getString() {
     throw std::runtime_error("Unterminated string literal");
   }
 
-  return Token(src.substr(i + 1, end - i), TokenType::String);
+  return Token(src.substr(pos + 1, end - pos), TokenType::String);
 }

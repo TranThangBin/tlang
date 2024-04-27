@@ -66,6 +66,12 @@ UnaryOperator TokenTypeToUnaryOperator(TokenType tokenType) {
 
 std::string NodeTypeToString(NodeType nodeType) {
   switch (nodeType) {
+  case NodeType::StringLiteral:
+    return "string literal";
+
+  case NodeType::IndexingExpression:
+    return "indexing expression";
+
   case NodeType::Program:
     return "program";
 

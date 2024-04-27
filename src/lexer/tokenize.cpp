@@ -10,13 +10,13 @@ std::queue<Token> Lexer::Tokenize() {
 
   srcLen = src.length();
 
-  i = 0;
+  pos = 0;
 
-  while (i < srcLen) {
-    char curChar = src[i];
+  while (pos < srcLen) {
+    char curChar = src[pos];
 
     if (curChar >= 0 && curChar <= 32) {
-      i++;
+      pos++;
       continue;
     }
 
@@ -24,28 +24,28 @@ std::queue<Token> Lexer::Tokenize() {
 
     if (literal.GetTokenType() != TokenType::Invalid) {
       tokens.push(literal);
-      i += literal.GetValue().length();
+      pos += literal.GetValue().length();
       continue;
     }
 
     if (isdigit(curChar) != 0) {
       Token number = getNumber();
       tokens.push(number);
-      i += number.GetValue().length();
+      pos += number.GetValue().length();
       continue;
     }
 
     if (curChar == '"') {
       Token string = getString();
       tokens.push(string);
-      i += string.GetValue().length() + 2;
+      pos += string.GetValue().length() + 2;
       continue;
     }
 
     if (isalpha(curChar) != 0 || curChar == '_') {
       Token ident = getIdent();
       tokens.push(ident);
-      i += ident.GetValue().length();
+      pos += ident.GetValue().length();
       continue;
     }
 

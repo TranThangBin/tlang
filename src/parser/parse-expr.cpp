@@ -13,20 +13,18 @@ std::unique_ptr<Expr> Parser::parseAssignmentExpr() {
   while (at().GetTokenType() == TokenType::Equal ||
          at().GetTokenType() == TokenType::Assignment) {
 
-    if (at().GetTokenType() == TokenType::Equal) {
-      eat();
-      std::unique_ptr<Expr> value = parseAssignmentExpr();
+    Token token = eat();
+    std::unique_ptr<Expr> value = parseAssignmentExpr();
+
+    if (token.GetTokenType() == TokenType::Equal) {
       assignee = std::make_unique<AssignmentExprNode>(std::move(assignee),
                                                       std::move(value));
       continue;
     }
 
-    BinaryOperator op = AssignmentToBinaryOperator(at().GetValue());
-
-    std::unique_ptr<Expr> value = parseAssignmentExpr();
-    assignee = std::make_unique<BinaryAssignmentExprNode>(std::move(assignee),
-                                                          std::move(value), op);
-    continue;
+    assignee = std::make_unique<BinaryAssignmentExprNode>(
+        std::move(assignee), std::move(value),
+        AssignmentToBinaryOperator(token.GetValue()));
   }
 
   return assignee;
@@ -36,6 +34,7 @@ std::unique_ptr<Expr> Parser::parseIndexingExpr() {
   std::unique_ptr<Expr> accessor = parseAdditiveExpr();
 
   while (at().GetTokenType() == TokenType::OpenSquare) {
+
     eat();
     accessor = std::make_unique<IndexingExpressionNode>(std::move(accessor),
                                                         parseAdditiveExpr());
@@ -50,6 +49,7 @@ std::unique_ptr<Expr> Parser::parseAdditiveExpr() {
 
   while (at().GetTokenType() == TokenType::Plus ||
          at().GetTokenType() == TokenType::Minus) {
+
     BinaryOperator op = TokenTypeToBinaryOperator(eat().GetTokenType());
 
     std::unique_ptr<Expr> right = parseMultiplicativeExpr();
@@ -67,6 +67,7 @@ std::unique_ptr<Expr> Parser::parseMultiplicativeExpr() {
   while (at().GetTokenType() == TokenType::Asterisk ||
          at().GetTokenType() == TokenType::FowardSlash ||
          at().GetTokenType() == TokenType::Percent) {
+
     BinaryOperator op = AssignmentToBinaryOperator(eat().GetValue());
 
     std::unique_ptr<Expr> right = parsePrimaryExpr();
@@ -96,17 +97,14 @@ std::unique_ptr<Expr> Parser::parsePrimaryExpr() {
     eat();
     std::unique_ptr<Expr> expr = parseExpr();
     expect(TokenType::ClosingParen);
-
     return expr;
   }
 
   case TokenType::Plus:
   case TokenType::Minus:
-  case TokenType::Exclamation: {
-    UnaryOperator op = TokenTypeToUnaryOperator(eat().GetTokenType());
-
-    return std::make_unique<UnaryExprNode>(parseExpr(), op);
-  }
+  case TokenType::Exclamation:
+    return std::make_unique<UnaryExprNode>(
+        parseExpr(), TokenTypeToUnaryOperator(eat().GetTokenType()));
 
   case TokenType::OpenCurly: {
     eat();

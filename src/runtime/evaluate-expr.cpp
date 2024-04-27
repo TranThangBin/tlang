@@ -133,14 +133,11 @@ std::shared_ptr<RuntimeValue> Interpreter::evaluateObjectLiteral(
   std::map<std::string, std::unique_ptr<Expr>> properties =
       std::move(objectLiteralNode->GetProperties());
 
-  std::map<std::string, std::shared_ptr<RuntimeValue>> valueProperties =
-      std::map<std::string, std::shared_ptr<RuntimeValue>>();
+  auto valueProperties = std::map<std::string, std::shared_ptr<RuntimeValue>>();
 
   for (auto it = properties.begin(); it != properties.end(); it++) {
-    std::string key = it->first;
-    std::shared_ptr<RuntimeValue> value =
-        evaluate(std::move(it->second), environment);
-    valueProperties.insert({key, std::move(value)});
+    valueProperties.insert(
+        {it->first, evaluate(std::move(it->second), environment)});
   }
 
   return std::make_shared<ObjectValue>(std::move(valueProperties));

@@ -43,17 +43,19 @@ private:
   TokenType tokenType;
 
 public:
-  Token(std::string value, TokenType tkType)
-      : value(value), tokenType(tkType) {}
-
   std::string GetValue() { return value; }
   TokenType GetTokenType() { return tokenType; }
 
+  Token(std::string value, TokenType tokenType)
+      : value(value), tokenType(tokenType) {}
+
   std::string Yaml() {
     std::stringstream ss;
+
     ss << "Token:" << std::endl
-       << "\tValue: " << value << std::endl
-       << "\tTokenType: " << TokenTypeToString(tokenType);
+       << "    Value: " << value << std::endl
+       << "    TokenType: " << TokenTypeToString(tokenType);
+
     return ss.str();
   }
 };

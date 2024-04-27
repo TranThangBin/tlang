@@ -3,6 +3,12 @@
 
 std::string DataTypeToString(DataType dt) {
   switch (dt) {
+  case DataType::String:
+    return "string";
+
+  case DataType::Object:
+    return "object";
+
   case DataType::Null:
     return "null";
 
