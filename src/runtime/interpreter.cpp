@@ -109,6 +109,14 @@ Interpreter::evaluate(std::unique_ptr<Stmt> astNode,
     return evaluateObjectLiteral(std::move(objectLiteralNode), environment);
   }
 
+  case NodeType::IndexingExpression: {
+    std::unique_ptr<IndexingExpressionNode> indexingExprNode =
+        std::unique_ptr<IndexingExpressionNode>(
+            static_cast<IndexingExpressionNode *>(astNode.release()));
+
+    return evaluateIndexingExpr(std::move(indexingExprNode), environment);
+  }
+
   default:
     throw std::runtime_error(
         NodeTypeToString(astNode->Kind()) +

@@ -76,8 +76,19 @@ std::unique_ptr<Expr> Parser::parsePrimaryExpr() {
   case TokenType::String:
     return std::make_unique<StringLiteralNode>(eat().GetValue());
 
-  case TokenType::Identifier:
-    return std::make_unique<IdentifierNode>(eat().GetValue());
+  case TokenType::Identifier: {
+    std::unique_ptr<Expr> expr =
+        std::make_unique<IdentifierNode>(eat().GetValue());
+
+    while (at().GetTokenType() == TokenType::OpenSquare) {
+      eat();
+      expr = std::make_unique<IndexingExpressionNode>(std::move(expr),
+                                                      parseExpr());
+      expect(TokenType::ClosingSquare);
+    }
+
+    return expr;
+  }
 
   case TokenType::OpenParen: {
     eat();

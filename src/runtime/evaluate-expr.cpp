@@ -18,26 +18,49 @@ std::shared_ptr<RuntimeValue> Interpreter::evaluateAssignmentExpr(
     std::unique_ptr<AssignmentExprNode> assignmentExprNode,
     std::unique_ptr<Environment> &environment) {
 
-  std::string varname;
-
   NodeType assigneeKind = assignmentExprNode->GetAssignee()->Kind();
 
   switch (assigneeKind) {
-  case NodeType::Identifier:
-    varname = std::unique_ptr<IdentifierNode>(
-                  static_cast<IdentifierNode *>(
-                      assignmentExprNode->GetAssignee().release()))
-                  ->GetSymbol();
-    break;
+  case NodeType::Identifier: {
+    std::string varname = std::unique_ptr<IdentifierNode>(
+                              static_cast<IdentifierNode *>(
+                                  assignmentExprNode->GetAssignee().release()))
+                              ->GetSymbol();
+
+    std::shared_ptr<RuntimeValue> value =
+        evaluate(std::move(assignmentExprNode->GetValue()), environment);
+
+    return environment->AssignVariable(varname, std::move(value));
+  }
+
+  case NodeType::IndexingExpression: {
+    std::unique_ptr<IndexingExpressionNode> indexingExpression =
+        std::unique_ptr<IndexingExpressionNode>(
+            static_cast<IndexingExpressionNode *>(
+                assignmentExprNode->GetAssignee().release()));
+
+    std::shared_ptr<RuntimeValue> accessor =
+        evaluate(std::move(indexingExpression->GetAccessor()), environment);
+
+    DataType accessorType = accessor->DataTypeID();
+
+    switch (accessorType) {
+    case DataType::Object:
+      return std::static_pointer_cast<ObjectValue>(accessor)->SetProperty(
+          evaluate(std::move(indexingExpression->GetIndex()), environment)
+              ->str(),
+          evaluate(std::move(assignmentExprNode->GetValue()), environment));
+
+    default:
+      throw std::runtime_error(DataTypeToString(accessorType) +
+                               " is not indexable");
+    }
+  }
+
   default:
     throw std::runtime_error("Unexpected node " +
                              NodeTypeToString(assigneeKind));
   }
-
-  std::shared_ptr<RuntimeValue> value =
-      evaluate(std::move(assignmentExprNode->GetValue()), environment);
-
-  return environment->AssignVariable(varname, std::move(value));
 }
 
 std::shared_ptr<RuntimeValue> Interpreter::evaluateBinaryAssignmentExpr(
@@ -114,4 +137,23 @@ std::shared_ptr<RuntimeValue> Interpreter::evaluateObjectLiteral(
   }
 
   return std::make_shared<ObjectValue>(std::move(valueProperties));
+}
+
+std::shared_ptr<RuntimeValue> Interpreter::evaluateIndexingExpr(
+    std::unique_ptr<IndexingExpressionNode> indexingExprNode,
+    std::unique_ptr<Environment> &environment) {
+  std::shared_ptr<RuntimeValue> accessor =
+      evaluate(std::move(indexingExprNode->GetAccessor()), environment);
+
+  DataType accessorType = accessor->DataTypeID();
+
+  switch (accessorType) {
+  case DataType::Object:
+    return std::static_pointer_cast<ObjectValue>(accessor)->GetProperty(
+        evaluate(std::move(indexingExprNode->GetIndex()), environment)->str());
+
+  default:
+    throw std::runtime_error(DataTypeToString(accessorType) +
+                             " is not indexable");
+  }
 }

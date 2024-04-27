@@ -77,6 +77,21 @@ public:
   ObjectValue(std::map<std::string, std::shared_ptr<RuntimeValue>> properties)
       : properties(properties) {}
 
+  std::shared_ptr<RuntimeValue> GetProperty(std::string key) {
+    auto it = properties.find(key);
+
+    if (it == properties.end()) {
+      return std::make_shared<NullValue>();
+    }
+
+    return it->second;
+  }
+
+  std::shared_ptr<RuntimeValue>
+  SetProperty(std::string key, std::shared_ptr<RuntimeValue> value) {
+    return properties[key] = value;
+  }
+
   std::string str() override {
     std::stringstream ss;
 

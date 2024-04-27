@@ -21,6 +21,7 @@ enum class NodeType {
   UnaryExpr,
   ObjectLiteral,
   StringLiteral,
+  IndexingExpression,
 };
 
 enum class BinaryOperator {
@@ -245,6 +246,24 @@ public:
   std::string GetValue() { return value; }
 
   StringLiteralNode(std::string value) : value(value) {}
+};
+
+class IndexingExpressionNode : public Expr {
+private:
+  std::unique_ptr<Expr> accessor;
+  std::unique_ptr<Expr> index;
+
+public:
+  std::string Yaml(int) override;
+
+  NodeType Kind() override { return NodeType::IndexingExpression; }
+
+  std::unique_ptr<Expr> &GetAccessor() { return accessor; }
+  std::unique_ptr<Expr> &GetIndex() { return index; }
+
+  IndexingExpressionNode(std::unique_ptr<Expr> accessor,
+                         std::unique_ptr<Expr> index)
+      : accessor(std::move(accessor)), index(std::move(index)) {}
 };
 
 #endif // !AST_H

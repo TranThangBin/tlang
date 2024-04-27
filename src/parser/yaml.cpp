@@ -146,3 +146,15 @@ std::string ObjectLiteralNode::Yaml(int indentLevel) {
 
   return ss.str();
 }
+
+std::string IndexingExpressionNode::Yaml(int indentLevel) {
+  std::stringstream ss;
+
+  ss << getIndent(indentLevel) << "IndexingExpressionNode" << std::endl
+     << getIndent(indentLevel + 1) << "Accessor:" << std::endl
+     << accessor->Yaml(indentLevel + 2) << std::endl
+     << getIndent(indentLevel + 1) << "Index:" << std::endl
+     << index->Yaml(indentLevel + 2);
+
+  return ss.str();
+}

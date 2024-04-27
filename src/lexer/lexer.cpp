@@ -55,7 +55,7 @@ Token Lexer::getLiteral() {
 }
 
 Token Lexer::getNumber() {
-  int end = i + 1;
+  int end = i;
 
   while (end < srcLen && isdigit(src[end + 1]) != 0) {
     end++;
@@ -65,7 +65,7 @@ Token Lexer::getNumber() {
 }
 
 Token Lexer::getIdent() {
-  int end = i + 1;
+  int end = i;
 
   while (end < srcLen && isalpha(src[end + 1]) != 0 || src[end + 1] == '_' ||
          isdigit(src[end + 1]) != 0) {
