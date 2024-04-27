@@ -2,6 +2,7 @@
 #include "runtime/environment.h"
 #include "runtime/interpreter.h"
 #include "runtime/runtime-value.h"
+#include <map>
 #include <memory>
 #include <stdexcept>
 #include <string>
@@ -93,4 +94,24 @@ Interpreter::evaluateUnaryExpr(std::unique_ptr<UnaryExprNode> unaryExpr,
       evaluate(std::move(unaryExpr->GetValue()), environment);
 
   return evaluateUnaryOperation(value, unaryExpr->GetOperator());
+}
+
+std::shared_ptr<RuntimeValue> Interpreter::evaluateObjectLiteral(
+    std::unique_ptr<ObjectLiteralNode> objectLiteralNode,
+    std::unique_ptr<Environment> &environment) {
+
+  std::map<std::string, std::unique_ptr<Expr>> properties =
+      std::move(objectLiteralNode->GetProperties());
+
+  std::map<std::string, std::shared_ptr<RuntimeValue>> valueProperties =
+      std::map<std::string, std::shared_ptr<RuntimeValue>>();
+
+  for (auto it = properties.begin(); it != properties.end(); it++) {
+    std::string key = it->first;
+    std::shared_ptr<RuntimeValue> value =
+        evaluate(std::move(it->second), environment);
+    valueProperties.insert({key, std::move(value)});
+  }
+
+  return std::make_shared<ObjectValue>(std::move(valueProperties));
 }

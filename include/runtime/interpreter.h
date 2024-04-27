@@ -6,7 +6,6 @@
 #include "runtime-value.h"
 #include "runtime/environment.h"
 #include <memory>
-#include <utility>
 
 struct Interpreter {
 private:
@@ -53,6 +52,10 @@ private:
 
   std::shared_ptr<RuntimeValue>
       evaluateUnaryOperation(std::shared_ptr<RuntimeValue>, UnaryOperator);
+
+  std::shared_ptr<RuntimeValue>
+  evaluateObjectLiteral(std::unique_ptr<ObjectLiteralNode>,
+                        std::unique_ptr<Environment> &);
 
 public:
   Interpreter(std::unique_ptr<Parser> parser,

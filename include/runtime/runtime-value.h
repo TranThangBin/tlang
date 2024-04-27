@@ -1,12 +1,16 @@
 #ifndef VALUE_H
 #define VALUE_H
 
+#include <map>
+#include <memory>
+#include <sstream>
 #include <string>
 
 enum class DataType {
   Null,
   Number,
   Boolean,
+  Object,
 };
 
 std::string DataTypeToString(DataType);
@@ -17,13 +21,13 @@ public:
   virtual std::string str() = 0;
 };
 
-struct NullValue : public RuntimeValue {
+class NullValue : public RuntimeValue {
 public:
   DataType DataTypeID() override { return DataType::Null; }
   std::string str() override { return "null"; }
 };
 
-struct BooleanValue : public RuntimeValue {
+class BooleanValue : public RuntimeValue {
 private:
   bool value;
 
@@ -36,7 +40,7 @@ public:
   std::string str() override { return value ? "true" : "false"; }
 };
 
-struct NumberValue : public RuntimeValue {
+class NumberValue : public RuntimeValue {
 private:
   float value;
 
@@ -47,6 +51,31 @@ public:
 
   float GetValue() { return value; }
   std::string str() override { return std::to_string(value); }
+};
+
+class ObjectValue : public RuntimeValue {
+private:
+  std::map<std::string, std::shared_ptr<RuntimeValue>> properties;
+
+public:
+  DataType DataTypeID() override { return DataType::Object; }
+
+  ObjectValue(std::map<std::string, std::shared_ptr<RuntimeValue>> properties)
+      : properties(properties) {}
+
+  std::string str() override {
+    std::stringstream ss;
+
+    ss << "{";
+
+    for (auto it = properties.begin(); it != properties.end(); it++) {
+      ss << it->first << ": " << it->second->str() << ", ";
+    }
+
+    ss << "}";
+
+    return ss.str();
+  }
 };
 
 #endif // !VALUE_H

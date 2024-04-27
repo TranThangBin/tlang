@@ -106,8 +106,8 @@ std::unique_ptr<Expr> Parser::parsePrimaryExpr() {
 
       properties.insert({key.GetValue(), std::move(value)});
 
-      if (at().GetTokenType() != TokenType::ClosingCurly) {
-        expect(TokenType::Comma);
+      if (at().GetTokenType() == TokenType::Comma) {
+        eat();
       }
     }
 

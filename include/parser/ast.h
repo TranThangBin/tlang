@@ -224,6 +224,10 @@ public:
 
   NodeType Kind() override { return NodeType::ObjectLiteral; }
 
+  std::map<std::string, std::unique_ptr<Expr>> &GetProperties() {
+    return properties;
+  }
+
   ObjectLiteralNode(std::map<std::string, std::unique_ptr<Expr>> properties)
       : properties(std::move(properties)) {}
 };

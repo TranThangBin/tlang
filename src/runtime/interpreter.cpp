@@ -93,6 +93,14 @@ Interpreter::evaluate(std::unique_ptr<Stmt> astNode,
                                         environment);
   }
 
+  case NodeType::ObjectLiteral: {
+    std::unique_ptr<ObjectLiteralNode> objectLiteralNode =
+        std::unique_ptr<ObjectLiteralNode>(
+            static_cast<ObjectLiteralNode *>(astNode.release()));
+
+    return evaluateObjectLiteral(std::move(objectLiteralNode), environment);
+  }
+
   default:
     throw std::runtime_error(
         NodeTypeToString(astNode->Kind()) +
