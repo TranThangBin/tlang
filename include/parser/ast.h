@@ -20,6 +20,7 @@ enum class NodeType {
   Identifier,
   UnaryExpr,
   ObjectLiteral,
+  StringLiteral,
 };
 
 enum class BinaryOperator {
@@ -230,6 +231,20 @@ public:
 
   ObjectLiteralNode(std::map<std::string, std::unique_ptr<Expr>> properties)
       : properties(std::move(properties)) {}
+};
+
+class StringLiteralNode : public Expr {
+private:
+  std::string value;
+
+public:
+  std::string Yaml(int) override;
+
+  NodeType Kind() override { return NodeType::StringLiteral; }
+
+  std::string GetValue() { return value; }
+
+  StringLiteralNode(std::string value) : value(value) {}
 };
 
 #endif // !AST_H

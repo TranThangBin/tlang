@@ -113,6 +113,15 @@ std::string NumericLiteralNode::Yaml(int indentLevel) {
   return ss.str();
 }
 
+std::string StringLiteralNode::Yaml(int indentLevel) {
+  std::stringstream ss;
+
+  ss << getIndent(indentLevel) << "StringLiteralNode:" << std::endl
+     << getIndent(indentLevel + 1) << "Value: " << value;
+
+  return ss.str();
+}
+
 std::string UnaryExprNode::Yaml(int indentLevel) {
   std::stringstream ss;
 

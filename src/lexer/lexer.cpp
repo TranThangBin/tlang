@@ -1,10 +1,13 @@
 #include "lexer/lexer.h"
 #include "lexer/token.h"
 #include <map>
+#include <stdexcept>
 #include <string>
 
 Lexer::Lexer(std::string src) : src(src) {
   literal = {
+      {"[", Token("[", TokenType::OpenSquare)},
+      {"]", Token("]", TokenType::ClosingSquare)},
       {"!", Token("!", TokenType::Exclamation)},
       {"%=", Token("%=", TokenType::Assignment)},
       {"/=", Token("/=", TokenType::Assignment)},
@@ -52,7 +55,7 @@ Token Lexer::getLiteral() {
 }
 
 Token Lexer::getNumber() {
-  int end = i;
+  int end = i + 1;
 
   while (end < srcLen && isdigit(src[end + 1]) != 0) {
     end++;
@@ -62,7 +65,7 @@ Token Lexer::getNumber() {
 }
 
 Token Lexer::getIdent() {
-  int end = i;
+  int end = i + 1;
 
   while (end < srcLen && isalpha(src[end + 1]) != 0 || src[end + 1] == '_' ||
          isdigit(src[end + 1]) != 0) {
@@ -77,4 +80,18 @@ Token Lexer::getIdent() {
   }
 
   return Token(ident, TokenType::Identifier);
+}
+
+Token Lexer::getString() {
+  int end = i;
+
+  while (end < srcLen && src[end + 1] != '"') {
+    end++;
+  }
+
+  if (end >= srcLen || src[end + 1] != '"') {
+    throw std::runtime_error("Unterminated string literal");
+  }
+
+  return Token(src.substr(i + 1, end - i), TokenType::String);
 }

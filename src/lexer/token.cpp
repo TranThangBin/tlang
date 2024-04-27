@@ -3,6 +3,21 @@
 
 std::string TokenTypeToString(TokenType tokenType) {
   switch (tokenType) {
+  case TokenType::Colon:
+    return ":";
+
+  case TokenType::Comma:
+    return ",";
+
+  case TokenType::OpenSquare:
+    return "[";
+
+  case TokenType::ClosingSquare:
+    return "]";
+
+  case TokenType::String:
+    return "string";
+
   case TokenType::Eof:
     return "EOF";
 

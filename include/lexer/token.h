@@ -22,13 +22,15 @@ enum class TokenType {
   ClosingCurly,
   Colon,
   Comma,
-
+  OpenSquare,
+  ClosingSquare,
   Assignment,
 
   Number,
   Identifier,
   Var,
   Mut,
+  String,
 
   Invalid,
 };

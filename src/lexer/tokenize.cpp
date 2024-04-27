@@ -35,6 +35,13 @@ std::queue<Token> Lexer::Tokenize() {
       continue;
     }
 
+    if (curChar == '"') {
+      Token string = getString();
+      tokens.push(string);
+      i += string.GetValue().length() + 2;
+      continue;
+    }
+
     if (isalpha(curChar) != 0 || curChar == '_') {
       Token ident = getIdent();
       tokens.push(ident);

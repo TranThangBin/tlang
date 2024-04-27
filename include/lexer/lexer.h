@@ -17,6 +17,7 @@ private:
   Token getLiteral();
   Token getNumber();
   Token getIdent();
+  Token getString();
 
 public:
   Lexer(std::string);

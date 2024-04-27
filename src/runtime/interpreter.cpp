@@ -76,6 +76,14 @@ Interpreter::evaluate(std::unique_ptr<Stmt> astNode,
     return std::make_shared<NumberValue>(numericLiteralNode->GetValue());
   }
 
+  case NodeType::StringLiteral: {
+    std::unique_ptr<StringLiteralNode> stringLiteralNode =
+        std::unique_ptr<StringLiteralNode>(
+            static_cast<StringLiteralNode *>(astNode.release()));
+
+    return std::make_shared<StringValue>(stringLiteralNode->GetValue());
+  }
+
   case NodeType::UnaryExpr: {
     std::unique_ptr<UnaryExprNode> unaryExprNode =
         std::unique_ptr<UnaryExprNode>(

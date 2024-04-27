@@ -73,6 +73,9 @@ std::unique_ptr<Expr> Parser::parsePrimaryExpr() {
   case TokenType::Number:
     return std::make_unique<NumericLiteralNode>(std::stof(eat().GetValue()));
 
+  case TokenType::String:
+    return std::make_unique<StringLiteralNode>(eat().GetValue());
+
   case TokenType::Identifier:
     return std::make_unique<IdentifierNode>(eat().GetValue());
 

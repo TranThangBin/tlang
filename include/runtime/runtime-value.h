@@ -10,12 +10,13 @@ enum class DataType {
   Null,
   Number,
   Boolean,
+  String,
   Object,
 };
 
 std::string DataTypeToString(DataType);
 
-struct RuntimeValue {
+class RuntimeValue {
 public:
   virtual DataType DataTypeID() = 0;
   virtual std::string str() = 0;
@@ -51,6 +52,19 @@ public:
 
   float GetValue() { return value; }
   std::string str() override { return std::to_string(value); }
+};
+
+class StringValue : public RuntimeValue {
+private:
+  std::string value;
+
+public:
+  DataType DataTypeID() override { return DataType::String; }
+
+  StringValue(std::string value) : value(value) {}
+
+  std::string GetValue() { return value; }
+  std::string str() override { return "\"" + value + "\""; }
 };
 
 class ObjectValue : public RuntimeValue {
