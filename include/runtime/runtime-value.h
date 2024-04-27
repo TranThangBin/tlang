@@ -95,7 +95,7 @@ public:
   std::string str() override {
     std::stringstream ss;
 
-    ss << "{";
+    ss << "{ ";
 
     for (auto it = properties.begin(); it != properties.end(); it++) {
       ss << it->first << ": " << it->second->str() << ", ";

@@ -8,9 +8,11 @@
 #include <utility>
 
 std::unique_ptr<Expr> Parser::parseAssignmentExpr() {
-  std::unique_ptr<Expr> assignee = parseAdditiveExpr();
+  std::unique_ptr<Expr> assignee = parseIndexingExpr();
 
-  while (true) {
+  while (at().GetTokenType() == TokenType::Equal ||
+         at().GetTokenType() == TokenType::Assignment) {
+
     if (at().GetTokenType() == TokenType::Equal) {
       eat();
       std::unique_ptr<Expr> value = parseAssignmentExpr();
@@ -21,16 +23,26 @@ std::unique_ptr<Expr> Parser::parseAssignmentExpr() {
 
     BinaryOperator op = AssignmentToBinaryOperator(at().GetValue());
 
-    if (op != BinaryOperator::Invalid) {
-      eat();
-      std::unique_ptr<Expr> value = parseAssignmentExpr();
-      assignee = std::make_unique<BinaryAssignmentExprNode>(
-          std::move(assignee), std::move(value), op);
-      continue;
-    }
-
-    return assignee;
+    std::unique_ptr<Expr> value = parseAssignmentExpr();
+    assignee = std::make_unique<BinaryAssignmentExprNode>(std::move(assignee),
+                                                          std::move(value), op);
+    continue;
   }
+
+  return assignee;
+}
+
+std::unique_ptr<Expr> Parser::parseIndexingExpr() {
+  std::unique_ptr<Expr> accessor = parseAdditiveExpr();
+
+  while (at().GetTokenType() == TokenType::OpenSquare) {
+    eat();
+    accessor = std::make_unique<IndexingExpressionNode>(std::move(accessor),
+                                                        parseAdditiveExpr());
+    expect(TokenType::ClosingSquare);
+  }
+
+  return accessor;
 }
 
 std::unique_ptr<Expr> Parser::parseAdditiveExpr() {
@@ -77,17 +89,7 @@ std::unique_ptr<Expr> Parser::parsePrimaryExpr() {
     return std::make_unique<StringLiteralNode>(eat().GetValue());
 
   case TokenType::Identifier: {
-    std::unique_ptr<Expr> expr =
-        std::make_unique<IdentifierNode>(eat().GetValue());
-
-    while (at().GetTokenType() == TokenType::OpenSquare) {
-      eat();
-      expr = std::make_unique<IndexingExpressionNode>(std::move(expr),
-                                                      parseExpr());
-      expect(TokenType::ClosingSquare);
-    }
-
-    return expr;
+    return std::make_unique<IdentifierNode>(eat().GetValue());
   }
 
   case TokenType::OpenParen: {
@@ -112,13 +114,18 @@ std::unique_ptr<Expr> Parser::parsePrimaryExpr() {
     auto properties = std::map<std::string, std::unique_ptr<Expr>>();
 
     while (at().GetTokenType() != TokenType::ClosingCurly) {
-      Token key = expect(TokenType::Identifier);
+      std::string key;
+
+      if (at().GetTokenType() == TokenType::Identifier ||
+          at().GetTokenType() == TokenType::String) {
+        key = eat().GetValue();
+      }
 
       expect(TokenType::Colon);
 
       std::unique_ptr<Expr> value = parseExpr();
 
-      properties.insert({key.GetValue(), std::move(value)});
+      properties.insert({key, std::move(value)});
 
       if (at().GetTokenType() == TokenType::Comma) {
         eat();

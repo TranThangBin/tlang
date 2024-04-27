@@ -45,11 +45,18 @@ std::shared_ptr<RuntimeValue> Interpreter::evaluateAssignmentExpr(
     DataType accessorType = accessor->DataTypeID();
 
     switch (accessorType) {
-    case DataType::Object:
+    case DataType::Object: {
+      std::shared_ptr<RuntimeValue> keyValue =
+          evaluate(std::move(indexingExpression->GetIndex()), environment);
+
+      if (keyValue->DataTypeID() != DataType::String) {
+        throw std::runtime_error("Invalid index for object");
+      }
+
       return std::static_pointer_cast<ObjectValue>(accessor)->SetProperty(
-          evaluate(std::move(indexingExpression->GetIndex()), environment)
-              ->str(),
+          std::static_pointer_cast<StringValue>(keyValue)->GetValue(),
           evaluate(std::move(assignmentExprNode->GetValue()), environment));
+    }
 
     default:
       throw std::runtime_error(DataTypeToString(accessorType) +
@@ -148,9 +155,17 @@ std::shared_ptr<RuntimeValue> Interpreter::evaluateIndexingExpr(
   DataType accessorType = accessor->DataTypeID();
 
   switch (accessorType) {
-  case DataType::Object:
+  case DataType::Object: {
+    std::shared_ptr<RuntimeValue> keyValue =
+        evaluate(std::move(indexingExprNode->GetIndex()), environment);
+
+    if (keyValue->DataTypeID() != DataType::String) {
+      throw std::runtime_error("Invalid index for object");
+    }
+
     return std::static_pointer_cast<ObjectValue>(accessor)->GetProperty(
-        evaluate(std::move(indexingExprNode->GetIndex()), environment)->str());
+        std::static_pointer_cast<StringValue>(keyValue)->GetValue());
+  }
 
   default:
     throw std::runtime_error(DataTypeToString(accessorType) +
