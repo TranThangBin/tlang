@@ -137,11 +137,29 @@ std::string ObjectLiteralNode::Yaml(int indentLevel) {
   std::stringstream ss;
 
   ss << getIndent(indentLevel) << "ObjectLiteralNode:" << std::endl
-     << getIndent(indentLevel + 1) << "Properties:" << std::endl;
+     << getIndent(indentLevel + 1) << "Properties:";
 
   for (auto it = properties.begin(); it != properties.end(); it++) {
-    ss << getIndent(indentLevel + 2) << it->first << ":" << std::endl
-       << it->second->Yaml(indentLevel + 3) << std::endl;
+    ss << std::endl
+       << getIndent(indentLevel + 2) << it->first << ":" << std::endl
+       << it->second->Yaml(indentLevel + 3);
+  }
+
+  return ss.str();
+}
+
+std::string ArrayExprNode::Yaml(int indentLevel) {
+  std::stringstream ss;
+
+  ss << getIndent(indentLevel) << "ArrayExprNode:" << std::endl
+     << getIndent(indentLevel + 1) << "Values:";
+
+  int valueCount = values.size();
+
+  for (int i = 0; i < valueCount; i++) {
+    ss << std::endl
+       << getIndent(indentLevel + 2) << i << ":" << std::endl
+       << values[i]->Yaml(indentLevel + 3);
   }
 
   return ss.str();

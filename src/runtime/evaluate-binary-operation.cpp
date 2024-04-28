@@ -34,6 +34,9 @@ evaluateNumericOperation(std::shared_ptr<NumberValue> leftHand,
                                          rightHand->GetValue());
 
   case BinaryOperator::Modulo:
+    if ((int)rightHand->GetValue() == 0) {
+      throw std::runtime_error("Modulo by 0 error");
+    }
     return std::make_shared<NumberValue>((int)leftHand->GetValue() %
                                          (int)rightHand->GetValue());
 

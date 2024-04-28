@@ -6,6 +6,7 @@
 #include <stdexcept>
 #include <string>
 #include <utility>
+#include <vector>
 
 std::unique_ptr<Expr> Parser::parseAssignmentExpr() {
   std::unique_ptr<Expr> assignee = parseIndexingExpr();
@@ -68,7 +69,7 @@ std::unique_ptr<Expr> Parser::parseMultiplicativeExpr() {
          at().GetTokenType() == TokenType::FowardSlash ||
          at().GetTokenType() == TokenType::Percent) {
 
-    BinaryOperator op = AssignmentToBinaryOperator(eat().GetValue());
+    BinaryOperator op = TokenTypeToBinaryOperator(eat().GetTokenType());
 
     std::unique_ptr<Expr> right = parsePrimaryExpr();
 
@@ -84,7 +85,7 @@ std::unique_ptr<Expr> Parser::parsePrimaryExpr() {
 
   switch (tk.GetTokenType()) {
   case TokenType::Number:
-    return std::make_unique<NumericLiteralNode>(std::stof(eat().GetValue()));
+    return std::make_unique<NumericLiteralNode>(std::stod(eat().GetValue()));
 
   case TokenType::String:
     return std::make_unique<StringLiteralNode>(eat().GetValue());
@@ -109,7 +110,7 @@ std::unique_ptr<Expr> Parser::parsePrimaryExpr() {
   case TokenType::OpenCurly: {
     eat();
 
-    auto properties = std::map<std::string, std::unique_ptr<Expr>>();
+    std::map<std::string, std::unique_ptr<Expr>> properties;
 
     while (at().GetTokenType() != TokenType::ClosingCurly) {
       std::string key;
@@ -121,9 +122,7 @@ std::unique_ptr<Expr> Parser::parsePrimaryExpr() {
 
       expect(TokenType::Colon);
 
-      std::unique_ptr<Expr> value = parseExpr();
-
-      properties.insert({key, std::move(value)});
+      properties.insert({key, parseExpr()});
 
       if (at().GetTokenType() == TokenType::Comma) {
         eat();
@@ -133,6 +132,24 @@ std::unique_ptr<Expr> Parser::parsePrimaryExpr() {
     eat();
 
     return std::make_unique<ObjectLiteralNode>(std::move(properties));
+  }
+
+  case TokenType::OpenSquare: {
+    eat();
+
+    std::vector<std::unique_ptr<Expr>> values;
+
+    while (at().GetTokenType() != TokenType::ClosingSquare) {
+      values.push_back(parseExpr());
+
+      if (at().GetTokenType() == TokenType::Comma) {
+        eat();
+      }
+    }
+
+    eat();
+
+    return std::make_unique<ArrayExprNode>(std::move(values));
   }
 
   default:

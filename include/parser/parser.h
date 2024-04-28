@@ -1,5 +1,6 @@
 #ifndef PARSER_H
 #define PARSER_H
+#define PARSER_VERSION "v0.0.9"
 
 #include "lexer/lexer.h"
 #include "lexer/token.h"

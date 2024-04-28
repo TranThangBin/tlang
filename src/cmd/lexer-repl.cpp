@@ -10,7 +10,7 @@ int main(int argc, char *argv[]) {
   string src;
   Lexer lexer = Lexer("");
 
-  cout << "Lexer explorer v0.0.1" << endl;
+  cout << "Lexer explorer " << LEXER_VERSION << endl;
 
   while (true) {
     cout << "> ";

@@ -1,5 +1,6 @@
 #ifndef LEXER_H
 #define LEXER_H
+#define LEXER_VERSION "v0.0.9"
 
 #include "token.h"
 #include <map>

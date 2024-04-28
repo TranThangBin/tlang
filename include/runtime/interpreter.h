@@ -1,5 +1,6 @@
 #ifndef INTERPRETER_H
 #define INTERPRETER_H
+#define INTERPRETER_VERSION "v0.0.9"
 
 #include "parser/ast.h"
 #include "parser/parser.h"
@@ -56,6 +57,10 @@ private:
   std::shared_ptr<RuntimeValue>
   evaluateObjectLiteral(std::unique_ptr<ObjectLiteralNode>,
                         std::unique_ptr<Environment> &);
+
+  std::shared_ptr<RuntimeValue>
+  evaluateArrayExpr(std::unique_ptr<ArrayExprNode>,
+                    std::unique_ptr<Environment> &);
 
   std::shared_ptr<RuntimeValue>
   evaluateIndexingExpr(std::unique_ptr<IndexingExpressionNode>,

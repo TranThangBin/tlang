@@ -19,7 +19,7 @@ int main(int argc, char *argv[]) {
   Interpreter interpreter =
       Interpreter(std::move(parser), std::move(environment));
 
-  cout << "Interpreter explorer v0.0.1" << endl;
+  cout << "Interpreter explorer " << INTERPRETER_VERSION << endl;
 
   while (true) {
     cout << "> ";

@@ -102,6 +102,14 @@ Interpreter::evaluate(std::unique_ptr<Stmt> astNode,
     return evaluateObjectLiteral(std::move(obj), env);
   }
 
+  case NodeType::ArrayExpr: {
+
+    auto arr = std::unique_ptr<ArrayExprNode>(
+        static_cast<ArrayExprNode *>(astNode.release()));
+
+    return evaluateArrayExpr(std::move(arr), env);
+  }
+
   case NodeType::IndexingExpression: {
 
     auto indExpr = std::unique_ptr<IndexingExpressionNode>(

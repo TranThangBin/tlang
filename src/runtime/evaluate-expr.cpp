@@ -2,61 +2,61 @@
 #include "runtime/environment.h"
 #include "runtime/interpreter.h"
 #include "runtime/runtime-value.h"
+#include <bits/types/error_t.h>
 #include <map>
 #include <memory>
 #include <stdexcept>
 #include <string>
 #include <utility>
+#include <vector>
 
 std::shared_ptr<RuntimeValue>
-Interpreter::evaluateIdentifier(std::unique_ptr<IdentifierNode> identifierNode,
-                                std::unique_ptr<Environment> &environment) {
-  return environment->LookUpVar(identifierNode->GetSymbol());
+Interpreter::evaluateIdentifier(std::unique_ptr<IdentifierNode> ident,
+                                std::unique_ptr<Environment> &env) {
+  return env->LookUpVar(ident->GetSymbol());
 }
 
 std::shared_ptr<RuntimeValue> Interpreter::evaluateAssignmentExpr(
-    std::unique_ptr<AssignmentExprNode> assignmentExprNode,
-    std::unique_ptr<Environment> &environment) {
+    std::unique_ptr<AssignmentExprNode> assignExpr,
+    std::unique_ptr<Environment> &env) {
 
-  NodeType assigneeKind = assignmentExprNode->GetAssignee()->Kind();
+  NodeType assigneeKind = assignExpr->GetAssignee()->Kind();
+
+  std::shared_ptr<RuntimeValue> assignValue =
+      evaluate(std::move(assignExpr->GetValue()), env);
 
   switch (assigneeKind) {
+
   case NodeType::Identifier: {
-    std::string varname = std::unique_ptr<IdentifierNode>(
-                              static_cast<IdentifierNode *>(
-                                  assignmentExprNode->GetAssignee().release()))
-                              ->GetSymbol();
 
-    std::shared_ptr<RuntimeValue> value =
-        evaluate(std::move(assignmentExprNode->GetValue()), environment);
+    std::string varname =
+        std::unique_ptr<IdentifierNode>(
+            static_cast<IdentifierNode *>(assignExpr->GetAssignee().release()))
+            ->GetSymbol();
 
-    return environment->AssignVariable(varname, std::move(value));
+    return env->AssignVariable(varname, assignValue);
   }
 
   case NodeType::IndexingExpression: {
-    std::unique_ptr<IndexingExpressionNode> indexingExpression =
-        std::unique_ptr<IndexingExpressionNode>(
-            static_cast<IndexingExpressionNode *>(
-                assignmentExprNode->GetAssignee().release()));
 
-    std::shared_ptr<RuntimeValue> accessor =
-        evaluate(std::move(indexingExpression->GetAccessor()), environment);
+    auto indexingExpression = std::unique_ptr<IndexingExpressionNode>(
+        static_cast<IndexingExpressionNode *>(
+            assignExpr->GetAssignee().release()));
 
-    DataType accessorType = accessor->DataTypeID();
+    std::shared_ptr<RuntimeValue> accessorValue =
+        evaluate(std::move(indexingExpression->GetAccessor()), env);
+
+    std::shared_ptr<RuntimeValue> indexValue =
+        evaluate(std::move(indexingExpression->GetIndex()), env);
+
+    DataType accessorType = accessorValue->DataTypeID();
 
     switch (accessorType) {
-    case DataType::Object: {
-      std::shared_ptr<RuntimeValue> keyValue =
-          evaluate(std::move(indexingExpression->GetIndex()), environment);
 
-      if (keyValue->DataTypeID() != DataType::String) {
-        throw std::runtime_error("Invalid index for object");
-      }
-
-      return std::static_pointer_cast<ObjectValue>(accessor)->SetProperty(
-          std::static_pointer_cast<StringValue>(keyValue)->GetValue(),
-          evaluate(std::move(assignmentExprNode->GetValue()), environment));
-    }
+    case DataType::Object:
+    case DataType::Array:
+      return std::static_pointer_cast<IndexAbleValue>(accessorValue)
+          ->SetIndexedValue(indexValue, assignValue);
 
     default:
       throw std::runtime_error(DataTypeToString(accessorType) +
@@ -71,34 +71,68 @@ std::shared_ptr<RuntimeValue> Interpreter::evaluateAssignmentExpr(
 }
 
 std::shared_ptr<RuntimeValue> Interpreter::evaluateBinaryAssignmentExpr(
-    std::unique_ptr<BinaryAssignmentExprNode> binaryAssignmentExprNode,
-    std::unique_ptr<Environment> &environment) {
+    std::unique_ptr<BinaryAssignmentExprNode> binAssignExpr,
+    std::unique_ptr<Environment> &env) {
 
-  std::string varname;
+  std::unique_ptr<Expr> assignee = std::move(binAssignExpr->GetAssignee());
 
-  NodeType assigneeKind = binaryAssignmentExprNode->GetAssignee()->Kind();
-
-  switch (assigneeKind) {
-  case NodeType::Identifier:
-    varname = std::unique_ptr<IdentifierNode>(
-                  static_cast<IdentifierNode *>(
-                      binaryAssignmentExprNode->GetAssignee().release()))
-                  ->GetSymbol();
-    break;
-  default:
-    throw std::runtime_error("Unexpected node " +
-                             NodeTypeToString(assigneeKind));
-  }
+  BinaryOperator op = binAssignExpr->GetOperator();
 
   std::shared_ptr<RuntimeValue> value =
-      evaluate(std::move(binaryAssignmentExprNode->GetValue()), environment);
+      evaluate(std::move(binAssignExpr->GetValue()), env);
 
-  BinaryOperator op = binaryAssignmentExprNode->GetOperator();
+  switch (assignee->Kind()) {
 
-  std::shared_ptr<RuntimeValue> varVal = environment->LookUpVar(varname);
+  case NodeType::Identifier: {
 
-  return environment->AssignVariable(
-      varname, evaluateBinaryOperation(varVal, value, op));
+    auto ident = std::unique_ptr<IdentifierNode>(
+        static_cast<IdentifierNode *>(assignee.release()));
+
+    std::string varname = ident->GetSymbol();
+
+    std::shared_ptr<RuntimeValue> varVal = evaluate(std::move(ident), env);
+
+    return env->AssignVariable(varname,
+                               evaluateBinaryOperation(varVal, value, op));
+  }
+
+  case NodeType::IndexingExpression: {
+
+    auto indexingExpr = std::unique_ptr<IndexingExpressionNode>(
+        static_cast<IndexingExpressionNode *>(assignee.release()));
+
+    std::shared_ptr<RuntimeValue> accessorValue =
+        evaluate(std::move(indexingExpr->GetAccessor()), env);
+
+    std::shared_ptr<RuntimeValue> indexValue =
+        evaluate(std::move(indexingExpr->GetIndex()), env);
+
+    DataType accessorType = accessorValue->DataTypeID();
+
+    switch (accessorType) {
+
+    case DataType::Object:
+    case DataType::Array: {
+
+      auto indexAbleValue =
+          std::static_pointer_cast<IndexAbleValue>(accessorValue);
+
+      return indexAbleValue->SetIndexedValue(
+          indexValue,
+          evaluateBinaryOperation(indexAbleValue->GetIndexedValue(indexValue),
+                                  value, op));
+    }
+
+    default:
+      throw std::runtime_error(DataTypeToString(accessorType) +
+                               " is not indexable");
+    }
+  }
+
+  default:
+    throw std::runtime_error("Unexpected node " +
+                             NodeTypeToString(assignee->Kind()));
+  }
 }
 
 std::shared_ptr<RuntimeValue>
@@ -133,36 +167,52 @@ std::shared_ptr<RuntimeValue> Interpreter::evaluateObjectLiteral(
   std::map<std::string, std::unique_ptr<Expr>> properties =
       std::move(objectLiteralNode->GetProperties());
 
-  auto valueProperties = std::map<std::string, std::shared_ptr<RuntimeValue>>();
+  std::map<std::string, std::shared_ptr<RuntimeValue>> objectProperties;
 
   for (auto it = properties.begin(); it != properties.end(); it++) {
-    valueProperties.insert(
+    objectProperties.insert(
         {it->first, evaluate(std::move(it->second), environment)});
   }
 
-  return std::make_shared<ObjectValue>(std::move(valueProperties));
+  return std::make_shared<ObjectValue>(std::move(objectProperties));
+}
+
+std::shared_ptr<RuntimeValue>
+Interpreter::evaluateArrayExpr(std::unique_ptr<ArrayExprNode> arr,
+                               std::unique_ptr<Environment> &env) {
+
+  std::vector<std::unique_ptr<Expr>> values = std::move(arr->GetValues());
+
+  std::vector<std::shared_ptr<RuntimeValue>> arrayValues;
+
+  int valueCount = values.size();
+
+  for (int i = 0; i < valueCount; i++) {
+    arrayValues.push_back(evaluate(std::move(values[i]), env));
+  }
+
+  return std::make_shared<ArrayValue>(std::move(arrayValues));
 }
 
 std::shared_ptr<RuntimeValue> Interpreter::evaluateIndexingExpr(
     std::unique_ptr<IndexingExpressionNode> indexingExprNode,
     std::unique_ptr<Environment> &environment) {
-  std::shared_ptr<RuntimeValue> accessor =
+
+  std::shared_ptr<RuntimeValue> accessorValue =
       evaluate(std::move(indexingExprNode->GetAccessor()), environment);
 
-  DataType accessorType = accessor->DataTypeID();
+  std::shared_ptr<RuntimeValue> indexValue =
+      evaluate(std::move(indexingExprNode->GetIndex()), environment);
+
+  DataType accessorType = accessorValue->DataTypeID();
 
   switch (accessorType) {
-  case DataType::Object: {
-    std::shared_ptr<RuntimeValue> keyValue =
-        evaluate(std::move(indexingExprNode->GetIndex()), environment);
 
-    if (keyValue->DataTypeID() != DataType::String) {
-      throw std::runtime_error("Invalid index for object");
-    }
+  case DataType::Object:
+  case DataType::Array:
 
-    return std::static_pointer_cast<ObjectValue>(accessor)->GetProperty(
-        std::static_pointer_cast<StringValue>(keyValue)->GetValue());
-  }
+    return std::static_pointer_cast<IndexAbleValue>(accessorValue)
+        ->GetIndexedValue(indexValue);
 
   default:
     throw std::runtime_error(DataTypeToString(accessorType) +
