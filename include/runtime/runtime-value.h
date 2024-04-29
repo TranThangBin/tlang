@@ -92,15 +92,21 @@ public:
   std::string str() override {
     std::stringstream ss;
 
-    int valueCount = values.size();
-
     ss << "[ ";
 
-    for (int i = 0; i < valueCount; i++) {
-      ss << values[i]->str() << ", ";
+    int valueCount = values.size();
+
+    if (valueCount > 0) {
+      int i = 0;
+
+      ss << values[i]->str();
+
+      for (i++; i < valueCount; i++) {
+        ss << ", " << values[i]->str();
+      }
     }
 
-    ss << "]";
+    ss << " ]";
 
     return ss.str();
   }
@@ -155,11 +161,18 @@ public:
 
     ss << "{ ";
 
-    for (auto it = properties.begin(); it != properties.end(); it++) {
-      ss << '"' << it->first << "\": " << it->second->str() << ", ";
+    auto it = properties.begin();
+
+    if (it != properties.end()) {
+
+      ss << '"' << it->first << "\": " << it->second->str();
+
+      for (it++; it != properties.end(); it++) {
+        ss << ", " << '"' << it->first << "\": " << it->second->str();
+      }
     }
 
-    ss << "}";
+    ss << " }";
 
     return ss.str();
   }

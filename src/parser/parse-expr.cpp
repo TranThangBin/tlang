@@ -9,7 +9,7 @@
 #include <vector>
 
 std::unique_ptr<Expr> Parser::parseAssignmentExpr() {
-  std::unique_ptr<Expr> assignee = parseIndexingExpr();
+  std::unique_ptr<Expr> assignee = parseAdditiveExpr();
 
   while (at().GetTokenType() == TokenType::Equal ||
          at().GetTokenType() == TokenType::Assignment) {
@@ -31,20 +31,6 @@ std::unique_ptr<Expr> Parser::parseAssignmentExpr() {
   return assignee;
 }
 
-std::unique_ptr<Expr> Parser::parseIndexingExpr() {
-  std::unique_ptr<Expr> accessor = parseAdditiveExpr();
-
-  while (at().GetTokenType() == TokenType::OpenSquare) {
-
-    eat();
-    accessor = std::make_unique<IndexingExpressionNode>(std::move(accessor),
-                                                        parseAdditiveExpr());
-    expect(TokenType::ClosingSquare);
-  }
-
-  return accessor;
-}
-
 std::unique_ptr<Expr> Parser::parseAdditiveExpr() {
   std::unique_ptr<Expr> left = parseMultiplicativeExpr();
 
@@ -63,7 +49,7 @@ std::unique_ptr<Expr> Parser::parseAdditiveExpr() {
 }
 
 std::unique_ptr<Expr> Parser::parseMultiplicativeExpr() {
-  std::unique_ptr<Expr> left = parsePrimaryExpr();
+  std::unique_ptr<Expr> left = parseIndexingExpr();
 
   while (at().GetTokenType() == TokenType::Asterisk ||
          at().GetTokenType() == TokenType::FowardSlash ||
@@ -71,13 +57,27 @@ std::unique_ptr<Expr> Parser::parseMultiplicativeExpr() {
 
     BinaryOperator op = TokenTypeToBinaryOperator(eat().GetTokenType());
 
-    std::unique_ptr<Expr> right = parsePrimaryExpr();
+    std::unique_ptr<Expr> right = parseIndexingExpr();
 
     left =
         std::make_unique<BinaryExprNode>(std::move(left), std::move(right), op);
   }
 
   return left;
+}
+
+std::unique_ptr<Expr> Parser::parseIndexingExpr() {
+  std::unique_ptr<Expr> accessor = parsePrimaryExpr();
+
+  while (at().GetTokenType() == TokenType::OpenSquare) {
+
+    eat();
+    accessor = std::make_unique<IndexingExpressionNode>(std::move(accessor),
+                                                        parseExpr());
+    expect(TokenType::ClosingSquare);
+  }
+
+  return accessor;
 }
 
 std::unique_ptr<Expr> Parser::parsePrimaryExpr() {

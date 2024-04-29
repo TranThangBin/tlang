@@ -3,6 +3,9 @@
 
 std::string DataTypeToString(DataType dt) {
   switch (dt) {
+  case DataType::Array:
+    return "array";
+
   case DataType::String:
     return "string";
 
