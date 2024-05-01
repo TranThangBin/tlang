@@ -19,8 +19,8 @@ private:
   Token expect(TokenType);
 
   std::unique_ptr<Stmt> parseStmt();
-  std::unique_ptr<Stmt> parseVariableDeclaration();
-  std::unique_ptr<Stmt> parseBlockStmt();
+  std::unique_ptr<VariableDeclarationNode> parseVariableDeclaration();
+  std::unique_ptr<BlockStmtNode> parseBlockStmt();
   std::unique_ptr<Expr> parseExpr();
   std::unique_ptr<Expr> parseIndexingExpr();
   std::unique_ptr<Expr> parseAssignmentExpr();

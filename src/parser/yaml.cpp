@@ -176,3 +176,21 @@ std::string IndexingExpressionNode::Yaml(int indentLevel) {
 
   return ss.str();
 }
+
+std::string FunctionExprNode::Yaml(int indentLevel) {
+  std::stringstream ss;
+
+  ss << getIndent(indentLevel) << "FunctionExprNode" << std::endl
+     << getIndent(indentLevel + 1) << "Params:" << std::endl;
+
+  int paramCount = params.size();
+
+  for (int i = 0; i < paramCount; i++) {
+    ss << params[i]->Yaml(indentLevel + 2) << std::endl;
+  }
+
+  ss << getIndent(indentLevel + 1) << "Block:" << std::endl
+     << block->Yaml(indentLevel + 2);
+
+  return ss.str();
+}

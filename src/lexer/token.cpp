@@ -3,6 +3,9 @@
 
 std::string TokenTypeToString(TokenType tokenType) {
   switch (tokenType) {
+  case TokenType::Fun:
+    return "fun";
+
   case TokenType::Colon:
     return ":";
 

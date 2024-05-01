@@ -6,7 +6,7 @@
 #include <string>
 #include <utility>
 
-std::unique_ptr<Stmt> Parser::parseVariableDeclaration() {
+std::unique_ptr<VariableDeclarationNode> Parser::parseVariableDeclaration() {
   eat();
   bool mut = false;
 
@@ -28,7 +28,7 @@ std::unique_ptr<Stmt> Parser::parseVariableDeclaration() {
   return std::make_unique<VariableDeclarationNode>(mut, ident, parseExpr());
 }
 
-std::unique_ptr<Stmt> Parser::parseBlockStmt() {
+std::unique_ptr<BlockStmtNode> Parser::parseBlockStmt() {
   eat();
 
   std::vector<std::unique_ptr<Stmt>> stmts;

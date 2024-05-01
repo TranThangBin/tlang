@@ -31,6 +31,7 @@ enum class TokenType {
   Var,
   Mut,
   String,
+  Fun,
 
   Invalid,
 };

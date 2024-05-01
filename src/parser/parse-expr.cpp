@@ -152,6 +152,31 @@ std::unique_ptr<Expr> Parser::parsePrimaryExpr() {
     return std::make_unique<ArrayExprNode>(std::move(values));
   }
 
+  case TokenType::Fun: {
+    eat();
+
+    expect(TokenType::OpenParen);
+
+    std::vector<std::unique_ptr<IdentifierNode>> params;
+
+    while (at().GetTokenType() != TokenType::ClosingParen) {
+
+      params.push_back(std::make_unique<IdentifierNode>(
+          expect(TokenType::Identifier).GetValue()));
+
+      if (at().GetTokenType() == TokenType::Comma) {
+        eat();
+      }
+    }
+
+    eat();
+
+    std::unique_ptr<BlockStmtNode> block = parseBlockStmt();
+
+    return std::make_unique<FunctionExprNode>(std::move(params),
+                                              std::move(block));
+  }
+
   default:
     throw std::runtime_error("Unexpected token " +
                              TokenTypeToString(tk.GetTokenType()));

@@ -32,6 +32,7 @@ Lexer::Lexer(std::string src) : src(src) {
   reserve = {
       {"var", Token("var", TokenType::Var)},
       {"mut", Token("mut", TokenType::Mut)},
+      {"fun", Token("fun", TokenType::Fun)},
   };
 }
 
