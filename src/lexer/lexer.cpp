@@ -33,6 +33,7 @@ Lexer::Lexer(std::string src) : src(src) {
       {"var", Token("var", TokenType::Var)},
       {"mut", Token("mut", TokenType::Mut)},
       {"fun", Token("fun", TokenType::Fun)},
+      {"return", Token("return", TokenType::Return)},
   };
 }
 

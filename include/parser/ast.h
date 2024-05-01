@@ -12,6 +12,8 @@ enum class NodeType {
   Program,
   VariableDeclaration,
   BlockStmt,
+  FunctionDeclaration,
+  ReturnStmt,
 
   AssignmentExpr,
   BinaryAssignmentExpr,
@@ -23,7 +25,6 @@ enum class NodeType {
   ArrayExpr,
   StringLiteral,
   IndexingExpression,
-  FunctionExpr,
   CallExpr,
 };
 
@@ -98,17 +99,51 @@ public:
 
 class BlockStmtNode : public Stmt {
 private:
-  std::vector<std::unique_ptr<Stmt>> stmts;
+  std::vector<std::unique_ptr<Stmt>> body;
 
 public:
   std::string Yaml(int) override;
 
   NodeType Kind() override { return NodeType::BlockStmt; }
 
-  std::vector<std::unique_ptr<Stmt>> &GetStmts() { return stmts; }
+  std::vector<std::unique_ptr<Stmt>> &GetStmts() { return body; }
 
   BlockStmtNode(std::vector<std::unique_ptr<Stmt>> stmts)
-      : stmts(std::move(stmts)) {}
+      : body(std::move(stmts)) {}
+};
+
+class FunctionDeclarationNode : public Stmt {
+private:
+  std::string name;
+  std::vector<std::string> params;
+  std::vector<std::unique_ptr<Stmt>> body;
+
+public:
+  std::string Yaml(int) override;
+
+  NodeType Kind() override { return NodeType::FunctionDeclaration; }
+
+  std::string GetName() { return name; }
+  std::vector<std::string> &GetParams() { return params; }
+  std::vector<std::unique_ptr<Stmt>> &GetStmts() { return body; }
+
+  FunctionDeclarationNode(std::string name, std::vector<std::string> params,
+                          std::vector<std::unique_ptr<Stmt>> stmts)
+      : name(name), params(params), body(std::move(stmts)) {}
+};
+
+class ReturnStmtNode : public Stmt {
+private:
+  std::unique_ptr<Expr> value;
+
+public:
+  std::string Yaml(int) override;
+
+  NodeType Kind() override { return NodeType::ReturnStmt; }
+
+  std::unique_ptr<Expr> &GetValue() { return value; }
+
+  ReturnStmtNode(std::unique_ptr<Expr> value) : value(std::move(value)) {}
 };
 
 class AssignmentExprNode : public Expr {

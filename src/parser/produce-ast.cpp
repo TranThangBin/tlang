@@ -28,6 +28,9 @@ std::unique_ptr<Stmt> Parser::parseStmt() {
   case TokenType::OpenCurly:
     return parseBlockStmt();
 
+  case TokenType::Fun:
+    return parseFunctionDeclaration();
+
   default:
     node = parseExpr();
     break;

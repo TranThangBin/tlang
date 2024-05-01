@@ -21,6 +21,7 @@ private:
   std::unique_ptr<Stmt> parseStmt();
   std::unique_ptr<VariableDeclarationNode> parseVariableDeclaration();
   std::unique_ptr<BlockStmtNode> parseBlockStmt();
+  std::unique_ptr<FunctionDeclarationNode> parseFunctionDeclaration();
   std::unique_ptr<Expr> parseExpr();
   std::unique_ptr<Expr> parseIndexingOrCallExpr();
   std::unique_ptr<Expr> parseAssignmentExpr();

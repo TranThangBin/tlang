@@ -32,6 +32,7 @@ enum class TokenType {
   Mut,
   String,
   Fun,
+  Return,
 
   Invalid,
 };

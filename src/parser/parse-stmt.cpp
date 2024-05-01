@@ -5,15 +5,14 @@
 #include <stdexcept>
 #include <string>
 #include <utility>
+#include <vector>
 
 std::unique_ptr<VariableDeclarationNode> Parser::parseVariableDeclaration() {
   eat();
-  bool mut = false;
 
-  if (at().GetTokenType() == TokenType::Mut) {
-    eat();
-    mut = true;
-  }
+  bool mut = at().GetTokenType() == TokenType::Mut;
+
+  eat();
 
   std::string ident = expect(TokenType::Identifier).GetValue();
 
@@ -31,13 +30,54 @@ std::unique_ptr<VariableDeclarationNode> Parser::parseVariableDeclaration() {
 std::unique_ptr<BlockStmtNode> Parser::parseBlockStmt() {
   eat();
 
-  std::vector<std::unique_ptr<Stmt>> stmts;
+  std::vector<std::unique_ptr<Stmt>> body;
 
   while (at().GetTokenType() != TokenType::ClosingCurly) {
-    stmts.push_back(parseStmt());
+    body.push_back(parseStmt());
   }
 
   eat();
 
-  return std::make_unique<BlockStmtNode>(std::move(stmts));
+  return std::make_unique<BlockStmtNode>(std::move(body));
+}
+
+std::unique_ptr<FunctionDeclarationNode> Parser::parseFunctionDeclaration() {
+  eat();
+
+  std::string name = expect(TokenType::Identifier).GetValue();
+
+  expect(TokenType::OpenParen);
+
+  std::vector<std::string> params;
+
+  while (at().GetTokenType() != TokenType::ClosingParen) {
+    params.push_back(expect(TokenType::Identifier).GetValue());
+
+    if (at().GetTokenType() == TokenType::Comma) {
+      eat();
+    }
+  }
+
+  eat();
+
+  expect(TokenType::OpenCurly);
+
+  std::vector<std::unique_ptr<Stmt>> body;
+
+  while (at().GetTokenType() != TokenType::ClosingCurly) {
+
+    if (at().GetTokenType() == TokenType::Return) {
+      eat();
+      body.push_back(std::make_unique<ReturnStmtNode>(parseExpr()));
+      expect(TokenType::SemiColon);
+      continue;
+    }
+
+    body.push_back(parseStmt());
+  }
+
+  eat();
+
+  return std::make_unique<FunctionDeclarationNode>(name, params,
+                                                   std::move(body));
 }
