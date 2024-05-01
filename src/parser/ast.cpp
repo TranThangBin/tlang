@@ -66,6 +66,12 @@ UnaryOperator TokenTypeToUnaryOperator(TokenType tokenType) {
 
 std::string NodeTypeToString(NodeType nodeType) {
   switch (nodeType) {
+  case NodeType::FunctionExpr:
+    return "function expression";
+
+  case NodeType::CallExpr:
+    return "call expression";
+
   case NodeType::ArrayExpr:
     return "array expression";
 

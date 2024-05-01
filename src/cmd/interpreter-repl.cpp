@@ -36,7 +36,8 @@ int main(int argc, char *argv[]) {
       continue;
     }
 
-    cout << value->str() << endl;
+    value->out();
+    cout << endl;
   }
 
   return 0;

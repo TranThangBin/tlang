@@ -1,10 +1,9 @@
 #ifndef VALUE_H
 #define VALUE_H
 
-#include "parser/ast.h"
+#include <iostream>
 #include <map>
 #include <memory>
-#include <sstream>
 #include <stdexcept>
 #include <string>
 #include <utility>
@@ -29,6 +28,7 @@ class RuntimeValue {
 public:
   virtual DataType DataTypeID() = 0;
   virtual std::string str() = 0;
+  virtual void out() = 0;
 };
 
 class IndexAbleValue : public RuntimeValue {
@@ -44,6 +44,7 @@ class NullValue : public RuntimeValue {
 public:
   DataType DataTypeID() override { return DataType::Null; }
   std::string str() override { return "null"; }
+  void out() override { std::cout << str(); }
 };
 
 class BooleanValue : public RuntimeValue {
@@ -57,6 +58,7 @@ public:
 
   bool GetValue() { return value; }
   std::string str() override { return value ? "true" : "false"; }
+  void out() override { std::cout << str(); }
 };
 
 class NumberValue : public RuntimeValue {
@@ -70,6 +72,7 @@ public:
 
   double GetValue() { return value; }
   std::string str() override { return std::to_string(value); }
+  void out() override { std::cout << value; }
 };
 
 class StringValue : public RuntimeValue {
@@ -83,6 +86,7 @@ public:
 
   std::string GetValue() { return value; }
   std::string str() override { return "\"" + value + "\""; }
+  void out() override { std::cout << value; }
 };
 
 class ArrayValue : public IndexAbleValue {
@@ -96,25 +100,26 @@ public:
       : values(values) {}
 
   std::string str() override {
-    std::stringstream ss;
+    return "Array[" + std::to_string(values.size()) + "]";
+  }
 
-    ss << "[ ";
+  void out() override {
+    std::cout << "[ ";
 
     int valueCount = values.size();
 
     if (valueCount > 0) {
       int i = 0;
 
-      ss << values[i]->str();
+      values[i]->out();
 
       for (i++; i < valueCount; i++) {
-        ss << ", " << values[i]->str();
+        std::cout << ", ";
+        values[i]->out();
       }
     }
 
-    ss << " ]";
-
-    return ss.str();
+    std::cout << " ]";
   }
 
   std::shared_ptr<RuntimeValue>
@@ -162,25 +167,25 @@ public:
   ObjectValue(std::map<std::string, std::shared_ptr<RuntimeValue>> properties)
       : properties(properties) {}
 
-  std::string str() override {
-    std::stringstream ss;
+  std::string str() override { return "Object"; }
 
-    ss << "{ ";
+  void out() override {
+    std::cout << "{ ";
 
     auto it = properties.begin();
 
     if (it != properties.end()) {
 
-      ss << '"' << it->first << "\": " << it->second->str();
+      std::cout << '"' << it->first << "\": ";
+      it->second->out();
 
       for (it++; it != properties.end(); it++) {
-        ss << ", " << '"' << it->first << "\": " << it->second->str();
+        std::cout << ", " << '"' << it->first << "\": ";
+        it->second->out();
       }
     }
 
-    ss << " }";
-
-    return ss.str();
+    std::cout << " }";
   }
 
   std::shared_ptr<RuntimeValue>
@@ -215,24 +220,6 @@ public:
   }
 };
 
-class FunctionValue : public RuntimeValue {
-private:
-  std::vector<std::string> params;
-  std::unique_ptr<BlockStmtNode> block;
-
-public:
-  DataType DataTypeID() override { return DataType::Function; }
-
-  FunctionValue(std::vector<std::string> params,
-                std::unique_ptr<BlockStmtNode> block)
-      : params(params), block(std::move(block)) {}
-
-  std::vector<std::string> &GetParams() { return params; }
-  std::unique_ptr<BlockStmtNode> &GetBlock() { return block; }
-
-  std::string str() override { return "FunctionValue"; }
-};
-
 class NativeFunctionValue : public RuntimeValue {
 private:
   std::shared_ptr<RuntimeValue> (*call)(
@@ -254,6 +241,7 @@ public:
       : call(call) {}
 
   std::string str() override { return "NativeFunctionValue"; }
+  void out() override { std::cout << "NativeFunctionValue"; }
 };
 
 #endif // !VALUE_H

@@ -15,7 +15,7 @@ std::unique_ptr<Expr> Parser::parseAssignmentExpr() {
          at().GetTokenType() == TokenType::Assignment) {
 
     Token token = eat();
-    std::unique_ptr<Expr> value = parseAssignmentExpr();
+    std::unique_ptr<Expr> value = parseExpr();
 
     if (token.GetTokenType() == TokenType::Equal) {
       assignee = std::make_unique<AssignmentExprNode>(std::move(assignee),
@@ -170,29 +170,6 @@ std::unique_ptr<Expr> Parser::parsePrimaryExpr() {
     eat();
 
     return std::make_unique<ArrayExprNode>(std::move(values));
-  }
-
-  case TokenType::Fun: {
-    eat();
-
-    expect(TokenType::OpenParen);
-
-    std::vector<std::string> params;
-
-    while (at().GetTokenType() != TokenType::ClosingParen) {
-
-      params.push_back(expect(TokenType::Identifier).GetValue());
-
-      if (at().GetTokenType() == TokenType::Comma) {
-        eat();
-      }
-    }
-
-    eat();
-
-    std::unique_ptr<BlockStmtNode> block = parseBlockStmt();
-
-    return std::make_unique<FunctionExprNode>(params, std::move(block));
   }
 
   default:

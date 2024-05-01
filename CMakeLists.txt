@@ -36,3 +36,6 @@ target_link_libraries(parser-repl parser lexer)
 
 add_executable(interpreter-repl ./src/cmd/interpreter-repl.cpp)
 target_link_libraries(interpreter-repl runtime parser lexer)
+
+add_executable(tlang ./src/cmd/main.cpp)
+target_link_libraries(tlang runtime parser lexer)

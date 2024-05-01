@@ -284,24 +284,6 @@ public:
       : accessor(std::move(accessor)), index(std::move(index)) {}
 };
 
-class FunctionExprNode : public Expr {
-private:
-  std::vector<std::string> params;
-  std::unique_ptr<BlockStmtNode> block;
-
-public:
-  std::string Yaml(int) override;
-
-  NodeType Kind() override { return NodeType::FunctionExpr; }
-
-  std::vector<std::string> &GetParams() { return params; }
-  std::unique_ptr<BlockStmtNode> &GetBlock() { return block; }
-
-  FunctionExprNode(std::vector<std::string> params,
-                   std::unique_ptr<BlockStmtNode> block)
-      : params(params), block(std::move(block)) {}
-};
-
 class CallExpr : public Expr {
 private:
   std::vector<std::unique_ptr<Expr>> args;

@@ -31,7 +31,7 @@ public:
                           int argCount = args.size();
 
                           for (int i = 0; i < argCount; i++) {
-                            std::cout << args[i]->str();
+                            args[i]->out();
                           }
 
                           return std::make_shared<NullValue>();
@@ -46,7 +46,7 @@ public:
                           int argCount = args.size();
 
                           for (int i = 0; i < argCount; i++) {
-                            std::cout << args[i]->str();
+                            args[i]->out();
                           }
                           std::cout << std::endl;
 
