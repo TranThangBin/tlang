@@ -12,7 +12,9 @@ std::unique_ptr<VariableDeclarationNode> Parser::parseVariableDeclaration() {
 
   bool mut = at().GetTokenType() == TokenType::Mut;
 
-  eat();
+  if (mut) {
+    eat();
+  }
 
   std::string ident = expect(TokenType::Identifier).GetValue();
 
