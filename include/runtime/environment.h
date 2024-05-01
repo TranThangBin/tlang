@@ -1,6 +1,7 @@
 #ifndef ENVIRONMENT_H
 #define ENVIRONMENT_H
 
+#include "parser/ast.h"
 #include "runtime-value.h"
 #include <iostream>
 #include <map>
@@ -69,6 +70,26 @@ public:
                                                std::shared_ptr<RuntimeValue>);
 
   std::shared_ptr<RuntimeValue> LookUpVar(std::string);
+};
+
+class FunctionValue : public RuntimeValue {
+private:
+  std::string name;
+  std::vector<std::string> params;
+  std::vector<std::unique_ptr<Stmt>> body;
+  std::unique_ptr<Environment> &declaredEnv;
+
+public:
+  DataType DataTypeID() override { return DataType::Function; }
+
+  FunctionValue(std::string name, std::vector<std::string> params,
+                std::vector<std::unique_ptr<Stmt>> body,
+                std::unique_ptr<Environment> &declaredEnv)
+      : name(name), params(params), body(std::move(body)),
+        declaredEnv(declaredEnv) {}
+
+  std::string str() override { return "[FunctionValue: " + name + "]"; }
+  void out() override { std::cout << str(); }
 };
 
 #endif // !ENVIRONMENT_H

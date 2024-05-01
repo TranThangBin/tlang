@@ -106,7 +106,7 @@ public:
 
   NodeType Kind() override { return NodeType::BlockStmt; }
 
-  std::vector<std::unique_ptr<Stmt>> &GetStmts() { return body; }
+  std::vector<std::unique_ptr<Stmt>> &GetBody() { return body; }
 
   BlockStmtNode(std::vector<std::unique_ptr<Stmt>> stmts)
       : body(std::move(stmts)) {}
@@ -125,7 +125,7 @@ public:
 
   std::string GetName() { return name; }
   std::vector<std::string> &GetParams() { return params; }
-  std::vector<std::unique_ptr<Stmt>> &GetStmts() { return body; }
+  std::vector<std::unique_ptr<Stmt>> &GetBody() { return body; }
 
   FunctionDeclarationNode(std::string name, std::vector<std::string> params,
                           std::vector<std::unique_ptr<Stmt>> stmts)

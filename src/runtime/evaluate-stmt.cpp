@@ -44,7 +44,7 @@ Interpreter::evaluateBlockStmt(std::unique_ptr<BlockStmtNode> block,
 
   std::shared_ptr<RuntimeValue> lastEvaluated = std::make_shared<NullValue>();
 
-  std::vector<std::unique_ptr<Stmt>> stmts = std::move(block->GetStmts());
+  std::vector<std::unique_ptr<Stmt>> stmts = std::move(block->GetBody());
   int stmtCount = stmts.size();
 
   for (int i = 0; i < stmtCount; i++) {
@@ -54,4 +54,15 @@ Interpreter::evaluateBlockStmt(std::unique_ptr<BlockStmtNode> block,
   env = std::move(blockEnvironment->GetParent());
 
   return lastEvaluated;
+}
+
+std::shared_ptr<RuntimeValue> Interpreter::evaluateFunctionDeclaration(
+    std::unique_ptr<FunctionDeclarationNode> funcDec,
+    std::unique_ptr<Environment> &env) {
+
+  return env->DeclareVariable(
+      funcDec->GetName(),
+      std::make_shared<FunctionValue>(funcDec->GetName(), funcDec->GetParams(),
+                                      std::move(funcDec->GetBody()), env),
+      false);
 }

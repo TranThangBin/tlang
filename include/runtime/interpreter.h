@@ -69,6 +69,10 @@ private:
   std::shared_ptr<RuntimeValue>
   evaluateCallExpr(std::unique_ptr<CallExpr>, std::unique_ptr<Environment> &);
 
+  std::shared_ptr<RuntimeValue>
+  evaluateFunctionDeclaration(std::unique_ptr<FunctionDeclarationNode>,
+                              std::unique_ptr<Environment> &env);
+
 public:
   Interpreter(std::unique_ptr<Parser> parser,
               std::unique_ptr<Environment> environment)

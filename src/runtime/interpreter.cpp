@@ -125,6 +125,13 @@ Interpreter::evaluate(std::unique_ptr<Stmt> astNode,
     return evaluateCallExpr(std::move(callExpr), env);
   }
 
+  case NodeType::FunctionDeclaration: {
+    auto funcDec = std::unique_ptr<FunctionDeclarationNode>(
+        static_cast<FunctionDeclarationNode *>(astNode.release()));
+
+    return evaluateFunctionDeclaration(std::move(funcDec), env);
+  }
+
   default:
     throw std::runtime_error(
         NodeTypeToString(astNode->Kind()) +
