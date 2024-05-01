@@ -270,6 +270,15 @@ Interpreter::evaluateCallExpr(std::unique_ptr<CallExpr> callExpr,
     std::shared_ptr<RuntimeValue> returnValue = std::make_unique<NullValue>();
 
     for (int i = 0; i < stmtCount; i++) {
+      if (body[i]->Kind() == NodeType::ReturnStmt) {
+
+        auto returnStmt = std::unique_ptr<ReturnStmtNode>(
+            static_cast<ReturnStmtNode *>(body[i].release()));
+
+        returnValue = evaluate(std::move(returnStmt->GetValue()), scope);
+
+        break;
+      }
       evaluate(std::move(body[i]), scope);
     }
 
@@ -279,6 +288,6 @@ Interpreter::evaluateCallExpr(std::unique_ptr<CallExpr> callExpr,
   }
 
   default:
-    throw fn->str() + " is not a function";
+    throw std::runtime_error(fn->str() + " is not a function");
   }
 }
