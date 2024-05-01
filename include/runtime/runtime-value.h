@@ -222,6 +222,7 @@ public:
 
 class NativeFunctionValue : public RuntimeValue {
 private:
+  std::string name;
   std::shared_ptr<RuntimeValue> (*call)(
       std::vector<std::shared_ptr<RuntimeValue>>,
       std::unique_ptr<Environment> &);
@@ -235,13 +236,14 @@ public:
     return call(args, env);
   }
 
-  NativeFunctionValue(std::shared_ptr<RuntimeValue> (*call)(
-      std::vector<std::shared_ptr<RuntimeValue>>,
-      std::unique_ptr<Environment> &))
-      : call(call) {}
+  NativeFunctionValue(std::string name,
+                      std::shared_ptr<RuntimeValue> (*call)(
+                          std::vector<std::shared_ptr<RuntimeValue>>,
+                          std::unique_ptr<Environment> &))
+      : name(name), call(call) {}
 
-  std::string str() override { return "NativeFunctionValue"; }
-  void out() override { std::cout << "NativeFunctionValue"; }
+  std::string str() override { return "[NativeFunctionValue: " + name + "]"; }
+  void out() override { std::cout << str(); }
 };
 
 #endif // !VALUE_H

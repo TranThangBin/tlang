@@ -25,6 +25,7 @@ public:
     DeclareVariable("null", std::make_shared<NullValue>(), false);
     DeclareVariable("print",
                     std::make_shared<NativeFunctionValue>(
+                        "print",
                         [](std::vector<std::shared_ptr<RuntimeValue>> args,
                            std::unique_ptr<Environment> &env)
                             -> std::shared_ptr<RuntimeValue> {
@@ -40,6 +41,7 @@ public:
 
     DeclareVariable("println",
                     std::make_shared<NativeFunctionValue>(
+                        "println",
                         [](std::vector<std::shared_ptr<RuntimeValue>> args,
                            std::unique_ptr<Environment> &env)
                             -> std::shared_ptr<RuntimeValue> {
