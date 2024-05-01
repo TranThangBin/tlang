@@ -66,6 +66,9 @@ private:
   evaluateIndexingExpr(std::unique_ptr<IndexingExpressionNode>,
                        std::unique_ptr<Environment> &);
 
+  std::shared_ptr<RuntimeValue>
+  evaluateCallExpr(std::unique_ptr<CallExpr>, std::unique_ptr<Environment> &);
+
 public:
   Interpreter(std::unique_ptr<Parser> parser,
               std::unique_ptr<Environment> environment)

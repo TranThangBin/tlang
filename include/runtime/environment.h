@@ -2,11 +2,13 @@
 #define ENVIRONMENT_H
 
 #include "runtime-value.h"
+#include <iostream>
 #include <map>
 #include <memory>
 #include <set>
 #include <string>
 #include <utility>
+#include <vector>
 
 struct Environment {
 private:
@@ -21,6 +23,36 @@ public:
     DeclareVariable("true", std::make_shared<BooleanValue>(true), false);
     DeclareVariable("false", std::make_shared<BooleanValue>(false), false);
     DeclareVariable("null", std::make_shared<NullValue>(), false);
+    DeclareVariable("print",
+                    std::make_shared<NativeFunctionValue>(
+                        [](std::vector<std::shared_ptr<RuntimeValue>> args,
+                           std::unique_ptr<Environment> &env)
+                            -> std::shared_ptr<RuntimeValue> {
+                          int argCount = args.size();
+
+                          for (int i = 0; i < argCount; i++) {
+                            std::cout << args[i]->str();
+                          }
+
+                          return std::make_shared<NullValue>();
+                        }),
+                    false);
+
+    DeclareVariable("println",
+                    std::make_shared<NativeFunctionValue>(
+                        [](std::vector<std::shared_ptr<RuntimeValue>> args,
+                           std::unique_ptr<Environment> &env)
+                            -> std::shared_ptr<RuntimeValue> {
+                          int argCount = args.size();
+
+                          for (int i = 0; i < argCount; i++) {
+                            std::cout << args[i]->str();
+                          }
+                          std::cout << std::endl;
+
+                          return std::make_shared<NullValue>();
+                        }),
+                    false);
   }
 
   Environment(std::unique_ptr<Environment> parent)

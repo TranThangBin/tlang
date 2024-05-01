@@ -126,6 +126,13 @@ Interpreter::evaluate(std::unique_ptr<Stmt> astNode,
                                            std::move(funcExpr->GetBlock()));
   }
 
+  case NodeType::CallExpr: {
+    auto callExpr =
+        std::unique_ptr<CallExpr>(static_cast<CallExpr *>(astNode.release()));
+
+    return evaluateCallExpr(std::move(callExpr), env);
+  }
+
   default:
     throw std::runtime_error(
         NodeTypeToString(astNode->Kind()) +

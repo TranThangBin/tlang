@@ -219,3 +219,33 @@ std::shared_ptr<RuntimeValue> Interpreter::evaluateIndexingExpr(
                              " is not indexable");
   }
 }
+
+std::shared_ptr<RuntimeValue>
+Interpreter::evaluateCallExpr(std::unique_ptr<CallExpr> callExpr,
+                              std::unique_ptr<Environment> &env) {
+
+  std::shared_ptr<RuntimeValue> fn =
+      evaluate(std::move(callExpr->GetCaller()), env);
+
+  std::vector<std::shared_ptr<RuntimeValue>> argValues;
+
+  std::vector<std::unique_ptr<Expr>> args = std::move(callExpr->GetArgs());
+
+  int argCount = args.size();
+
+  for (int i = 0; i < argCount; i++) {
+    argValues.push_back(evaluate(std::move(args[i]), env));
+  }
+
+  switch (fn->DataTypeID()) {
+  case DataType::NativeFunction: {
+    std::static_pointer_cast<NativeFunctionValue>(fn)->Call(argValues, env);
+  }
+
+  case DataType::Function:
+    return std::make_shared<NullValue>();
+
+  default:
+    throw fn->str() + " is not a function";
+  }
+}

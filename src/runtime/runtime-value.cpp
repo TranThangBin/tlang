@@ -3,6 +3,9 @@
 
 std::string DataTypeToString(DataType dt) {
   switch (dt) {
+  case DataType::NativeFunction:
+    return "NativeFunction";
+
   case DataType::Function:
     return "function";
 

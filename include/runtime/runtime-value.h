@@ -10,6 +10,8 @@
 #include <utility>
 #include <vector>
 
+struct Environment;
+
 enum class DataType {
   Null,
   Number,
@@ -18,6 +20,7 @@ enum class DataType {
   Array,
   Object,
   Function,
+  NativeFunction,
 };
 
 std::string DataTypeToString(DataType);
@@ -227,27 +230,30 @@ public:
   std::vector<std::string> &GetParams() { return params; }
   std::unique_ptr<BlockStmtNode> &GetBlock() { return block; }
 
-  std::string str() override {
-    std::stringstream ss;
+  std::string str() override { return "FunctionValue"; }
+};
 
-    ss << "Function( ";
+class NativeFunctionValue : public RuntimeValue {
+private:
+  std::shared_ptr<RuntimeValue> (*call)(
+      std::vector<std::shared_ptr<RuntimeValue>>,
+      std::unique_ptr<Environment> &);
 
-    int paramCount = params.size();
+public:
+  DataType DataTypeID() override { return DataType::NativeFunction; }
 
-    if (paramCount > 0) {
-      int i = 0;
-
-      ss << params[i];
-
-      for (i++; i < paramCount; i++) {
-        ss << ", " << params[i];
-      }
-    }
-
-    ss << " )";
-
-    return ss.str();
+  std::shared_ptr<RuntimeValue>
+  Call(std::vector<std::shared_ptr<RuntimeValue>> args,
+       std::unique_ptr<Environment> &env) {
+    return call(args, env);
   }
+
+  NativeFunctionValue(std::shared_ptr<RuntimeValue> (*call)(
+      std::vector<std::shared_ptr<RuntimeValue>>,
+      std::unique_ptr<Environment> &))
+      : call(call) {}
+
+  std::string str() override { return "NativeFunctionValue"; }
 };
 
 #endif // !VALUE_H
