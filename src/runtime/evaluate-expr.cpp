@@ -239,11 +239,44 @@ Interpreter::evaluateCallExpr(std::unique_ptr<CallExpr> callExpr,
 
   switch (fn->DataTypeID()) {
   case DataType::NativeFunction: {
-    std::static_pointer_cast<NativeFunctionValue>(fn)->Call(argValues, env);
+    return std::static_pointer_cast<NativeFunctionValue>(fn)->Call(argValues,
+                                                                   env);
   }
 
-  case DataType::Function:
-    return std::make_shared<NullValue>();
+  case DataType::Function: {
+    auto func = std::static_pointer_cast<FunctionValue>(fn);
+
+    std::vector<std::string> params = func->GetParams();
+
+    int paramCount = params.size();
+
+    if (paramCount != argCount) {
+      throw std::runtime_error("expected " + std::to_string(paramCount) +
+                               " arguments but get " +
+                               std::to_string(argCount));
+    }
+
+    std::unique_ptr<Environment> scope =
+        std::make_unique<Environment>(std::move(func->GetDeclaredEnv()));
+
+    for (int i = 0; i < argCount; i++) {
+      scope->DeclareVariable(params[i], argValues[i], true);
+    }
+
+    std::vector<std::unique_ptr<Stmt>> body = std::move(func->GetBody());
+
+    int stmtCount = body.size();
+
+    std::shared_ptr<RuntimeValue> returnValue = std::make_unique<NullValue>();
+
+    for (int i = 0; i < stmtCount; i++) {
+      evaluate(std::move(body[i]), scope);
+    }
+
+    func->SetDeclaredEnv(std::move(scope->GetParent()));
+
+    return returnValue;
+  }
 
   default:
     throw fn->str() + " is not a function";

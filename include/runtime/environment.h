@@ -82,6 +82,13 @@ private:
 public:
   DataType DataTypeID() override { return DataType::Function; }
 
+  std::vector<std::string> GetParams() { return params; }
+  std::vector<std::unique_ptr<Stmt>> &GetBody() { return body; }
+  std::unique_ptr<Environment> &GetDeclaredEnv() { return declaredEnv; }
+  void SetDeclaredEnv(std::unique_ptr<Environment> env) {
+    declaredEnv = std::move(env);
+  }
+
   FunctionValue(std::string name, std::vector<std::string> params,
                 std::vector<std::unique_ptr<Stmt>> body,
                 std::unique_ptr<Environment> &declaredEnv)
