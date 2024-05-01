@@ -118,6 +118,14 @@ Interpreter::evaluate(std::unique_ptr<Stmt> astNode,
     return evaluateIndexingExpr(std::move(indExpr), env);
   }
 
+  case NodeType::FunctionExpr: {
+    auto funcExpr = std::unique_ptr<FunctionExprNode>(
+        static_cast<FunctionExprNode *>(astNode.release()));
+
+    return std::make_shared<FunctionValue>(funcExpr->GetParams(),
+                                           std::move(funcExpr->GetBlock()));
+  }
+
   default:
     throw std::runtime_error(
         NodeTypeToString(astNode->Kind()) +

@@ -186,7 +186,7 @@ std::string FunctionExprNode::Yaml(int indentLevel) {
   int paramCount = params.size();
 
   for (int i = 0; i < paramCount; i++) {
-    ss << params[i]->Yaml(indentLevel + 2) << std::endl;
+    ss << getIndent(indentLevel + 2) << params[i] << std::endl;
   }
 
   ss << getIndent(indentLevel + 1) << "Block:" << std::endl

@@ -157,12 +157,11 @@ std::unique_ptr<Expr> Parser::parsePrimaryExpr() {
 
     expect(TokenType::OpenParen);
 
-    std::vector<std::unique_ptr<IdentifierNode>> params;
+    std::vector<std::string> params;
 
     while (at().GetTokenType() != TokenType::ClosingParen) {
 
-      params.push_back(std::make_unique<IdentifierNode>(
-          expect(TokenType::Identifier).GetValue()));
+      params.push_back(expect(TokenType::Identifier).GetValue());
 
       if (at().GetTokenType() == TokenType::Comma) {
         eat();
@@ -173,8 +172,7 @@ std::unique_ptr<Expr> Parser::parsePrimaryExpr() {
 
     std::unique_ptr<BlockStmtNode> block = parseBlockStmt();
 
-    return std::make_unique<FunctionExprNode>(std::move(params),
-                                              std::move(block));
+    return std::make_unique<FunctionExprNode>(params, std::move(block));
   }
 
   default:

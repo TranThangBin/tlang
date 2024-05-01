@@ -1,11 +1,13 @@
 #ifndef VALUE_H
 #define VALUE_H
 
+#include "parser/ast.h"
 #include <map>
 #include <memory>
 #include <sstream>
 #include <stdexcept>
 #include <string>
+#include <utility>
 #include <vector>
 
 enum class DataType {
@@ -15,6 +17,7 @@ enum class DataType {
   String,
   Array,
   Object,
+  Function,
 };
 
 std::string DataTypeToString(DataType);
@@ -206,6 +209,44 @@ public:
 
     return properties[std::static_pointer_cast<StringValue>(key)->GetValue()] =
                value;
+  }
+};
+
+class FunctionValue : public RuntimeValue {
+private:
+  std::vector<std::string> params;
+  std::unique_ptr<BlockStmtNode> block;
+
+public:
+  DataType DataTypeID() override { return DataType::Function; }
+
+  FunctionValue(std::vector<std::string> params,
+                std::unique_ptr<BlockStmtNode> block)
+      : params(params), block(std::move(block)) {}
+
+  std::vector<std::string> &GetParams() { return params; }
+  std::unique_ptr<BlockStmtNode> &GetBlock() { return block; }
+
+  std::string str() override {
+    std::stringstream ss;
+
+    ss << "Function( ";
+
+    int paramCount = params.size();
+
+    if (paramCount > 0) {
+      int i = 0;
+
+      ss << params[i];
+
+      for (i++; i < paramCount; i++) {
+        ss << ", " << params[i];
+      }
+    }
+
+    ss << " )";
+
+    return ss.str();
   }
 };
 

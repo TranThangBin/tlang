@@ -285,7 +285,7 @@ public:
 
 class FunctionExprNode : public Expr {
 private:
-  std::vector<std::unique_ptr<IdentifierNode>> params;
+  std::vector<std::string> params;
   std::unique_ptr<BlockStmtNode> block;
 
 public:
@@ -293,12 +293,12 @@ public:
 
   NodeType Kind() override { return NodeType::FunctionExpr; }
 
-  std::vector<std::unique_ptr<IdentifierNode>> &GetParams() { return params; }
+  std::vector<std::string> &GetParams() { return params; }
   std::unique_ptr<BlockStmtNode> &GetBlock() { return block; }
 
-  FunctionExprNode(std::vector<std::unique_ptr<IdentifierNode>> params,
+  FunctionExprNode(std::vector<std::string> params,
                    std::unique_ptr<BlockStmtNode> block)
-      : params(std::move(params)), block(std::move(block)) {}
+      : params(params), block(std::move(block)) {}
 };
 
 #endif // !AST_H
