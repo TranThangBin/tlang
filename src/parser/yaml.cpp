@@ -194,3 +194,21 @@ std::string FunctionExprNode::Yaml(int indentLevel) {
 
   return ss.str();
 }
+
+std::string CallExpr::Yaml(int indentLevel) {
+  std::stringstream ss;
+
+  ss << getIndent(indentLevel) << "CallExpr" << std::endl
+     << getIndent(indentLevel + 1) << "Args" << std::endl;
+
+  int argCount = args.size();
+
+  for (int i = 0; i < argCount; i++) {
+    ss << args[i]->Yaml(indentLevel + 2) << std::endl;
+  }
+
+  ss << getIndent(indentLevel + 1) << "Caller:" << std::endl
+     << caller->Yaml(indentLevel + 2);
+
+  return ss.str();
+}

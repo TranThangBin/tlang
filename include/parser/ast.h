@@ -24,6 +24,7 @@ enum class NodeType {
   StringLiteral,
   IndexingExpression,
   FunctionExpr,
+  CallExpr,
 };
 
 enum class BinaryOperator {
@@ -299,6 +300,24 @@ public:
   FunctionExprNode(std::vector<std::string> params,
                    std::unique_ptr<BlockStmtNode> block)
       : params(params), block(std::move(block)) {}
+};
+
+class CallExpr : public Expr {
+private:
+  std::vector<std::unique_ptr<Expr>> args;
+  std::unique_ptr<Expr> caller;
+
+public:
+  std::string Yaml(int) override;
+
+  NodeType Kind() override { return NodeType::CallExpr; }
+
+  std::vector<std::unique_ptr<Expr>> &GetArgs() { return args; }
+  std::unique_ptr<Expr> &GetCaller() { return caller; }
+
+  CallExpr(std::vector<std::unique_ptr<Expr>> args,
+           std::unique_ptr<Expr> caller)
+      : args(std::move(args)), caller(std::move(caller)) {}
 };
 
 #endif // !AST_H
