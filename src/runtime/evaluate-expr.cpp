@@ -261,35 +261,17 @@ Interpreter::evaluateCallExpr(std::unique_ptr<CallExpr> &callExpr,
                                std::to_string(argCount));
     }
 
-    std::unique_ptr<Environment> scope =
-        std::make_unique<Environment>(std::move(func->GetDeclaredEnv()));
+    std::unique_ptr<Environment> functionScope = std::make_unique<Environment>(
+        std::move(func->GetDeclaredEnv()), EnvironmentContext::Function);
 
     for (int i = 0; i < argCount; i++) {
-      scope->DeclareVariable(params[i], argValues[i], true);
+      functionScope->DeclareVariable(params[i], argValues[i], true);
     }
 
-    std::vector<std::unique_ptr<Stmt>> &body = func->GetBody();
+    std::shared_ptr<RuntimeValue> returnValue =
+        evaluateBlockStmt(func->GetBody(), functionScope);
 
-    int stmtCount = body.size();
-
-    std::shared_ptr<RuntimeValue> returnValue = std::make_unique<NullValue>();
-
-    for (int i = 0; i < stmtCount; i++) {
-      if (body[i]->Kind() == NodeType::ReturnStmt) {
-
-        auto returnStmt = std::unique_ptr<ReturnStmtNode>(
-            static_cast<ReturnStmtNode *>(body[i].release()));
-
-        returnValue = evaluateExpr(returnStmt->GetValue(), scope);
-
-        body[i] = std::move(returnStmt);
-
-        break;
-      }
-      evaluateStmt(body[i], scope);
-    }
-
-    func->SetDeclaredEnv(std::move(scope->GetParent()));
+    func->SetDeclaredEnv(std::move(functionScope->GetParent()));
 
     return returnValue;
   }

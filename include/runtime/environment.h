@@ -11,11 +11,19 @@
 #include <utility>
 #include <vector>
 
+enum class EnvironmentContext {
+  Global,
+  Block,
+  Function,
+  Loop,
+};
+
 struct Environment {
 private:
   std::unique_ptr<Environment> parent;
   std::map<std::string, std::shared_ptr<RuntimeValue>> variables;
   std::set<std::string> mutables;
+  EnvironmentContext context;
 
   Environment *resolve(std::string);
 
@@ -58,13 +66,15 @@ public:
                     false);
   }
 
-  Environment(std::unique_ptr<Environment> parent)
-      : parent(std::move(parent)) {}
+  Environment(std::unique_ptr<Environment> parent, EnvironmentContext context)
+      : parent(std::move(parent)), context(context) {}
 
   std::unique_ptr<Environment> &GetParent() { return parent; }
 
   std::shared_ptr<RuntimeValue>
   DeclareVariable(std::string, std::shared_ptr<RuntimeValue>, bool);
+
+  bool HasContext(EnvironmentContext);
 
   std::shared_ptr<RuntimeValue> AssignVariable(std::string,
                                                std::shared_ptr<RuntimeValue>);
@@ -76,21 +86,21 @@ class FunctionValue : public RuntimeValue {
 private:
   std::string name;
   std::vector<std::string> params;
-  std::vector<std::unique_ptr<Stmt>> body;
+  std::unique_ptr<BlockStmtNode> body;
   std::unique_ptr<Environment> &declaredEnv;
 
 public:
   DataType DataTypeID() override { return DataType::Function; }
 
   std::vector<std::string> GetParams() { return params; }
-  std::vector<std::unique_ptr<Stmt>> &GetBody() { return body; }
+  std::unique_ptr<BlockStmtNode> &GetBody() { return body; }
   std::unique_ptr<Environment> &GetDeclaredEnv() { return declaredEnv; }
   void SetDeclaredEnv(std::unique_ptr<Environment> env) {
     declaredEnv = std::move(env);
   }
 
   FunctionValue(std::string name, std::vector<std::string> params,
-                std::vector<std::unique_ptr<Stmt>> body,
+                std::unique_ptr<BlockStmtNode> body,
                 std::unique_ptr<Environment> &declaredEnv)
       : name(name), params(params), body(std::move(body)),
         declaredEnv(declaredEnv) {}

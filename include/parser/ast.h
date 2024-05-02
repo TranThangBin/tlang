@@ -44,6 +44,12 @@ enum class UnaryOperator {
   Invalid,
 };
 
+enum class BlockContext {
+  Block,
+  Function,
+  Loop,
+};
+
 BinaryOperator AssignmentToBinaryOperator(std::string);
 BinaryOperator TokenTypeToBinaryOperator(TokenType);
 UnaryOperator TokenTypeToUnaryOperator(TokenType);
@@ -116,7 +122,7 @@ class FunctionDeclarationNode : public Stmt {
 private:
   std::string name;
   std::vector<std::string> params;
-  std::vector<std::unique_ptr<Stmt>> body;
+  std::unique_ptr<BlockStmtNode> body;
 
 public:
   std::string Yaml(int) override;
@@ -125,10 +131,10 @@ public:
 
   std::string GetName() { return name; }
   std::vector<std::string> &GetParams() { return params; }
-  std::vector<std::unique_ptr<Stmt>> &GetBody() { return body; }
+  std::unique_ptr<BlockStmtNode> &GetBody() { return body; }
 
   FunctionDeclarationNode(std::string name, std::vector<std::string> params,
-                          std::vector<std::unique_ptr<Stmt>> stmts)
+                          std::unique_ptr<BlockStmtNode> stmts)
       : name(name), params(params), body(std::move(stmts)) {}
 };
 

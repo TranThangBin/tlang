@@ -31,6 +31,17 @@ std::unique_ptr<Stmt> Parser::parseStmt() {
   case TokenType::Fun:
     return parseFunctionDeclaration();
 
+  case TokenType::Return:
+    eat();
+
+    if (at().GetTokenType() == TokenType::SemiColon) {
+      node = std::make_unique<ReturnStmtNode>(nullptr);
+    } else {
+      node = std::make_unique<ReturnStmtNode>(parseExpr());
+    }
+
+    break;
+
   default:
     node = parseExpr();
     break;

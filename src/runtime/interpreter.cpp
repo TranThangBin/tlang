@@ -47,7 +47,12 @@ Interpreter::evaluateStmt(std::unique_ptr<Stmt> &stmtNode,
     auto block = std::unique_ptr<BlockStmtNode>(
         static_cast<BlockStmtNode *>(stmtNode.release()));
 
-    result = evaluateBlockStmt(block, env);
+    std::unique_ptr<Environment> blockScope = std::make_unique<Environment>(
+        std::move(env), EnvironmentContext::Block);
+
+    result = evaluateBlockStmt(block, blockScope);
+
+    env = std::move(blockScope->GetParent());
 
     stmtNode = std::move(block);
 
@@ -61,6 +66,25 @@ Interpreter::evaluateStmt(std::unique_ptr<Stmt> &stmtNode,
     result = evaluateFunctionDeclaration(funcDec, env);
 
     stmtNode = std::move(funcDec);
+
+    return result;
+  }
+
+  case NodeType::ReturnStmt: {
+    if (!env->HasContext(EnvironmentContext::Function)) {
+      throw std::runtime_error("illegal return statement");
+    }
+
+    auto returnStmt = std::unique_ptr<ReturnStmtNode>(
+        static_cast<ReturnStmtNode *>(stmtNode.release()));
+
+    result = std::make_shared<NullValue>();
+
+    if (returnStmt->GetValue() != nullptr) {
+      result = evaluateExpr(returnStmt->GetValue(), env);
+    }
+
+    stmtNode = std::move(returnStmt);
 
     return result;
   }

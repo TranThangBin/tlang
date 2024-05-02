@@ -40,7 +40,6 @@ std::shared_ptr<RuntimeValue> Interpreter::evaluateVariableDeclaration(
 std::shared_ptr<RuntimeValue>
 Interpreter::evaluateBlockStmt(std::unique_ptr<BlockStmtNode> &block,
                                std::unique_ptr<Environment> &env) {
-  auto blockEnvironment = std::make_unique<Environment>(std::move(env));
 
   std::shared_ptr<RuntimeValue> lastEvaluated = std::make_shared<NullValue>();
 
@@ -48,10 +47,21 @@ Interpreter::evaluateBlockStmt(std::unique_ptr<BlockStmtNode> &block,
   int stmtCount = stmts.size();
 
   for (int i = 0; i < stmtCount; i++) {
-    lastEvaluated = evaluateStmt(stmts[i], blockEnvironment);
+
+    if (stmts[i]->Kind() == NodeType::ReturnStmt) {
+      return evaluateStmt(stmts[i], env);
+    }
+
+    if (stmts[i]->Kind() == NodeType::BlockStmt) {
+      return evaluateStmt(stmts[i], env);
+    }
+
+    lastEvaluated = evaluateStmt(stmts[i], env);
   }
 
-  env = std::move(blockEnvironment->GetParent());
+  if (env->HasContext(EnvironmentContext::Function)) {
+    return std::make_shared<NullValue>();
+  }
 
   return lastEvaluated;
 }

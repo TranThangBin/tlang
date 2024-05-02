@@ -44,12 +44,12 @@ std::string BlockStmtNode::Yaml(int indentLevel) {
   std::stringstream ss;
 
   ss << getIndent(indentLevel) << "BlockStmtNode:" << std::endl
-     << getIndent(indentLevel + 1) << "Body:" << std::endl;
+     << getIndent(indentLevel + 1) << "Body:";
 
   int stmtCount = body.size();
 
   for (int i = 0; i < stmtCount; i++) {
-    ss << body[i]->Yaml(indentLevel + 2) << std::endl;
+    ss << std::endl << body[i]->Yaml(indentLevel + 2);
   }
 
   return ss.str();
@@ -68,12 +68,9 @@ std::string FunctionDeclarationNode::Yaml(int indentLevel) {
     ss << std::endl << getIndent(indentLevel + 2) << params[i];
   }
 
-  ss << std::endl << getIndent(indentLevel + 1) << "Body:";
-  int stmtCount = body.size();
-
-  for (int i = 0; i < stmtCount; i++) {
-    ss << std::endl << body[i]->Yaml(indentLevel + 2);
-  }
+  ss << std::endl
+     << getIndent(indentLevel + 1) << "Body:" << std::endl
+     << body->Yaml(indentLevel + 2);
 
   return ss.str();
 }
@@ -82,8 +79,13 @@ std::string ReturnStmtNode::Yaml(int indentLevel) {
   std::stringstream ss;
 
   ss << getIndent(indentLevel) << "ReturnStmtNode:" << std::endl
-     << getIndent(indentLevel + 1) << "Value:" << std::endl
-     << value->Yaml(indentLevel + 2);
+     << getIndent(indentLevel + 1) << "Value:" << std::endl;
+
+  if (value == nullptr) {
+    ss << getIndent(indentLevel + 2) << "nullptr";
+  } else {
+    ss << value->Yaml(indentLevel + 2);
+  }
 
   return ss.str();
 }

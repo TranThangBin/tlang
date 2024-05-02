@@ -30,7 +30,7 @@ std::unique_ptr<VariableDeclarationNode> Parser::parseVariableDeclaration() {
 }
 
 std::unique_ptr<BlockStmtNode> Parser::parseBlockStmt() {
-  eat();
+  expect(TokenType::OpenCurly);
 
   std::vector<std::unique_ptr<Stmt>> body;
 
@@ -62,23 +62,7 @@ std::unique_ptr<FunctionDeclarationNode> Parser::parseFunctionDeclaration() {
 
   eat();
 
-  expect(TokenType::OpenCurly);
-
-  std::vector<std::unique_ptr<Stmt>> body;
-
-  while (at().GetTokenType() != TokenType::ClosingCurly) {
-
-    if (at().GetTokenType() == TokenType::Return) {
-      eat();
-      body.push_back(std::make_unique<ReturnStmtNode>(parseExpr()));
-      expect(TokenType::SemiColon);
-      continue;
-    }
-
-    body.push_back(parseStmt());
-  }
-
-  eat();
+  std::unique_ptr<BlockStmtNode> body = parseBlockStmt();
 
   return std::make_unique<FunctionDeclarationNode>(name, params,
                                                    std::move(body));

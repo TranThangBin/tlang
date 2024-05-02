@@ -56,3 +56,15 @@ std::shared_ptr<RuntimeValue> Environment::LookUpVar(std::string varname) {
 
   return env->variables.find(varname)->second;
 }
+
+bool Environment::HasContext(EnvironmentContext ctx) {
+  if (context == ctx) {
+    return true;
+  }
+
+  if (parent == nullptr) {
+    return false;
+  }
+
+  return parent->HasContext(ctx);
+}
