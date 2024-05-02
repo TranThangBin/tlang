@@ -90,6 +90,22 @@ std::string ReturnStmtNode::Yaml(int indentLevel) {
   return ss.str();
 }
 
+std::string IfStmtNode::Yaml(int indentLevel) {
+  std::stringstream ss;
+
+  ss << getIndent(indentLevel) << "IfStmtNode:" << std::endl
+     << getIndent(indentLevel + 1) << "IfBody:" << std::endl
+     << ifBody->Yaml(indentLevel + 2);
+
+  if (elseBody != nullptr) {
+    ss << std::endl
+       << getIndent(indentLevel + 1) << "ElseBody:" << std::endl
+       << elseBody->Yaml(indentLevel + 2);
+  }
+
+  return ss.str();
+}
+
 std::string AssignmentExprNode::Yaml(int indentLevel) {
   std::stringstream ss;
 
@@ -203,7 +219,7 @@ std::string ArrayExprNode::Yaml(int indentLevel) {
 std::string IndexingExpressionNode::Yaml(int indentLevel) {
   std::stringstream ss;
 
-  ss << getIndent(indentLevel) << "IndexingExpressionNode" << std::endl
+  ss << getIndent(indentLevel) << "IndexingExpressionNode:" << std::endl
      << getIndent(indentLevel + 1) << "Accessor:" << std::endl
      << accessor->Yaml(indentLevel + 2) << std::endl
      << getIndent(indentLevel + 1) << "Index:" << std::endl
@@ -215,8 +231,8 @@ std::string IndexingExpressionNode::Yaml(int indentLevel) {
 std::string CallExpr::Yaml(int indentLevel) {
   std::stringstream ss;
 
-  ss << getIndent(indentLevel) << "CallExpr" << std::endl
-     << getIndent(indentLevel + 1) << "Args" << std::endl;
+  ss << getIndent(indentLevel) << "CallExpr:" << std::endl
+     << getIndent(indentLevel + 1) << "Args:" << std::endl;
 
   int argCount = args.size();
 

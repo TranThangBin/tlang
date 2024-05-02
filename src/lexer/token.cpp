@@ -3,6 +3,21 @@
 
 std::string TokenTypeToString(TokenType tokenType) {
   switch (tokenType) {
+  case TokenType::If:
+    return "if";
+
+  case TokenType::Else:
+    return "else";
+
+  case TokenType::For:
+    return "for";
+
+  case TokenType::Break:
+    return "break";
+
+  case TokenType::Continue:
+    return "continue";
+
   case TokenType::Dot:
     return ".";
 

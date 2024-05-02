@@ -76,6 +76,10 @@ private:
   evaluateFunctionDeclaration(std::unique_ptr<FunctionDeclarationNode> &,
                               std::unique_ptr<Environment> &env);
 
+  std::shared_ptr<RuntimeValue>
+  evaluateIfStmt(std::unique_ptr<IfStmtNode> &,
+                 std::unique_ptr<Environment> &env);
+
 public:
   Interpreter(std::unique_ptr<Parser> parser,
               std::unique_ptr<Environment> environment)

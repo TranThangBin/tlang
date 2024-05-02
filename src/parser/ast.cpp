@@ -90,6 +90,9 @@ UnaryOperator TokenTypeToUnaryOperator(TokenType tokenType) {
 
 std::string NodeTypeToString(NodeType nodeType) {
   switch (nodeType) {
+  case NodeType::IfStmt:
+    return "if statement";
+
   case NodeType::ReturnStmt:
     return "return statement";
 
@@ -144,6 +147,11 @@ std::string NodeTypeToString(NodeType nodeType) {
 
 std::string BinaryOperatorToString(BinaryOperator binop) {
   switch (binop) {
+  case BinaryOperator::And:
+    return "&&";
+
+  case BinaryOperator::Or:
+    return "||";
 
   case BinaryOperator::Equality:
     return "==";

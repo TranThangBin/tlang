@@ -14,6 +14,7 @@ enum class NodeType {
   BlockStmt,
   FunctionDeclaration,
   ReturnStmt,
+  IfStmt,
 
   AssignmentExpr,
   BinaryAssignmentExpr,
@@ -177,6 +178,29 @@ public:
   AssignmentExprNode(std::unique_ptr<Expr> assignee,
                      std::unique_ptr<Expr> value)
       : assignee(std::move(assignee)), value(std::move(value)) {}
+};
+
+class IfStmtNode : public Expr {
+private:
+  std::unique_ptr<Expr> condition;
+  std::unique_ptr<Stmt> ifBody;
+  std::unique_ptr<Stmt> elseBody;
+
+public:
+  std::string Yaml(int) override;
+
+  NodeType Kind() override { return NodeType::IfStmt; }
+
+  std::unique_ptr<Expr> &GetCondition() { return condition; }
+
+  std::unique_ptr<Stmt> &GetIfBody() { return ifBody; }
+
+  std::unique_ptr<Stmt> &GetElseBody() { return elseBody; }
+
+  IfStmtNode(std::unique_ptr<Expr> condition, std::unique_ptr<Stmt> ifBody,
+             std::unique_ptr<Stmt> elseBody)
+      : condition(std::move(condition)), ifBody(std::move(ifBody)),
+        elseBody(std::move(elseBody)) {}
 };
 
 class BinaryAssignmentExprNode : public Expr {

@@ -42,6 +42,11 @@ enum class TokenType {
   String,
   Fun,
   Return,
+  If,
+  Else,
+  For,
+  Break,
+  Continue,
 
   Invalid,
 };

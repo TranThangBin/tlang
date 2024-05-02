@@ -20,6 +20,7 @@ enum class DataType {
   Object,
   Function,
   NativeFunction,
+  Return,
 };
 
 std::string DataTypeToString(DataType);
@@ -243,6 +244,21 @@ public:
       : name(name), call(call) {}
 
   std::string str() override { return "[NativeFunctionValue: " + name + "]"; }
+  void out() override { std::cout << str(); }
+};
+
+class ReturnValue : public RuntimeValue {
+private:
+  std::shared_ptr<RuntimeValue> value;
+
+public:
+  DataType DataTypeID() override { return DataType::Return; }
+
+  std::shared_ptr<RuntimeValue> GetValue() { return value; }
+
+  ReturnValue(std::shared_ptr<RuntimeValue> value) : value(value) {}
+
+  std::string str() override { return "[ReturnValue: " + value->str() + "]"; }
   void out() override { std::cout << str(); }
 };
 

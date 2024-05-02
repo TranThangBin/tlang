@@ -67,3 +67,25 @@ std::unique_ptr<FunctionDeclarationNode> Parser::parseFunctionDeclaration() {
   return std::make_unique<FunctionDeclarationNode>(name, params,
                                                    std::move(body));
 }
+
+std::unique_ptr<IfStmtNode> Parser::parseIfStmt() {
+  eat();
+
+  expect(TokenType::OpenParen);
+
+  std::unique_ptr<Expr> condition = parseExpr();
+
+  expect(TokenType::ClosingParen);
+
+  std::unique_ptr<Stmt> ifBody = parseStmt();
+
+  if (at().GetTokenType() != TokenType::Else) {
+    return std::make_unique<IfStmtNode>(std::move(condition), std::move(ifBody),
+                                        nullptr);
+  }
+
+  eat();
+
+  return std::make_unique<IfStmtNode>(std::move(condition), std::move(ifBody),
+                                      parseStmt());
+}

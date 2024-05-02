@@ -14,6 +14,7 @@
 enum class EnvironmentContext {
   Global,
   Block,
+  Conditional,
   Function,
   Loop,
 };

@@ -273,7 +273,7 @@ Interpreter::evaluateCallExpr(std::unique_ptr<CallExpr> &callExpr,
 
     func->SetDeclaredEnv(std::move(functionScope->GetParent()));
 
-    return returnValue;
+    return std::static_pointer_cast<ReturnValue>(returnValue)->GetValue();
   }
 
   default:

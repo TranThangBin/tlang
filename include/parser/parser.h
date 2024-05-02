@@ -22,6 +22,7 @@ private:
   std::unique_ptr<VariableDeclarationNode> parseVariableDeclaration();
   std::unique_ptr<BlockStmtNode> parseBlockStmt();
   std::unique_ptr<FunctionDeclarationNode> parseFunctionDeclaration();
+  std::unique_ptr<IfStmtNode> parseIfStmt();
   std::unique_ptr<Expr> parseExpr();
   std::unique_ptr<Expr> parseAssignmentExpr();
   std::unique_ptr<Expr> parseOrExpr();

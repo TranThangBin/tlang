@@ -3,6 +3,7 @@
 #include "runtime/interpreter.h"
 #include "runtime/runtime-value.h"
 #include <memory>
+#include <stdexcept>
 #include <utility>
 #include <vector>
 
@@ -48,19 +49,15 @@ Interpreter::evaluateBlockStmt(std::unique_ptr<BlockStmtNode> &block,
 
   for (int i = 0; i < stmtCount; i++) {
 
-    if (stmts[i]->Kind() == NodeType::ReturnStmt) {
-      return evaluateStmt(stmts[i], env);
-    }
-
-    if (stmts[i]->Kind() == NodeType::BlockStmt) {
-      return evaluateStmt(stmts[i], env);
-    }
-
     lastEvaluated = evaluateStmt(stmts[i], env);
+
+    if (lastEvaluated->DataTypeID() == DataType::Return) {
+      return lastEvaluated;
+    }
   }
 
   if (env->HasContext(EnvironmentContext::Function)) {
-    return std::make_shared<NullValue>();
+    return std::make_shared<ReturnValue>(std::make_shared<NullValue>());
   }
 
   return lastEvaluated;
@@ -75,4 +72,33 @@ std::shared_ptr<RuntimeValue> Interpreter::evaluateFunctionDeclaration(
       std::make_shared<FunctionValue>(funcDec->GetName(), funcDec->GetParams(),
                                       std::move(funcDec->GetBody()), env),
       false);
+}
+
+std::shared_ptr<RuntimeValue>
+Interpreter::evaluateIfStmt(std::unique_ptr<IfStmtNode> &ifStmt,
+                            std::unique_ptr<Environment> &env) {
+
+  std::shared_ptr<RuntimeValue> condition =
+      evaluateExpr(ifStmt->GetCondition(), env);
+
+  if (condition->DataTypeID() != DataType::Boolean) {
+    throw std::runtime_error("expected " + DataTypeToString(DataType::Boolean) +
+                             " for condition but get " +
+                             DataTypeToString(condition->DataTypeID()));
+  }
+
+  std::unique_ptr<Environment> ifScope = std::make_unique<Environment>(
+      std::move(env), EnvironmentContext::Conditional);
+
+  std::shared_ptr<RuntimeValue> result = std::make_shared<NullValue>();
+
+  if (std::static_pointer_cast<BooleanValue>(condition)->GetValue()) {
+    result = evaluateStmt(ifStmt->GetIfBody(), ifScope);
+  } else if (ifStmt->GetElseBody() != nullptr) {
+    result = evaluateStmt(ifStmt->GetElseBody(), env);
+  }
+
+  env = std::move(ifScope->GetParent());
+
+  return result;
 }

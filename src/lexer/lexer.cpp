@@ -43,6 +43,11 @@ Lexer::Lexer(std::string src) : src(src) {
       {"mut", Token("mut", TokenType::Mut)},
       {"fun", Token("fun", TokenType::Fun)},
       {"return", Token("return", TokenType::Return)},
+      {"if", Token("if", TokenType::If)},
+      {"else", Token("else", TokenType::Else)},
+      {"for", Token("for", TokenType::For)},
+      {"continue", Token("continue", TokenType::Continue)},
+      {"break", Token("break", TokenType::Break)},
   };
 }
 

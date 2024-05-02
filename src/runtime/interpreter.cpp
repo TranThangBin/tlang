@@ -81,10 +81,22 @@ Interpreter::evaluateStmt(std::unique_ptr<Stmt> &stmtNode,
     result = std::make_shared<NullValue>();
 
     if (returnStmt->GetValue() != nullptr) {
-      result = evaluateExpr(returnStmt->GetValue(), env);
+      result = std::make_shared<ReturnValue>(
+          evaluateExpr(returnStmt->GetValue(), env));
     }
 
     stmtNode = std::move(returnStmt);
+
+    return result;
+  }
+
+  case NodeType::IfStmt: {
+    auto ifStmt = std::unique_ptr<IfStmtNode>(
+        static_cast<IfStmtNode *>(stmtNode.release()));
+
+    result = evaluateIfStmt(ifStmt, env);
+
+    stmtNode = std::move(ifStmt);
 
     return result;
   }

@@ -31,6 +31,9 @@ std::unique_ptr<Stmt> Parser::parseStmt() {
   case TokenType::Fun:
     return parseFunctionDeclaration();
 
+  case TokenType::If:
+    return parseIfStmt();
+
   case TokenType::Return:
     eat();
 
