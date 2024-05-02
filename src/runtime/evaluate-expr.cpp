@@ -160,7 +160,7 @@ Interpreter::evaluateBinaryExpr(std::unique_ptr<BinaryExprNode> &binaryExprNode,
 
 std::shared_ptr<RuntimeValue>
 Interpreter::evaluateUnaryExpr(std::unique_ptr<UnaryExprNode> &unaryExpr,
-                               std::unique_ptr<Environment> &environment) {
+                               std::unique_ptr<Environment> &env) {
   std::shared_ptr<RuntimeValue> value =
       evaluateExpr(unaryExpr->GetValue(), environment);
 
@@ -169,7 +169,7 @@ Interpreter::evaluateUnaryExpr(std::unique_ptr<UnaryExprNode> &unaryExpr,
 
 std::shared_ptr<RuntimeValue> Interpreter::evaluateObjectLiteral(
     std::unique_ptr<ObjectLiteralNode> &objectLiteralNode,
-    std::unique_ptr<Environment> &environment) {
+    std::unique_ptr<Environment> &env) {
 
   std::map<std::string, std::unique_ptr<Expr>> properties =
       std::move(objectLiteralNode->GetProperties());
@@ -202,7 +202,7 @@ Interpreter::evaluateArrayExpr(std::unique_ptr<ArrayExprNode> &arr,
 
 std::shared_ptr<RuntimeValue> Interpreter::evaluateIndexingExpr(
     std::unique_ptr<IndexingExpressionNode> &indexingExprNode,
-    std::unique_ptr<Environment> &environment) {
+    std::unique_ptr<Environment> &env) {
 
   std::shared_ptr<RuntimeValue> accessorValue =
       evaluateExpr(indexingExprNode->GetAccessor(), environment);
