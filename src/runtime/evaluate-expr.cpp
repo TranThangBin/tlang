@@ -11,43 +11,48 @@
 #include <vector>
 
 std::shared_ptr<RuntimeValue>
-Interpreter::evaluateIdentifier(std::unique_ptr<IdentifierNode> ident,
+Interpreter::evaluateIdentifier(std::unique_ptr<IdentifierNode> &ident,
                                 std::unique_ptr<Environment> &env) {
   return env->LookUpVar(ident->GetSymbol());
 }
 
 std::shared_ptr<RuntimeValue> Interpreter::evaluateAssignmentExpr(
-    std::unique_ptr<AssignmentExprNode> assignExpr,
+    std::unique_ptr<AssignmentExprNode> &assignExpr,
     std::unique_ptr<Environment> &env) {
 
-  NodeType assigneeKind = assignExpr->GetAssignee()->Kind();
+  std::unique_ptr<Expr> &assignee = assignExpr->GetAssignee();
+
+  NodeType assigneeKind = assignee->Kind();
 
   std::shared_ptr<RuntimeValue> assignValue =
-      evaluate(std::move(assignExpr->GetValue()), env);
+      evaluateExpr(assignExpr->GetValue(), env);
 
   switch (assigneeKind) {
 
   case NodeType::Identifier: {
 
-    std::string varname =
-        std::unique_ptr<IdentifierNode>(
-            static_cast<IdentifierNode *>(assignExpr->GetAssignee().release()))
-            ->GetSymbol();
+    auto identifier = std::unique_ptr<IdentifierNode>(
+        static_cast<IdentifierNode *>(assignee.release()));
+
+    std::string varname = identifier->GetSymbol();
+
+    assignee = std::move(identifier);
 
     return env->AssignVariable(varname, assignValue);
   }
 
   case NodeType::IndexingExpression: {
 
-    auto indexingExpression = std::unique_ptr<IndexingExpressionNode>(
-        static_cast<IndexingExpressionNode *>(
-            assignExpr->GetAssignee().release()));
+    auto indexingExpr = std::unique_ptr<IndexingExpressionNode>(
+        static_cast<IndexingExpressionNode *>(assignee.release()));
 
     std::shared_ptr<RuntimeValue> accessorValue =
-        evaluate(std::move(indexingExpression->GetAccessor()), env);
+        evaluateExpr(indexingExpr->GetAccessor(), env);
 
     std::shared_ptr<RuntimeValue> indexValue =
-        evaluate(std::move(indexingExpression->GetIndex()), env);
+        evaluateExpr(indexingExpr->GetIndex(), env);
+
+    assignee = std::move(indexingExpr);
 
     DataType accessorType = accessorValue->DataTypeID();
 
@@ -71,15 +76,15 @@ std::shared_ptr<RuntimeValue> Interpreter::evaluateAssignmentExpr(
 }
 
 std::shared_ptr<RuntimeValue> Interpreter::evaluateBinaryAssignmentExpr(
-    std::unique_ptr<BinaryAssignmentExprNode> binAssignExpr,
+    std::unique_ptr<BinaryAssignmentExprNode> &binAssignExpr,
     std::unique_ptr<Environment> &env) {
 
-  std::unique_ptr<Expr> assignee = std::move(binAssignExpr->GetAssignee());
+  std::unique_ptr<Expr> &assignee = binAssignExpr->GetAssignee();
 
   BinaryOperator op = binAssignExpr->GetOperator();
 
   std::shared_ptr<RuntimeValue> value =
-      evaluate(std::move(binAssignExpr->GetValue()), env);
+      evaluateExpr(binAssignExpr->GetValue(), env);
 
   switch (assignee->Kind()) {
 
@@ -90,7 +95,9 @@ std::shared_ptr<RuntimeValue> Interpreter::evaluateBinaryAssignmentExpr(
 
     std::string varname = ident->GetSymbol();
 
-    std::shared_ptr<RuntimeValue> varVal = evaluate(std::move(ident), env);
+    assignee = std::move(ident);
+
+    std::shared_ptr<RuntimeValue> varVal = env->LookUpVar(varname);
 
     return env->AssignVariable(varname,
                                evaluateBinaryOperation(varVal, value, op));
@@ -102,10 +109,10 @@ std::shared_ptr<RuntimeValue> Interpreter::evaluateBinaryAssignmentExpr(
         static_cast<IndexingExpressionNode *>(assignee.release()));
 
     std::shared_ptr<RuntimeValue> accessorValue =
-        evaluate(std::move(indexingExpr->GetAccessor()), env);
+        evaluateExpr(indexingExpr->GetAccessor(), env);
 
     std::shared_ptr<RuntimeValue> indexValue =
-        evaluate(std::move(indexingExpr->GetIndex()), env);
+        evaluateExpr(indexingExpr->GetIndex(), env);
 
     DataType accessorType = accessorValue->DataTypeID();
 
@@ -136,13 +143,13 @@ std::shared_ptr<RuntimeValue> Interpreter::evaluateBinaryAssignmentExpr(
 }
 
 std::shared_ptr<RuntimeValue>
-Interpreter::evaluateBinaryExpr(std::unique_ptr<BinaryExprNode> binaryExprNode,
-                                std::unique_ptr<Environment> &environment) {
+Interpreter::evaluateBinaryExpr(std::unique_ptr<BinaryExprNode> &binaryExprNode,
+                                std::unique_ptr<Environment> &env) {
 
   std::shared_ptr<RuntimeValue> left =
-      evaluate(std::move(binaryExprNode->GetLeft()), environment);
+      evaluateExpr(binaryExprNode->GetLeft(), env);
   std::shared_ptr<RuntimeValue> right =
-      evaluate(std::move(binaryExprNode->GetRight()), environment);
+      evaluateExpr(binaryExprNode->GetRight(), env);
 
   if (left->DataTypeID() != right->DataTypeID()) {
     throw std::runtime_error("Mismatched type in the binary expression");
@@ -152,16 +159,16 @@ Interpreter::evaluateBinaryExpr(std::unique_ptr<BinaryExprNode> binaryExprNode,
 }
 
 std::shared_ptr<RuntimeValue>
-Interpreter::evaluateUnaryExpr(std::unique_ptr<UnaryExprNode> unaryExpr,
+Interpreter::evaluateUnaryExpr(std::unique_ptr<UnaryExprNode> &unaryExpr,
                                std::unique_ptr<Environment> &environment) {
   std::shared_ptr<RuntimeValue> value =
-      evaluate(std::move(unaryExpr->GetValue()), environment);
+      evaluateExpr(unaryExpr->GetValue(), environment);
 
   return evaluateUnaryOperation(value, unaryExpr->GetOperator());
 }
 
 std::shared_ptr<RuntimeValue> Interpreter::evaluateObjectLiteral(
-    std::unique_ptr<ObjectLiteralNode> objectLiteralNode,
+    std::unique_ptr<ObjectLiteralNode> &objectLiteralNode,
     std::unique_ptr<Environment> &environment) {
 
   std::map<std::string, std::unique_ptr<Expr>> properties =
@@ -170,39 +177,38 @@ std::shared_ptr<RuntimeValue> Interpreter::evaluateObjectLiteral(
   std::map<std::string, std::shared_ptr<RuntimeValue>> objectProperties;
 
   for (auto it = properties.begin(); it != properties.end(); it++) {
-    objectProperties.insert(
-        {it->first, evaluate(std::move(it->second), environment)});
+    objectProperties.insert({it->first, evaluateExpr(it->second, environment)});
   }
 
   return std::make_shared<ObjectValue>(std::move(objectProperties));
 }
 
 std::shared_ptr<RuntimeValue>
-Interpreter::evaluateArrayExpr(std::unique_ptr<ArrayExprNode> arr,
+Interpreter::evaluateArrayExpr(std::unique_ptr<ArrayExprNode> &arr,
                                std::unique_ptr<Environment> &env) {
 
-  std::vector<std::unique_ptr<Expr>> values = std::move(arr->GetValues());
+  std::vector<std::unique_ptr<Expr>> &values = arr->GetValues();
 
   std::vector<std::shared_ptr<RuntimeValue>> arrayValues;
 
   int valueCount = values.size();
 
   for (int i = 0; i < valueCount; i++) {
-    arrayValues.push_back(evaluate(std::move(values[i]), env));
+    arrayValues.push_back(evaluateExpr(values[i], env));
   }
 
   return std::make_shared<ArrayValue>(std::move(arrayValues));
 }
 
 std::shared_ptr<RuntimeValue> Interpreter::evaluateIndexingExpr(
-    std::unique_ptr<IndexingExpressionNode> indexingExprNode,
+    std::unique_ptr<IndexingExpressionNode> &indexingExprNode,
     std::unique_ptr<Environment> &environment) {
 
   std::shared_ptr<RuntimeValue> accessorValue =
-      evaluate(std::move(indexingExprNode->GetAccessor()), environment);
+      evaluateExpr(indexingExprNode->GetAccessor(), environment);
 
   std::shared_ptr<RuntimeValue> indexValue =
-      evaluate(std::move(indexingExprNode->GetIndex()), environment);
+      evaluateExpr(indexingExprNode->GetIndex(), environment);
 
   DataType accessorType = accessorValue->DataTypeID();
 
@@ -221,20 +227,19 @@ std::shared_ptr<RuntimeValue> Interpreter::evaluateIndexingExpr(
 }
 
 std::shared_ptr<RuntimeValue>
-Interpreter::evaluateCallExpr(std::unique_ptr<CallExpr> callExpr,
+Interpreter::evaluateCallExpr(std::unique_ptr<CallExpr> &callExpr,
                               std::unique_ptr<Environment> &env) {
 
-  std::shared_ptr<RuntimeValue> fn =
-      evaluate(std::move(callExpr->GetCaller()), env);
+  std::shared_ptr<RuntimeValue> fn = evaluateExpr(callExpr->GetCaller(), env);
 
   std::vector<std::shared_ptr<RuntimeValue>> argValues;
 
-  std::vector<std::unique_ptr<Expr>> args = std::move(callExpr->GetArgs());
+  std::vector<std::unique_ptr<Expr>> &args = callExpr->GetArgs();
 
   int argCount = args.size();
 
   for (int i = 0; i < argCount; i++) {
-    argValues.push_back(evaluate(std::move(args[i]), env));
+    argValues.push_back(evaluateExpr(args[i], env));
   }
 
   switch (fn->DataTypeID()) {
@@ -263,7 +268,7 @@ Interpreter::evaluateCallExpr(std::unique_ptr<CallExpr> callExpr,
       scope->DeclareVariable(params[i], argValues[i], true);
     }
 
-    std::vector<std::unique_ptr<Stmt>> body = std::move(func->GetBody());
+    std::vector<std::unique_ptr<Stmt>> &body = func->GetBody();
 
     int stmtCount = body.size();
 
@@ -275,11 +280,13 @@ Interpreter::evaluateCallExpr(std::unique_ptr<CallExpr> callExpr,
         auto returnStmt = std::unique_ptr<ReturnStmtNode>(
             static_cast<ReturnStmtNode *>(body[i].release()));
 
-        returnValue = evaluate(std::move(returnStmt->GetValue()), scope);
+        returnValue = evaluateExpr(returnStmt->GetValue(), scope);
+
+        body[i] = std::move(returnStmt);
 
         break;
       }
-      evaluate(std::move(body[i]), scope);
+      evaluateStmt(body[i], scope);
     }
 
     func->SetDeclaredEnv(std::move(scope->GetParent()));

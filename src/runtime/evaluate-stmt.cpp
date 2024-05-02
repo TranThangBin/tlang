@@ -7,7 +7,7 @@
 #include <vector>
 
 std::shared_ptr<RuntimeValue>
-Interpreter::evaluateProgram(std::unique_ptr<ProgramNode> program,
+Interpreter::evaluateProgram(std::unique_ptr<ProgramNode> &program,
                              std::unique_ptr<Environment> &env) {
   std::shared_ptr<RuntimeValue> lastEvaluated = std::make_shared<NullValue>();
 
@@ -16,14 +16,14 @@ Interpreter::evaluateProgram(std::unique_ptr<ProgramNode> program,
   int stmtCount = stmts.size();
 
   for (int i = 0; i < stmtCount; i++) {
-    lastEvaluated = evaluate(std::move(stmts[i]), env);
+    lastEvaluated = evaluateStmt(stmts[i], env);
   }
 
   return lastEvaluated;
 }
 
 std::shared_ptr<RuntimeValue> Interpreter::evaluateVariableDeclaration(
-    std::unique_ptr<VariableDeclarationNode> varDec,
+    std::unique_ptr<VariableDeclarationNode> &varDec,
     std::unique_ptr<Environment> &env) {
 
   if (varDec->GetValue() == nullptr) {
@@ -33,22 +33,22 @@ std::shared_ptr<RuntimeValue> Interpreter::evaluateVariableDeclaration(
   }
 
   return env->DeclareVariable(varDec->GetIdentifier(),
-                              evaluate(std::move(varDec->GetValue()), env),
+                              evaluateExpr(varDec->GetValue(), env),
                               varDec->GetMut());
 }
 
 std::shared_ptr<RuntimeValue>
-Interpreter::evaluateBlockStmt(std::unique_ptr<BlockStmtNode> block,
+Interpreter::evaluateBlockStmt(std::unique_ptr<BlockStmtNode> &block,
                                std::unique_ptr<Environment> &env) {
   auto blockEnvironment = std::make_unique<Environment>(std::move(env));
 
   std::shared_ptr<RuntimeValue> lastEvaluated = std::make_shared<NullValue>();
 
-  std::vector<std::unique_ptr<Stmt>> stmts = std::move(block->GetBody());
+  std::vector<std::unique_ptr<Stmt>> &stmts = block->GetBody();
   int stmtCount = stmts.size();
 
   for (int i = 0; i < stmtCount; i++) {
-    lastEvaluated = evaluate(std::move(stmts[i]), blockEnvironment);
+    lastEvaluated = evaluateStmt(stmts[i], blockEnvironment);
   }
 
   env = std::move(blockEnvironment->GetParent());
@@ -57,7 +57,7 @@ Interpreter::evaluateBlockStmt(std::unique_ptr<BlockStmtNode> block,
 }
 
 std::shared_ptr<RuntimeValue> Interpreter::evaluateFunctionDeclaration(
-    std::unique_ptr<FunctionDeclarationNode> funcDec,
+    std::unique_ptr<FunctionDeclarationNode> &funcDec,
     std::unique_ptr<Environment> &env) {
 
   return env->DeclareVariable(
