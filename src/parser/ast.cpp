@@ -43,6 +43,30 @@ BinaryOperator TokenTypeToBinaryOperator(TokenType tkType) {
   case TokenType::Percent:
     return BinaryOperator::Modulo;
 
+  case TokenType::Equality:
+    return BinaryOperator::Equality;
+
+  case TokenType::InEquality:
+    return BinaryOperator::InEquality;
+
+  case TokenType::Greater:
+    return BinaryOperator::Greater;
+
+  case TokenType::Lower:
+    return BinaryOperator::Lower;
+
+  case TokenType::GreaterEqual:
+    return BinaryOperator::GreaterEqual;
+
+  case TokenType::LowerEqual:
+    return BinaryOperator::LowerEqual;
+
+  case TokenType::And:
+    return BinaryOperator::And;
+
+  case TokenType::Or:
+    return BinaryOperator::Or;
+
   default:
     return BinaryOperator::Invalid;
   }
@@ -120,6 +144,25 @@ std::string NodeTypeToString(NodeType nodeType) {
 
 std::string BinaryOperatorToString(BinaryOperator binop) {
   switch (binop) {
+
+  case BinaryOperator::Equality:
+    return "==";
+
+  case BinaryOperator::InEquality:
+    return "!=";
+
+  case BinaryOperator::Greater:
+    return ">";
+
+  case BinaryOperator::Lower:
+    return "<";
+
+  case BinaryOperator::GreaterEqual:
+    return ">=";
+
+  case BinaryOperator::LowerEqual:
+    return "<=";
+
   case BinaryOperator::Addition:
     return "+";
 

@@ -23,10 +23,13 @@ private:
   std::unique_ptr<BlockStmtNode> parseBlockStmt();
   std::unique_ptr<FunctionDeclarationNode> parseFunctionDeclaration();
   std::unique_ptr<Expr> parseExpr();
-  std::unique_ptr<Expr> parseIndexingOrCallExpr();
   std::unique_ptr<Expr> parseAssignmentExpr();
+  std::unique_ptr<Expr> parseOrExpr();
+  std::unique_ptr<Expr> parseAndExpr();
+  std::unique_ptr<Expr> parseComparisonExpr();
   std::unique_ptr<Expr> parseAdditiveExpr();
   std::unique_ptr<Expr> parseMultiplicativeExpr();
+  std::unique_ptr<Expr> parseIndexingOrCallExpr();
   std::unique_ptr<Expr> parsePrimaryExpr();
 
 public:

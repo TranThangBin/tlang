@@ -34,6 +34,14 @@ enum class BinaryOperator {
   Multiplication,
   Division,
   Modulo,
+  Equality,
+  InEquality,
+  Greater,
+  Lower,
+  GreaterEqual,
+  LowerEqual,
+  And,
+  Or,
   Invalid,
 };
 

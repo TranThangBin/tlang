@@ -6,6 +6,14 @@
 
 Lexer::Lexer(std::string src) : src(src) {
   literal = {
+      {"&&", Token("&&", TokenType::And)},
+      {"||", Token("||", TokenType::Or)},
+      {">=", Token(">=", TokenType::GreaterEqual)},
+      {"<=", Token("<=", TokenType::LowerEqual)},
+      {">", Token(">", TokenType::Greater)},
+      {"<", Token("<", TokenType::Lower)},
+      {"==", Token("==", TokenType::Equality)},
+      {"!=", Token("!=", TokenType::InEquality)},
       {"[", Token("[", TokenType::OpenSquare)},
       {"]", Token("]", TokenType::ClosingSquare)},
       {"!", Token("!", TokenType::Exclamation)},

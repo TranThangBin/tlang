@@ -40,6 +40,30 @@ evaluateNumericOperation(std::shared_ptr<NumberValue> leftHand,
     return std::make_shared<NumberValue>((int)leftHand->GetValue() %
                                          (int)rightHand->GetValue());
 
+  case BinaryOperator::Equality:
+    return std::make_shared<BooleanValue>(leftHand->GetValue() ==
+                                          rightHand->GetValue());
+
+  case BinaryOperator::InEquality:
+    return std::make_shared<BooleanValue>(leftHand->GetValue() !=
+                                          rightHand->GetValue());
+
+  case BinaryOperator::Greater:
+    return std::make_shared<BooleanValue>(leftHand->GetValue() >
+                                          rightHand->GetValue());
+
+  case BinaryOperator::Lower:
+    return std::make_shared<BooleanValue>(leftHand->GetValue() <
+                                          rightHand->GetValue());
+
+  case BinaryOperator::GreaterEqual:
+    return std::make_shared<BooleanValue>(leftHand->GetValue() >=
+                                          rightHand->GetValue());
+
+  case BinaryOperator::LowerEqual:
+    return std::make_shared<BooleanValue>(leftHand->GetValue() <=
+                                          rightHand->GetValue());
+
   default:
     throw GetError(op);
   }
@@ -54,6 +78,40 @@ evaluateStringOperation(std::shared_ptr<StringValue> leftHand,
     return std::make_shared<StringValue>(leftHand->GetValue() +
                                          rightHand->GetValue());
 
+  case BinaryOperator::Equality:
+    return std::make_shared<BooleanValue>(leftHand->GetValue() ==
+                                          rightHand->GetValue());
+
+  case BinaryOperator::InEquality:
+    return std::make_shared<BooleanValue>(leftHand->GetValue() !=
+                                          rightHand->GetValue());
+
+  default:
+    throw GetError(op);
+  }
+}
+
+std::shared_ptr<RuntimeValue>
+evaluateBooleanOperation(std::shared_ptr<BooleanValue> leftHand,
+                         std::shared_ptr<BooleanValue> rightHand,
+                         BinaryOperator op) {
+  switch (op) {
+  case BinaryOperator::Equality:
+    return std::make_shared<BooleanValue>(leftHand->GetValue() ==
+                                          rightHand->GetValue());
+
+  case BinaryOperator::InEquality:
+    return std::make_shared<BooleanValue>(leftHand->GetValue() !=
+                                          rightHand->GetValue());
+
+  case BinaryOperator::And:
+    return std::make_shared<BooleanValue>(leftHand->GetValue() &&
+                                          rightHand->GetValue());
+
+  case BinaryOperator::Or:
+    return std::make_shared<BooleanValue>(leftHand->GetValue() ||
+                                          rightHand->GetValue());
+
   default:
     throw GetError(op);
   }
@@ -63,9 +121,19 @@ std::shared_ptr<RuntimeValue>
 Interpreter::evaluateBinaryOperation(std::shared_ptr<RuntimeValue> left,
                                      std::shared_ptr<RuntimeValue> right,
                                      BinaryOperator op) {
-  DataType leftDt = left->DataTypeID();
+  DataType dt = left->DataTypeID();
 
-  switch (leftDt) {
+  if (dt == DataType::Null) {
+    if (op == BinaryOperator::Equality) {
+
+      return std::make_shared<BooleanValue>(true);
+    } else if (op == BinaryOperator::InEquality) {
+
+      return std::make_shared<BooleanValue>(false);
+    }
+  }
+
+  switch (dt) {
   case DataType::Number:
     return evaluateNumericOperation(
         std::static_pointer_cast<NumberValue>(left),
@@ -76,9 +144,14 @@ Interpreter::evaluateBinaryOperation(std::shared_ptr<RuntimeValue> left,
                                    std::static_pointer_cast<StringValue>(right),
                                    op);
 
+  case DataType::Boolean:
+    return evaluateBooleanOperation(
+        std::static_pointer_cast<BooleanValue>(left),
+        std::static_pointer_cast<BooleanValue>(right), op);
+
   default:
     throw std::runtime_error("No binary operator " +
                              BinaryOperatorToString(op) + " for " +
-                             DataTypeToString(leftDt));
+                             DataTypeToString(dt));
   }
 }

@@ -3,6 +3,30 @@
 
 std::string TokenTypeToString(TokenType tokenType) {
   switch (tokenType) {
+  case TokenType::And:
+    return "&&";
+
+  case TokenType::Or:
+    return "||";
+
+  case TokenType::Greater:
+    return ">";
+
+  case TokenType::Lower:
+    return "<";
+
+  case TokenType::GreaterEqual:
+    return ">=";
+
+  case TokenType::LowerEqual:
+    return "<=";
+
+  case TokenType::Equality:
+    return "==";
+
+  case TokenType::InEquality:
+    return "!=";
+
   case TokenType::Return:
     return "return";
 

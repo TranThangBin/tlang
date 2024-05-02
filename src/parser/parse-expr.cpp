@@ -9,7 +9,7 @@
 #include <vector>
 
 std::unique_ptr<Expr> Parser::parseAssignmentExpr() {
-  std::unique_ptr<Expr> assignee = parseAdditiveExpr();
+  std::unique_ptr<Expr> assignee = parseOrExpr();
 
   while (at().GetTokenType() == TokenType::Equal ||
          at().GetTokenType() == TokenType::Assignment) {
@@ -29,6 +29,59 @@ std::unique_ptr<Expr> Parser::parseAssignmentExpr() {
   }
 
   return assignee;
+}
+
+std::unique_ptr<Expr> Parser::parseOrExpr() {
+  std::unique_ptr<Expr> left = parseAndExpr();
+
+  while (at().GetTokenType() == TokenType::Or) {
+
+    BinaryOperator op = TokenTypeToBinaryOperator(eat().GetTokenType());
+
+    std::unique_ptr<Expr> right = parseAndExpr();
+
+    left =
+        std::make_unique<BinaryExprNode>(std::move(left), std::move(right), op);
+  }
+
+  return left;
+}
+
+std::unique_ptr<Expr> Parser::parseAndExpr() {
+  std::unique_ptr<Expr> left = parseComparisonExpr();
+
+  while (at().GetTokenType() == TokenType::And) {
+
+    BinaryOperator op = TokenTypeToBinaryOperator(eat().GetTokenType());
+
+    std::unique_ptr<Expr> right = parseComparisonExpr();
+
+    left =
+        std::make_unique<BinaryExprNode>(std::move(left), std::move(right), op);
+  }
+
+  return left;
+}
+
+std::unique_ptr<Expr> Parser::parseComparisonExpr() {
+  std::unique_ptr<Expr> left = parseAdditiveExpr();
+
+  while (at().GetTokenType() == TokenType::Equality ||
+         at().GetTokenType() == TokenType::InEquality ||
+         at().GetTokenType() == TokenType::Greater ||
+         at().GetTokenType() == TokenType::Lower ||
+         at().GetTokenType() == TokenType::GreaterEqual ||
+         at().GetTokenType() == TokenType::LowerEqual) {
+
+    BinaryOperator op = TokenTypeToBinaryOperator(eat().GetTokenType());
+
+    std::unique_ptr<Expr> right = parseAdditiveExpr();
+
+    left =
+        std::make_unique<BinaryExprNode>(std::move(left), std::move(right), op);
+  }
+
+  return left;
 }
 
 std::unique_ptr<Expr> Parser::parseAdditiveExpr() {
