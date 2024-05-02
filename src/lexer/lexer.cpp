@@ -6,6 +6,7 @@
 
 Lexer::Lexer(std::string src) : src(src) {
   literal = {
+      {".", Token(".", TokenType::Dot)},
       {"&&", Token("&&", TokenType::And)},
       {"||", Token("||", TokenType::Or)},
       {">=", Token(">=", TokenType::GreaterEqual)},

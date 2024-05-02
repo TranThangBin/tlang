@@ -8,6 +8,7 @@
 enum class TokenType {
   Eof,
 
+  Dot,
   Plus,
   Minus,
   Asterisk,

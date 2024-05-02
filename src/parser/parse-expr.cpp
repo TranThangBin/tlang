@@ -157,8 +157,23 @@ std::unique_ptr<Expr> Parser::parsePrimaryExpr() {
   Token tk = at();
 
   switch (tk.GetTokenType()) {
-  case TokenType::Number:
-    return std::make_unique<NumericLiteralNode>(std::stod(eat().GetValue()));
+  case TokenType::Number: {
+    std::string number = eat().GetValue();
+
+    if (at().GetTokenType() != TokenType::Dot) {
+      return std::make_unique<NumericLiteralNode>(std::stod(number));
+    }
+
+    eat();
+
+    return std::make_unique<NumericLiteralNode>(
+        std::stod(number + "." + expect(TokenType::Number).GetValue()));
+  }
+
+  case TokenType::Dot:
+    eat();
+    return std::make_unique<NumericLiteralNode>(
+        std::stod("0." + expect(TokenType::Number).GetValue()));
 
   case TokenType::String:
     return std::make_unique<StringLiteralNode>(eat().GetValue());

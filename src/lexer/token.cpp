@@ -3,6 +3,9 @@
 
 std::string TokenTypeToString(TokenType tokenType) {
   switch (tokenType) {
+  case TokenType::Dot:
+    return ".";
+
   case TokenType::And:
     return "&&";
 
