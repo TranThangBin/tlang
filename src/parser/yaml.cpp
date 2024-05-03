@@ -94,6 +94,8 @@ std::string IfStmtNode::Yaml(int indentLevel) {
   std::stringstream ss;
 
   ss << getIndent(indentLevel) << "IfStmtNode:" << std::endl
+     << getIndent(indentLevel) << "Condition:" << std::endl
+     << condition->Yaml(indentLevel + 2) << std::endl
      << getIndent(indentLevel + 1) << "IfBody:" << std::endl
      << ifBody->Yaml(indentLevel + 2);
 

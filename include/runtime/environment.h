@@ -71,6 +71,7 @@ public:
       : parent(std::move(parent)), context(context) {}
 
   std::unique_ptr<Environment> &GetParent() { return parent; }
+  EnvironmentContext GetContext() { return context; }
 
   std::shared_ptr<RuntimeValue>
   DeclareVariable(std::string, std::shared_ptr<RuntimeValue>, bool);

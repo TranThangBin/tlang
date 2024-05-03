@@ -56,8 +56,8 @@ Interpreter::evaluateBlockStmt(std::unique_ptr<BlockStmtNode> &block,
     }
   }
 
-  if (env->HasContext(EnvironmentContext::Function)) {
-    return std::make_shared<NullValue>();
+  if (env->GetContext() == EnvironmentContext::Function) {
+    return std::make_shared<ReturnValue>(std::make_shared<NullValue>());
   }
 
   return lastEvaluated;
@@ -95,7 +95,7 @@ Interpreter::evaluateIfStmt(std::unique_ptr<IfStmtNode> &ifStmt,
   if (std::static_pointer_cast<BooleanValue>(condition)->GetValue()) {
     result = evaluateStmt(ifStmt->GetIfBody(), ifScope);
   } else if (ifStmt->GetElseBody() != nullptr) {
-    result = evaluateStmt(ifStmt->GetElseBody(), env);
+    result = evaluateStmt(ifStmt->GetElseBody(), ifScope);
   }
 
   env = std::move(ifScope->GetParent());

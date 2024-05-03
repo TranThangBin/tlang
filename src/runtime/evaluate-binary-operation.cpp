@@ -121,19 +121,26 @@ std::shared_ptr<RuntimeValue>
 Interpreter::evaluateBinaryOperation(std::shared_ptr<RuntimeValue> left,
                                      std::shared_ptr<RuntimeValue> right,
                                      BinaryOperator op) {
-  DataType dt = left->DataTypeID();
 
-  if (dt == DataType::Null) {
+  DataType leftDt = left->DataTypeID();
+  DataType rightDt = right->DataTypeID();
+
+  if (leftDt == DataType::Null || rightDt == DataType::Null) {
     if (op == BinaryOperator::Equality) {
 
-      return std::make_shared<BooleanValue>(true);
+      return std::make_shared<BooleanValue>(leftDt == rightDt);
     } else if (op == BinaryOperator::InEquality) {
 
-      return std::make_shared<BooleanValue>(false);
+      return std::make_shared<BooleanValue>(leftDt != rightDt);
     }
   }
 
-  switch (dt) {
+  if (leftDt != rightDt) {
+
+    throw std::runtime_error("Mismatched type in the binary expression");
+  }
+
+  switch (leftDt) {
   case DataType::Number:
     return evaluateNumericOperation(
         std::static_pointer_cast<NumberValue>(left),
@@ -152,6 +159,6 @@ Interpreter::evaluateBinaryOperation(std::shared_ptr<RuntimeValue> left,
   default:
     throw std::runtime_error("No binary operator " +
                              BinaryOperatorToString(op) + " for " +
-                             DataTypeToString(dt));
+                             DataTypeToString(leftDt));
   }
 }

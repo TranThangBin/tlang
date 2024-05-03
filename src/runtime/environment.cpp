@@ -22,6 +22,7 @@ Environment *Environment::resolve(std::string varname) {
 std::shared_ptr<RuntimeValue>
 Environment::DeclareVariable(std::string varname,
                              std::shared_ptr<RuntimeValue> value, bool mut) {
+
   auto it = variables.find(varname);
 
   if (it != variables.end()) {

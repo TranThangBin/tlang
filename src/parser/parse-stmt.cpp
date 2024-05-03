@@ -109,13 +109,13 @@ std::unique_ptr<ForLoopNode> Parser::parseForLoop() {
     condition = parseExpr();
   }
 
-  eat();
+  expect(TokenType::SemiColon);
 
   if (at().GetTokenType() != TokenType::ClosingParen) {
     modifier = parseExpr();
   }
 
-  eat();
+  expect(TokenType::ClosingParen);
 
   return std::make_unique<ForLoopNode>(std::move(initilizer),
                                        std::move(condition),

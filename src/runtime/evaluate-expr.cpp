@@ -148,12 +148,9 @@ Interpreter::evaluateBinaryExpr(std::unique_ptr<BinaryExprNode> &binaryExprNode,
 
   std::shared_ptr<RuntimeValue> left =
       evaluateExpr(binaryExprNode->GetLeft(), env);
+
   std::shared_ptr<RuntimeValue> right =
       evaluateExpr(binaryExprNode->GetRight(), env);
-
-  if (left->DataTypeID() != right->DataTypeID()) {
-    throw std::runtime_error("Mismatched type in the binary expression");
-  }
 
   return evaluateBinaryOperation(left, right, binaryExprNode->GetOperator());
 }
@@ -162,7 +159,7 @@ std::shared_ptr<RuntimeValue>
 Interpreter::evaluateUnaryExpr(std::unique_ptr<UnaryExprNode> &unaryExpr,
                                std::unique_ptr<Environment> &env) {
   std::shared_ptr<RuntimeValue> value =
-      evaluateExpr(unaryExpr->GetValue(), environment);
+      evaluateExpr(unaryExpr->GetValue(), env);
 
   return evaluateUnaryOperation(value, unaryExpr->GetOperator());
 }
@@ -177,7 +174,7 @@ std::shared_ptr<RuntimeValue> Interpreter::evaluateObjectLiteral(
   std::map<std::string, std::shared_ptr<RuntimeValue>> objectProperties;
 
   for (auto it = properties.begin(); it != properties.end(); it++) {
-    objectProperties.insert({it->first, evaluateExpr(it->second, environment)});
+    objectProperties.insert({it->first, evaluateExpr(it->second, env)});
   }
 
   return std::make_shared<ObjectValue>(std::move(objectProperties));
@@ -205,10 +202,10 @@ std::shared_ptr<RuntimeValue> Interpreter::evaluateIndexingExpr(
     std::unique_ptr<Environment> &env) {
 
   std::shared_ptr<RuntimeValue> accessorValue =
-      evaluateExpr(indexingExprNode->GetAccessor(), environment);
+      evaluateExpr(indexingExprNode->GetAccessor(), env);
 
   std::shared_ptr<RuntimeValue> indexValue =
-      evaluateExpr(indexingExprNode->GetIndex(), environment);
+      evaluateExpr(indexingExprNode->GetIndex(), env);
 
   DataType accessorType = accessorValue->DataTypeID();
 
