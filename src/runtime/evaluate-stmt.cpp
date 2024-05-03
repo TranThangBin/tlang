@@ -174,8 +174,11 @@ Interpreter::evaluateForLoop(std::unique_ptr<ForLoopNode> &forLoop,
       evaluateExpr(modifier, loopScope);
     }
 
-    conditionValue = std::static_pointer_cast<BooleanValue>(
-        evaluateExpr(condition, loopScope));
+    if (condition != nullptr) {
+
+      conditionValue = std::static_pointer_cast<BooleanValue>(
+          evaluateExpr(condition, loopScope));
+    }
   }
 
   env = std::move(loopScope->GetParent());
