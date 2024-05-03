@@ -57,7 +57,7 @@ Interpreter::evaluateBlockStmt(std::unique_ptr<BlockStmtNode> &block,
   }
 
   if (env->HasContext(EnvironmentContext::Function)) {
-    return std::make_shared<ReturnValue>(std::make_shared<NullValue>());
+    return std::make_shared<NullValue>();
   }
 
   return lastEvaluated;
@@ -101,4 +101,84 @@ Interpreter::evaluateIfStmt(std::unique_ptr<IfStmtNode> &ifStmt,
   env = std::move(ifScope->GetParent());
 
   return result;
+}
+
+std::shared_ptr<RuntimeValue>
+Interpreter::evaluateForLoop(std::unique_ptr<ForLoopNode> &forLoop,
+                             std::unique_ptr<Environment> &env) {
+
+  std::unique_ptr<Stmt> &initializer = forLoop->GetInitializer();
+  std::unique_ptr<Expr> &condition = forLoop->GetCondition();
+  std::unique_ptr<Expr> &modifier = forLoop->GetModifier();
+  bool haveModifier = false;
+
+  std::unique_ptr<Environment> loopScope =
+      std::make_unique<Environment>(std::move(env), EnvironmentContext::Loop);
+
+  if (initializer != nullptr) {
+
+    if (initializer->Kind() != NodeType::VariableDeclaration &&
+        initializer->Kind() != NodeType::AssignmentExpr) {
+
+      throw std::runtime_error(
+          "expected " + NodeTypeToString(NodeType::VariableDeclaration) +
+          " or " + NodeTypeToString(NodeType::AssignmentExpr) + " but get " +
+          NodeTypeToString(initializer->Kind()));
+    }
+
+    evaluateStmt(initializer, loopScope);
+  }
+
+  std::shared_ptr<BooleanValue> conditionValue = nullptr;
+
+  if (condition != nullptr) {
+
+    std::shared_ptr<RuntimeValue> value = evaluateExpr(condition, loopScope);
+
+    if (value->DataTypeID() != DataType::Boolean) {
+      throw std::runtime_error(
+          "expected " + DataTypeToString(DataType::Boolean) + " but get " +
+          DataTypeToString(value->DataTypeID()));
+    }
+
+    conditionValue = std::static_pointer_cast<BooleanValue>(value);
+  } else {
+
+    conditionValue = std::make_shared<BooleanValue>(true);
+  }
+
+  if (modifier != nullptr) {
+
+    if (modifier->Kind() != NodeType::AssignmentExpr &&
+        modifier->Kind() != NodeType::BinaryAssignmentExpr) {
+      throw std::runtime_error(
+          "expected " + NodeTypeToString(NodeType::AssignmentExpr) + " or " +
+          NodeTypeToString(NodeType::BinaryAssignmentExpr) + " but get " +
+          NodeTypeToString(modifier->Kind()));
+    }
+
+    haveModifier = true;
+  }
+
+  std::shared_ptr<RuntimeValue> lastEvaluated = std::make_shared<NullValue>();
+
+  while (conditionValue->GetValue()) {
+
+    lastEvaluated = evaluateStmt(forLoop->GetBody(), loopScope);
+
+    if (lastEvaluated->DataTypeID() == DataType::Return) {
+      break;
+    }
+
+    if (haveModifier) {
+      evaluateExpr(modifier, loopScope);
+    }
+
+    conditionValue = std::static_pointer_cast<BooleanValue>(
+        evaluateExpr(condition, loopScope));
+  }
+
+  env = std::move(loopScope->GetParent());
+
+  return lastEvaluated;
 }

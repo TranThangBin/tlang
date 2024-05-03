@@ -15,6 +15,7 @@ enum class NodeType {
   FunctionDeclaration,
   ReturnStmt,
   IfStmt,
+  ForLoop,
 
   AssignmentExpr,
   BinaryAssignmentExpr,
@@ -201,6 +202,33 @@ public:
              std::unique_ptr<Stmt> elseBody)
       : condition(std::move(condition)), ifBody(std::move(ifBody)),
         elseBody(std::move(elseBody)) {}
+};
+
+class ForLoopNode : public Expr {
+private:
+  std::unique_ptr<Stmt> initializer;
+  std::unique_ptr<Expr> condition;
+  std::unique_ptr<Expr> modifier;
+  std::unique_ptr<Stmt> body;
+
+public:
+  std::string Yaml(int) override;
+
+  NodeType Kind() override { return NodeType::ForLoop; }
+
+  std::unique_ptr<Stmt> &GetInitializer() { return initializer; }
+
+  std::unique_ptr<Expr> &GetCondition() { return condition; }
+
+  std::unique_ptr<Expr> &GetModifier() { return modifier; }
+
+  std::unique_ptr<Stmt> &GetBody() { return body; }
+
+  ForLoopNode(std::unique_ptr<Stmt> initializer,
+              std::unique_ptr<Expr> condition, std::unique_ptr<Expr> modifier,
+              std::unique_ptr<Stmt> body)
+      : initializer(std::move(initializer)), condition(std::move(condition)),
+        modifier(std::move(modifier)), body(std::move(body)) {}
 };
 
 class BinaryAssignmentExprNode : public Expr {

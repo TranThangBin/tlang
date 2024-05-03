@@ -101,6 +101,17 @@ Interpreter::evaluateStmt(std::unique_ptr<Stmt> &stmtNode,
     return result;
   }
 
+  case NodeType::ForLoop: {
+    auto forLoop = std::unique_ptr<ForLoopNode>(
+        static_cast<ForLoopNode *>(stmtNode.release()));
+
+    result = evaluateForLoop(forLoop, env);
+
+    stmtNode = std::move(forLoop);
+
+    return result;
+  }
+
   default: {
     auto expr = std::unique_ptr<Expr>(static_cast<Expr *>(stmtNode.release()));
 

@@ -106,6 +106,41 @@ std::string IfStmtNode::Yaml(int indentLevel) {
   return ss.str();
 }
 
+std::string ForLoopNode::Yaml(int indentLevel) {
+  std::stringstream ss;
+
+  ss << getIndent(indentLevel) << "ForLoopNode:" << std::endl
+     << getIndent(indentLevel + 1) << "Initializer:" << std::endl;
+
+  if (initializer == nullptr) {
+    ss << getIndent(indentLevel + 2) << "nullptr";
+  } else {
+    ss << initializer->Yaml(indentLevel + 2);
+  }
+
+  ss << std::endl << getIndent(indentLevel + 1) << "Condition:" << std::endl;
+
+  if (condition == nullptr) {
+    ss << getIndent(indentLevel + 2) << "nullptr";
+  } else {
+    ss << condition->Yaml(indentLevel + 2);
+  }
+
+  ss << std::endl << getIndent(indentLevel + 1) << "Modifier:" << std::endl;
+
+  if (modifier == nullptr) {
+    ss << getIndent(indentLevel + 2) << "nullptr";
+  } else {
+    ss << modifier->Yaml(indentLevel + 2);
+  }
+
+  ss << std::endl
+     << getIndent(indentLevel + 1) << "Body:" << std::endl
+     << body->Yaml(indentLevel + 2);
+
+  return ss.str();
+}
+
 std::string AssignmentExprNode::Yaml(int indentLevel) {
   std::stringstream ss;
 

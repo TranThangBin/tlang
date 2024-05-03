@@ -89,3 +89,35 @@ std::unique_ptr<IfStmtNode> Parser::parseIfStmt() {
   return std::make_unique<IfStmtNode>(std::move(condition), std::move(ifBody),
                                       parseStmt());
 }
+
+std::unique_ptr<ForLoopNode> Parser::parseForLoop() {
+  eat();
+
+  expect(TokenType::OpenParen);
+
+  std::unique_ptr<Stmt> initilizer = nullptr;
+  std::unique_ptr<Expr> condition = nullptr;
+  std::unique_ptr<Expr> modifier = nullptr;
+
+  if (at().GetTokenType() != TokenType::SemiColon) {
+    initilizer = parseStmt();
+  } else {
+    eat();
+  }
+
+  if (at().GetTokenType() != TokenType::SemiColon) {
+    condition = parseExpr();
+  }
+
+  eat();
+
+  if (at().GetTokenType() != TokenType::ClosingParen) {
+    modifier = parseExpr();
+  }
+
+  eat();
+
+  return std::make_unique<ForLoopNode>(std::move(initilizer),
+                                       std::move(condition),
+                                       std::move(modifier), parseStmt());
+}

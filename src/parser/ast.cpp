@@ -90,6 +90,9 @@ UnaryOperator TokenTypeToUnaryOperator(TokenType tokenType) {
 
 std::string NodeTypeToString(NodeType nodeType) {
   switch (nodeType) {
+  case NodeType::ForLoop:
+    return "for loop";
+
   case NodeType::IfStmt:
     return "if statement";
 
@@ -130,7 +133,7 @@ std::string NodeTypeToString(NodeType nodeType) {
     return "numeric literal";
 
   case NodeType::VariableDeclaration:
-    return "variable declaratin";
+    return "variable declaration";
 
   case NodeType::ObjectLiteral:
     return "object literal";

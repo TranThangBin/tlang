@@ -74,11 +74,13 @@ private:
 
   std::shared_ptr<RuntimeValue>
   evaluateFunctionDeclaration(std::unique_ptr<FunctionDeclarationNode> &,
-                              std::unique_ptr<Environment> &env);
+                              std::unique_ptr<Environment> &);
 
-  std::shared_ptr<RuntimeValue>
-  evaluateIfStmt(std::unique_ptr<IfStmtNode> &,
-                 std::unique_ptr<Environment> &env);
+  std::shared_ptr<RuntimeValue> evaluateIfStmt(std::unique_ptr<IfStmtNode> &,
+                                               std::unique_ptr<Environment> &);
+
+  std::shared_ptr<RuntimeValue> evaluateForLoop(std::unique_ptr<ForLoopNode> &,
+                                                std::unique_ptr<Environment> &);
 
 public:
   Interpreter(std::unique_ptr<Parser> parser,
