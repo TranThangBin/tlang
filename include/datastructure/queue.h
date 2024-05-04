@@ -11,7 +11,7 @@ private:
 public:
   Queue<T>() : front(nullptr), rear(nullptr) {}
 
-  bool IsEmpty() { return front == nullptr; }
+  bool IsEmpty() { return front == nullptr && rear == nullptr; }
 
   T GetFront() {
     if (IsEmpty()) {
@@ -22,15 +22,13 @@ public:
   }
 
   void Enqueue(T data) {
-    ListNode<T> *newNode = new ListNode<T>(data, nullptr);
-
     if (IsEmpty()) {
-      front = rear = newNode;
+      front = rear = new ListNode<T>(data, nullptr);
       return;
     }
 
-    rear->next = newNode;
-    rear = newNode;
+    rear->next = new ListNode<T>(data, nullptr);
+    rear = rear->next;
   }
 
   T Dequeue() {
@@ -52,14 +50,8 @@ public:
   }
 
   ~Queue<T>() {
-    while (front != nullptr) {
-      ListNode<T> *temp = front;
-
-      front = front->next;
-
-      delete temp;
-
-      temp = nullptr;
+    while (!IsEmpty()) {
+      Dequeue();
     }
   }
 };

@@ -9,6 +9,8 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 include_directories(include)
 
+add_library(datastructure ./src/datastructure/hashmap.cpp)
+
 add_library(lexer ./src/lexer/tokenize.cpp ./src/lexer/lexer.cpp
                   ./src/lexer/token.cpp)
 
@@ -41,4 +43,4 @@ add_executable(tlang ./src/cmd/main.cpp)
 target_link_libraries(tlang runtime parser lexer)
 
 add_executable(test ./src/cmd/test.cpp)
-target_link_libraries(test runtime parser lexer)
+target_link_libraries(test runtime parser lexer datastructure)
