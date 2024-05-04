@@ -46,10 +46,10 @@ std::string BlockStmtNode::Yaml(int indentLevel) {
   ss << getIndent(indentLevel) << "BlockStmtNode:" << std::endl
      << getIndent(indentLevel + 1) << "Body:";
 
-  int stmtCount = body.size();
+  int stmtCount = body.Count();
 
   for (int i = 0; i < stmtCount; i++) {
-    ss << std::endl << body[i]->Yaml(indentLevel + 2);
+    ss << std::endl << body.At(i)->Yaml(indentLevel + 2);
   }
 
   return ss.str();

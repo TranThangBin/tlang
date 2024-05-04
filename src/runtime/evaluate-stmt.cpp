@@ -45,12 +45,12 @@ Interpreter::evaluateBlockStmt(std::unique_ptr<BlockStmtNode> &block,
 
   std::shared_ptr<RuntimeValue> lastEvaluated = std::make_shared<NullValue>();
 
-  std::vector<std::unique_ptr<Stmt>> &stmts = block->GetBody();
-  int stmtCount = stmts.size();
+  ArrayList<std::unique_ptr<Stmt>> &stmts = block->GetBody();
+  int stmtCount = stmts.Count();
 
   for (int i = 0; i < stmtCount; i++) {
 
-    lastEvaluated = evaluateStmt(stmts[i], env);
+    lastEvaluated = evaluateStmt(stmts.At(i), env);
 
     if (lastEvaluated->DataTypeID() == DataType::Return) {
       return lastEvaluated;

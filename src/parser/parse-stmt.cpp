@@ -1,3 +1,4 @@
+#include "datastructure/array-list.h"
 #include "lexer/token.h"
 #include "parser/ast.h"
 #include "parser/parser.h"
@@ -32,10 +33,10 @@ std::unique_ptr<VariableDeclarationNode> Parser::parseVariableDeclaration() {
 std::unique_ptr<BlockStmtNode> Parser::parseBlockStmt() {
   expect(TokenType::OpenCurly);
 
-  std::vector<std::unique_ptr<Stmt>> body;
+  ArrayList<std::unique_ptr<Stmt>> body = ArrayList<std::unique_ptr<Stmt>>(50);
 
   while (at().GetTokenType() != TokenType::ClosingCurly) {
-    body.push_back(parseStmt());
+    body.Push(parseStmt());
   }
 
   eat();

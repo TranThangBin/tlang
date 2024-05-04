@@ -116,16 +116,16 @@ public:
 
 class BlockStmtNode : public Stmt {
 private:
-  std::vector<std::unique_ptr<Stmt>> body;
+  ArrayList<std::unique_ptr<Stmt>> body;
 
 public:
   std::string Yaml(int) override;
 
   NodeType Kind() override { return NodeType::BlockStmt; }
 
-  std::vector<std::unique_ptr<Stmt>> &GetBody() { return body; }
+  ArrayList<std::unique_ptr<Stmt>> &GetBody() { return body; }
 
-  BlockStmtNode(std::vector<std::unique_ptr<Stmt>> stmts)
+  BlockStmtNode(ArrayList<std::unique_ptr<Stmt>> stmts)
       : body(std::move(stmts)) {}
 };
 
