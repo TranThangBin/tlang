@@ -100,10 +100,10 @@ Token Lexer::getLiteral() {
   int literalLen = 1;
 
   while (pos + literalLen - 1 < srcLen && literalLen <= maxLiteralLen) {
-    Pair<Token> pair = Pair<Token>("", Token("", TokenType::Invalid));
+    Pair<Token> *pair = literal.Find(src.substr(pos, literalLen));
 
-    if (literal.Find(src.substr(pos, literalLen), &pair)) {
-      token = pair.value;
+    if (pair != nullptr) {
+      token = pair->value;
     }
 
     literalLen++;
@@ -132,10 +132,10 @@ Token Lexer::getIdent() {
 
   std::string ident = src.substr(pos, end - pos + 1);
 
-  Pair<Token> pair = Pair<Token>("", Token("", TokenType::Invalid));
+  Pair<Token> *pair = reserve.Find(ident);
 
-  if (reserve.Find(ident, &pair)) {
-    return pair.value;
+  if (pair != nullptr) {
+    return pair->value;
   }
 
   return Token(ident, TokenType::Identifier);

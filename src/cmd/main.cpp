@@ -36,8 +36,11 @@ int main(int argc, char *argv[]) {
     interpreter.Evaluate();
   } catch (runtime_error err) {
     cerr << err.what() << endl;
+    fileStream.close();
     return 1;
   }
+
+  fileStream.close();
 
   return 0;
 }

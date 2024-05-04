@@ -52,29 +52,24 @@ public:
     head->next = new ListNode<Pair<TValue>>(Pair<TValue>(key, value), nullptr);
   }
 
-  bool Find(std::string key, Pair<TValue> *value) {
+  Pair<TValue> *Find(std::string key) {
     int hashCode = GetHashCode(key);
 
     int index = hashCode % size;
 
     ListNode<Pair<TValue>> *head = table[index];
 
-    if (head == nullptr) {
-      return false;
-    }
-
     while (head != nullptr) {
-      Pair<TValue> pair = head->data;
+      Pair<TValue> *pair = &head->data;
 
-      if (pair.key == key) {
-        *value = pair;
-        return true;
+      if (pair->key == key) {
+        return pair;
       }
 
       head = head->next;
     }
 
-    return false;
+    return nullptr;
   }
 
   ~Hashmap<TValue>() {
