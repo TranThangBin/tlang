@@ -1,6 +1,7 @@
+#include "datastructure/queue.h"
 #include "lexer/lexer.h"
+#include "lexer/token.h"
 #include <iostream>
-#include <queue>
 #include <stdexcept>
 #include <string>
 
@@ -18,7 +19,7 @@ int main(int argc, char *argv[]) {
 
     lexer.SetSrc(src);
 
-    queue<Token> tokens;
+    Queue<Token> tokens = Queue<Token>();
 
     try {
       tokens = lexer.Tokenize();
@@ -27,11 +28,8 @@ int main(int argc, char *argv[]) {
       continue;
     }
 
-    int tkSize = tokens.size();
-
-    while (tokens.size() != 0) {
-      cout << tokens.front().Yaml() << endl;
-      tokens.pop();
+    while (!tokens.IsEmpty()) {
+      cout << tokens.Dequeue().Yaml() << endl;
     }
 
     cout << endl;

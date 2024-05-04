@@ -1,17 +1,17 @@
 #ifndef PARSER_H
 #define PARSER_H
+#include "datastructure/queue.h"
 #define PARSER_VERSION "v0.0.9"
 
 #include "lexer/lexer.h"
 #include "lexer/token.h"
 #include "parser/ast.h"
 #include <memory>
-#include <queue>
 
 struct Parser {
 private:
   std::shared_ptr<Lexer> lexer;
-  std::queue<Token> tokens;
+  Queue<Token> tokens;
 
   bool notEOF();
   Token at();

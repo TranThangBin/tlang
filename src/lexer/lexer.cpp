@@ -101,11 +101,13 @@ Token Lexer::getIdent() {
 Token Lexer::getString() {
   int end = pos;
 
-  while (end < srcLen && src[end + 1] != '"') {
+  char endChar = src[pos];
+
+  while (end < srcLen && src[end + 1] != endChar) {
     end++;
   }
 
-  if (end >= srcLen || src[end + 1] != '"') {
+  if (end >= srcLen || src[end + 1] != endChar) {
     throw std::runtime_error("Unterminated string literal");
   }
 

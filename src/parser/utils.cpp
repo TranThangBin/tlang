@@ -3,16 +3,12 @@
 #include <stdexcept>
 
 bool Parser::notEOF() {
-  return tokens.front().GetTokenType() != TokenType::Eof;
+  return tokens.GetFront().GetTokenType() != TokenType::Eof;
 }
 
-Token Parser::at() { return tokens.front(); }
+Token Parser::at() { return tokens.GetFront(); }
 
-Token Parser::eat() {
-  Token token = tokens.front();
-  tokens.pop();
-  return token;
-}
+Token Parser::eat() { return tokens.Dequeue(); }
 
 Token Parser::expect(TokenType tkType) {
   Token tk = eat();

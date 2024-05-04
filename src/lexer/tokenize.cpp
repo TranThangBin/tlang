@@ -1,12 +1,12 @@
+#include "datastructure/queue.h"
 #include "lexer/lexer.h"
 #include "lexer/token.h"
 #include <cctype>
-#include <queue>
 #include <stdexcept>
 #include <string>
 
-std::queue<Token> Lexer::Tokenize() {
-  std::queue<Token> tokens;
+Queue<Token> &Lexer::Tokenize() {
+  Queue<Token> *tokens = new Queue<Token>();
 
   srcLen = src.length();
 
@@ -23,28 +23,28 @@ std::queue<Token> Lexer::Tokenize() {
     Token literal = getLiteral();
 
     if (literal.GetTokenType() != TokenType::Invalid) {
-      tokens.push(literal);
+      tokens->Enqueue(literal);
       pos += literal.GetValue().length();
       continue;
     }
 
     if (isdigit(curChar) != 0) {
       Token number = getNumber();
-      tokens.push(number);
+      tokens->Enqueue(number);
       pos += number.GetValue().length();
       continue;
     }
 
-    if (curChar == '"') {
+    if (curChar == '"' || curChar == '\'') {
       Token string = getString();
-      tokens.push(string);
+      tokens->Enqueue(string);
       pos += string.GetValue().length() + 2;
       continue;
     }
 
     if (isalpha(curChar) != 0 || curChar == '_') {
       Token ident = getIdent();
-      tokens.push(ident);
+      tokens->Enqueue(ident);
       pos += ident.GetValue().length();
       continue;
     }
@@ -52,7 +52,7 @@ std::queue<Token> Lexer::Tokenize() {
     throw std::runtime_error("Unexpected symbol " + std::string(1, curChar));
   }
 
-  tokens.push(Token("EOF", TokenType::Eof));
+  tokens->Enqueue(Token("EOF", TokenType::Eof));
 
-  return tokens;
+  return *tokens;
 }

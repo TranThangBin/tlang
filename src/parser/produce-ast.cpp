@@ -6,7 +6,7 @@
 #include <vector>
 
 std::unique_ptr<ProgramNode> Parser::ProduceAST() {
-  tokens = std::move(lexer->Tokenize());
+  tokens = lexer->Tokenize();
 
   std::vector<std::unique_ptr<Stmt>> stmts;
 

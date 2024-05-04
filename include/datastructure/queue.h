@@ -11,28 +11,44 @@ private:
 public:
   Queue<T>() : front(nullptr), rear(nullptr) {}
 
-  T Enqueue(T data) {
-    if (front == nullptr && rear == nullptr) {
-      front = rear = new ListNode<T>(data, nullptr);
-      return rear;
+  bool IsEmpty() { return front == nullptr; }
+
+  T GetFront() {
+    if (IsEmpty()) {
+
+      throw std::runtime_error("cannot get front because the queue is empty");
+    }
+    return front->data;
+  }
+
+  void Enqueue(T data) {
+    ListNode<T> *newNode = new ListNode<T>(data, nullptr);
+
+    if (IsEmpty()) {
+      front = rear = newNode;
+      return;
     }
 
-    rear->next = new ListNode<T>(data, nullptr);
-    return rear;
+    rear->next = newNode;
+    rear = newNode;
   }
 
   T Dequeue() {
-    if (front == nullptr) {
+    if (IsEmpty()) {
       throw std::runtime_error("cannot dequeue because the queue is empty");
     }
 
     ListNode<T> *temp = front;
 
+    T data = temp->data;
+
     front = front->next;
 
     delete temp;
 
-    return front;
+    temp = nullptr;
+
+    return data;
   }
 
   ~Queue<T>() {

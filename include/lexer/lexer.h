@@ -2,9 +2,9 @@
 #define LEXER_H
 #define LEXER_VERSION "v0.0.9"
 
+#include "datastructure/queue.h"
 #include "token.h"
 #include <map>
-#include <queue>
 #include <string>
 
 struct Lexer {
@@ -23,7 +23,7 @@ private:
 public:
   Lexer(std::string);
 
-  std::queue<Token> Tokenize();
+  Queue<Token> &Tokenize();
 
   void SetSrc(std::string src) { this->src = src; }
 };
