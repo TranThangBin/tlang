@@ -168,8 +168,8 @@ std::shared_ptr<RuntimeValue> Interpreter::evaluateObjectLiteral(
     std::unique_ptr<ObjectLiteralNode> &objectLiteralNode,
     std::unique_ptr<Environment> &env) {
 
-  std::map<std::string, std::unique_ptr<Expr>> properties =
-      std::move(objectLiteralNode->GetProperties());
+  std::map<std::string, std::unique_ptr<Expr>> &properties =
+      objectLiteralNode->GetProperties();
 
   std::map<std::string, std::shared_ptr<RuntimeValue>> objectProperties;
 
