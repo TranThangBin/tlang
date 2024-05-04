@@ -31,16 +31,16 @@ add_library(
   ./src/runtime/evaluate-unary-operation.cpp)
 
 add_executable(lexer-repl ./src/cmd/lexer-repl.cpp)
-target_link_libraries(lexer-repl lexer)
+target_link_libraries(lexer-repl lexer datastructure)
 
 add_executable(parser-repl ./src/cmd/parser-repl.cpp)
-target_link_libraries(parser-repl parser lexer)
+target_link_libraries(parser-repl parser lexer datastructure)
 
 add_executable(interpreter-repl ./src/cmd/interpreter-repl.cpp)
-target_link_libraries(interpreter-repl runtime parser lexer)
+target_link_libraries(interpreter-repl runtime parser lexer datastructure)
 
 add_executable(tlang ./src/cmd/main.cpp)
-target_link_libraries(tlang runtime parser lexer)
+target_link_libraries(tlang runtime parser lexer datastructure)
 
 add_executable(test ./src/cmd/test.cpp)
 target_link_libraries(test runtime parser lexer datastructure)

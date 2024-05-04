@@ -2,9 +2,9 @@
 #define LEXER_H
 #define LEXER_VERSION "v0.0.9"
 
+#include "datastructure/hashmap.h"
 #include "datastructure/queue.h"
 #include "token.h"
-#include <map>
 #include <string>
 
 struct Lexer {
@@ -12,8 +12,8 @@ private:
   std::string src;
   int srcLen;
   int pos;
-  std::map<std::string, Token> literal;
-  std::map<std::string, Token> reserve;
+  Hashmap<Token> literal;
+  Hashmap<Token> reserve;
 
   Token getLiteral();
   Token getNumber();

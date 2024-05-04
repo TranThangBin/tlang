@@ -88,9 +88,9 @@ public:
         head = head->next;
 
         delete temp;
-
-        temp = nullptr;
       }
+
+      table[i] = nullptr;
     }
 
     delete[] table;
