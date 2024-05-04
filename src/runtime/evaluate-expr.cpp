@@ -184,14 +184,14 @@ std::shared_ptr<RuntimeValue>
 Interpreter::evaluateArrayExpr(std::unique_ptr<ArrayExprNode> &arr,
                                std::unique_ptr<Environment> &env) {
 
-  std::vector<std::unique_ptr<Expr>> &values = arr->GetValues();
+  ArrayList<std::unique_ptr<Expr>> &values = arr->GetValues();
 
   std::vector<std::shared_ptr<RuntimeValue>> arrayValues;
 
-  int valueCount = values.size();
+  int valueCount = values.Count();
 
   for (int i = 0; i < valueCount; i++) {
-    arrayValues.push_back(evaluateExpr(values[i], env));
+    arrayValues.push_back(evaluateExpr(values.At(i), env));
   }
 
   return std::make_shared<ArrayValue>(std::move(arrayValues));

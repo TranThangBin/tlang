@@ -6,14 +6,13 @@
 #include <memory>
 #include <stdexcept>
 #include <utility>
-#include <vector>
 
 std::shared_ptr<RuntimeValue>
 Interpreter::evaluateProgram(std::unique_ptr<ProgramNode> &program,
                              std::unique_ptr<Environment> &env) {
   std::shared_ptr<RuntimeValue> lastEvaluated = std::make_shared<NullValue>();
 
-  ArrayList<std::unique_ptr<Stmt>> stmts = std::move(program->GetStmts());
+  ArrayList<std::unique_ptr<Stmt>> &stmts = program->GetStmts();
 
   int stmtCount = stmts.Count();
 

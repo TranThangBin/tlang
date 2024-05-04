@@ -1,3 +1,4 @@
+#include "datastructure/array-list.h"
 #include "lexer/token.h"
 #include "parser/ast.h"
 #include "parser/parser.h"
@@ -225,10 +226,11 @@ std::unique_ptr<Expr> Parser::parsePrimaryExpr() {
   case TokenType::OpenSquare: {
     eat();
 
-    std::vector<std::unique_ptr<Expr>> values;
+    ArrayList<std::unique_ptr<Expr>> values =
+        ArrayList<std::unique_ptr<Expr>>(20);
 
     while (at().GetTokenType() != TokenType::ClosingSquare) {
-      values.push_back(parseExpr());
+      values.Push(parseExpr());
 
       if (at().GetTokenType() == TokenType::Comma) {
         eat();

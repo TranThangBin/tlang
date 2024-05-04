@@ -242,12 +242,12 @@ std::string ArrayExprNode::Yaml(int indentLevel) {
   ss << getIndent(indentLevel) << "ArrayExprNode:" << std::endl
      << getIndent(indentLevel + 1) << "Values:";
 
-  int valueCount = values.size();
+  int valueCount = values.Count();
 
   for (int i = 0; i < valueCount; i++) {
     ss << std::endl
        << getIndent(indentLevel + 2) << i << ":" << std::endl
-       << values[i]->Yaml(indentLevel + 3);
+       << values.At(i)->Yaml(indentLevel + 3);
   }
 
   return ss.str();

@@ -341,16 +341,16 @@ public:
 
 class ArrayExprNode : public Expr {
 private:
-  std::vector<std::unique_ptr<Expr>> values;
+  ArrayList<std::unique_ptr<Expr>> values;
 
 public:
   std::string Yaml(int) override;
 
   NodeType Kind() override { return NodeType::ArrayExpr; }
 
-  std::vector<std::unique_ptr<Expr>> &GetValues() { return values; }
+  ArrayList<std::unique_ptr<Expr>> &GetValues() { return values; }
 
-  ArrayExprNode(std::vector<std::unique_ptr<Expr>> values)
+  ArrayExprNode(ArrayList<std::unique_ptr<Expr>> values)
       : values(std::move(values)) {}
 };
 
