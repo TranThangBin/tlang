@@ -231,12 +231,12 @@ Interpreter::evaluateCallExpr(std::unique_ptr<CallExpr> &callExpr,
 
   std::vector<std::shared_ptr<RuntimeValue>> argValues;
 
-  std::vector<std::unique_ptr<Expr>> &args = callExpr->GetArgs();
+  ArrayList<std::unique_ptr<Expr>> &args = callExpr->GetArgs();
 
-  int argCount = args.size();
+  int argCount = args.Count();
 
   for (int i = 0; i < argCount; i++) {
-    argValues.push_back(evaluateExpr(args[i], env));
+    argValues.push_back(evaluateExpr(args.At(i), env));
   }
 
   switch (fn->DataTypeID()) {

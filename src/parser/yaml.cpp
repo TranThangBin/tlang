@@ -271,10 +271,10 @@ std::string CallExpr::Yaml(int indentLevel) {
   ss << getIndent(indentLevel) << "CallExpr:" << std::endl
      << getIndent(indentLevel + 1) << "Args:" << std::endl;
 
-  int argCount = args.size();
+  int argCount = args.Count();
 
   for (int i = 0; i < argCount; i++) {
-    ss << args[i]->Yaml(indentLevel + 2) << std::endl;
+    ss << args.At(i)->Yaml(indentLevel + 2) << std::endl;
   }
 
   ss << getIndent(indentLevel + 1) << "Caller:" << std::endl

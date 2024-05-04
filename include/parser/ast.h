@@ -7,7 +7,6 @@
 #include <memory>
 #include <string>
 #include <utility>
-#include <vector>
 
 enum class NodeType {
   Program,
@@ -388,7 +387,7 @@ public:
 
 class CallExpr : public Expr {
 private:
-  std::vector<std::unique_ptr<Expr>> args;
+  ArrayList<std::unique_ptr<Expr>> args;
   std::unique_ptr<Expr> caller;
 
 public:
@@ -396,11 +395,10 @@ public:
 
   NodeType Kind() override { return NodeType::CallExpr; }
 
-  std::vector<std::unique_ptr<Expr>> &GetArgs() { return args; }
+  ArrayList<std::unique_ptr<Expr>> &GetArgs() { return args; }
   std::unique_ptr<Expr> &GetCaller() { return caller; }
 
-  CallExpr(std::vector<std::unique_ptr<Expr>> args,
-           std::unique_ptr<Expr> caller)
+  CallExpr(ArrayList<std::unique_ptr<Expr>> args, std::unique_ptr<Expr> caller)
       : args(std::move(args)), caller(std::move(caller)) {}
 };
 

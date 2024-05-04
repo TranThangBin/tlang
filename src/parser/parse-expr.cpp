@@ -7,7 +7,6 @@
 #include <stdexcept>
 #include <string>
 #include <utility>
-#include <vector>
 
 std::unique_ptr<Expr> Parser::parseAssignmentExpr() {
   std::unique_ptr<Expr> assignee = parseOrExpr();
@@ -135,10 +134,11 @@ std::unique_ptr<Expr> Parser::parseIndexingOrCallExpr() {
       continue;
     }
 
-    std::vector<std::unique_ptr<Expr>> args;
+    ArrayList<std::unique_ptr<Expr>> args =
+        ArrayList<std::unique_ptr<Expr>>(10);
 
     while (at().GetTokenType() != TokenType::ClosingParen) {
-      args.push_back(parseExpr());
+      args.Push(parseExpr());
 
       if (at().GetTokenType() == TokenType::Comma) {
         eat();
