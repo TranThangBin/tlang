@@ -1,3 +1,4 @@
+#include "datastructure/array-list.h"
 #include "datastructure/queue.h"
 #include "runtime/environment.h"
 #include "runtime/runtime-value.h"
@@ -7,11 +8,20 @@
 using namespace std;
 
 int main(int argc, char *argv[]) {
-  unique_ptr<Environment> env = make_unique<Environment>();
-  env->DeclareVariable("hello", make_shared<StringValue>("Hello"), true);
-  env->LookUpVar("hello")->out();
-  env->AssignVariable("hello", make_shared<NumberValue>(10));
-  env->LookUpVar("hello")->out();
+  ArrayList<int> arr = ArrayList<int>(0);
+
+  arr.Push(10);
+  arr.Push(2);
+  arr.Push(-1);
+  arr.Push(-5);
+  arr.Push(20);
+  arr.Push(555);
+
+  cout << arr.Count() << endl;
+
+  for (int i = 0; i < arr.Count(); i++) {
+    cout << arr.At(i) << endl;
+  }
 
   return 0;
 }
