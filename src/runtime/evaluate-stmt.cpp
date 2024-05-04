@@ -70,7 +70,8 @@ std::shared_ptr<RuntimeValue> Interpreter::evaluateFunctionDeclaration(
 
   return env->DeclareVariable(
       funcDec->GetName(),
-      std::make_shared<FunctionValue>(funcDec->GetName(), funcDec->GetParams(),
+      std::make_shared<FunctionValue>(funcDec->GetName(),
+                                      std::move(funcDec->GetParams()),
                                       std::move(funcDec->GetBody()), env),
       false);
 }

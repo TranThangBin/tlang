@@ -87,24 +87,24 @@ public:
 class FunctionValue : public RuntimeValue {
 private:
   std::string name;
-  std::vector<std::string> params;
+  ArrayList<std::string> params;
   std::unique_ptr<BlockStmtNode> body;
   std::unique_ptr<Environment> &declaredEnv;
 
 public:
   DataType DataTypeID() override { return DataType::Function; }
 
-  std::vector<std::string> GetParams() { return params; }
+  ArrayList<std::string> &GetParams() { return params; }
   std::unique_ptr<BlockStmtNode> &GetBody() { return body; }
   std::unique_ptr<Environment> &GetDeclaredEnv() { return declaredEnv; }
   void SetDeclaredEnv(std::unique_ptr<Environment> env) {
     declaredEnv = std::move(env);
   }
 
-  FunctionValue(std::string name, std::vector<std::string> params,
+  FunctionValue(std::string name, ArrayList<std::string> params,
                 std::unique_ptr<BlockStmtNode> body,
                 std::unique_ptr<Environment> &declaredEnv)
-      : name(name), params(params), body(std::move(body)),
+      : name(name), params(std::move(params)), body(std::move(body)),
         declaredEnv(declaredEnv) {}
 
   std::string str() override { return "[FunctionValue: " + name + "]"; }

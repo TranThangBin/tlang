@@ -6,7 +6,6 @@
 #include <stdexcept>
 #include <string>
 #include <utility>
-#include <vector>
 
 std::unique_ptr<VariableDeclarationNode> Parser::parseVariableDeclaration() {
   eat();
@@ -51,10 +50,10 @@ std::unique_ptr<FunctionDeclarationNode> Parser::parseFunctionDeclaration() {
 
   expect(TokenType::OpenParen);
 
-  std::vector<std::string> params;
+  ArrayList<std::string> params = ArrayList<std::string>(10);
 
   while (at().GetTokenType() != TokenType::ClosingParen) {
-    params.push_back(expect(TokenType::Identifier).GetValue());
+    params.Push(expect(TokenType::Identifier).GetValue());
 
     if (at().GetTokenType() == TokenType::Comma) {
       eat();
@@ -65,7 +64,7 @@ std::unique_ptr<FunctionDeclarationNode> Parser::parseFunctionDeclaration() {
 
   std::unique_ptr<BlockStmtNode> body = parseBlockStmt();
 
-  return std::make_unique<FunctionDeclarationNode>(name, params,
+  return std::make_unique<FunctionDeclarationNode>(name, std::move(params),
                                                    std::move(body));
 }
 

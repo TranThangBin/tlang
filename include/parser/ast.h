@@ -132,7 +132,7 @@ public:
 class FunctionDeclarationNode : public Stmt {
 private:
   std::string name;
-  std::vector<std::string> params;
+  ArrayList<std::string> params;
   std::unique_ptr<BlockStmtNode> body;
 
 public:
@@ -141,12 +141,12 @@ public:
   NodeType Kind() override { return NodeType::FunctionDeclaration; }
 
   std::string GetName() { return name; }
-  std::vector<std::string> &GetParams() { return params; }
+  ArrayList<std::string> &GetParams() { return params; }
   std::unique_ptr<BlockStmtNode> &GetBody() { return body; }
 
-  FunctionDeclarationNode(std::string name, std::vector<std::string> params,
+  FunctionDeclarationNode(std::string name, ArrayList<std::string> params,
                           std::unique_ptr<BlockStmtNode> stmts)
-      : name(name), params(params), body(std::move(stmts)) {}
+      : name(name), params(std::move(params)), body(std::move(stmts)) {}
 };
 
 class ReturnStmtNode : public Stmt {

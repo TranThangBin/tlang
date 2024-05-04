@@ -248,9 +248,9 @@ Interpreter::evaluateCallExpr(std::unique_ptr<CallExpr> &callExpr,
   case DataType::Function: {
     auto func = std::static_pointer_cast<FunctionValue>(fn);
 
-    std::vector<std::string> params = func->GetParams();
+    ArrayList<std::string> &params = func->GetParams();
 
-    int paramCount = params.size();
+    int paramCount = params.Count();
 
     if (paramCount != argCount) {
       throw std::runtime_error("expected " + std::to_string(paramCount) +
@@ -262,7 +262,7 @@ Interpreter::evaluateCallExpr(std::unique_ptr<CallExpr> &callExpr,
         std::move(func->GetDeclaredEnv()), EnvironmentContext::Function);
 
     for (int i = 0; i < argCount; i++) {
-      functionScope->DeclareVariable(params[i], argValues[i], true);
+      functionScope->DeclareVariable(params.At(i), argValues[i], true);
     }
 
     std::shared_ptr<RuntimeValue> returnValue =

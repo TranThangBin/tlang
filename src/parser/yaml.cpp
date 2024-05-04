@@ -62,10 +62,10 @@ std::string FunctionDeclarationNode::Yaml(int indentLevel) {
      << getIndent(indentLevel + 1) << "Name: " << name << std::endl
      << getIndent(indentLevel + 1) << "Params:";
 
-  int paramCount = params.size();
+  int paramCount = params.Count();
 
   for (int i = 0; i < paramCount; i++) {
-    ss << std::endl << getIndent(indentLevel + 2) << params[i];
+    ss << std::endl << getIndent(indentLevel + 2) << params.At(i);
   }
 
   ss << std::endl
