@@ -1,17 +1,17 @@
+#include "datastructure/array-list.h"
 #include "lexer/token.h"
 #include "parser/ast.h"
 #include "parser/parser.h"
 #include <memory>
 #include <utility>
-#include <vector>
 
 std::unique_ptr<ProgramNode> Parser::ProduceAST() {
   tokens = lexer->Tokenize();
 
-  std::vector<std::unique_ptr<Stmt>> stmts;
+  ArrayList<std::unique_ptr<Stmt>> stmts = ArrayList<std::unique_ptr<Stmt>>(50);
 
   while (notEOF()) {
-    stmts.push_back(parseStmt());
+    stmts.Push(parseStmt());
   }
 
   return std::make_unique<ProgramNode>(std::move(stmts));

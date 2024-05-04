@@ -1,6 +1,7 @@
 #ifndef AST_H
 #define AST_H
 
+#include "datastructure/array-list.h"
 #include "lexer/token.h"
 #include <map>
 #include <memory>
@@ -78,16 +79,16 @@ class Expr : public Stmt {};
 
 class ProgramNode : public Stmt {
 private:
-  std::vector<std::unique_ptr<Stmt>> stmts;
+  ArrayList<std::unique_ptr<Stmt>> stmts;
 
 public:
   std::string Yaml(int) override;
 
   NodeType Kind() override { return NodeType::Program; }
 
-  std::vector<std::unique_ptr<Stmt>> &GetStmts() { return stmts; }
+  ArrayList<std::unique_ptr<Stmt>> &GetStmts() { return stmts; }
 
-  ProgramNode(std::vector<std::unique_ptr<Stmt>> stmts)
+  ProgramNode(ArrayList<std::unique_ptr<Stmt>> stmts)
       : stmts(std::move(stmts)) {}
 };
 

@@ -2,6 +2,8 @@
 #define ARRAY_LIST_H
 
 #include <stdexcept>
+#include <utility>
+
 template <typename T> struct ArrayList {
 private:
   T *arr;
@@ -19,7 +21,7 @@ public:
       T *newArr = new T[capacity];
 
       for (int i = 0; i < count; i++) {
-        newArr[i] = arr[i];
+        newArr[i] = std::move(arr[i]);
       }
 
       delete[] arr;
@@ -27,10 +29,10 @@ public:
       arr = newArr;
     }
 
-    arr[count++] = elem;
+    arr[count++] = std::move(elem);
   }
 
-  T At(int index) {
+  T &At(int index) {
     if (index < 0 || index >= count) {
       throw std::runtime_error("index out of range");
     }
@@ -40,7 +42,18 @@ public:
 
   int Count() { return count; }
 
-  ~ArrayList<T>() { delete[] arr; }
+  ArrayList(ArrayList &&other)
+      : arr(other.arr), capacity(other.capacity), count(other.count) {
+    other.arr = nullptr;
+    other.capacity = 0;
+    other.count = 0;
+  }
+
+  ~ArrayList() {
+    if (arr != nullptr) {
+      delete[] arr;
+    }
+  }
 };
 
 #endif // !ARRAY_LIST_H

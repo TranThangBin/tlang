@@ -1,3 +1,4 @@
+#include "datastructure/array-list.h"
 #include "parser/ast.h"
 #include "runtime/environment.h"
 #include "runtime/interpreter.h"
@@ -12,12 +13,12 @@ Interpreter::evaluateProgram(std::unique_ptr<ProgramNode> &program,
                              std::unique_ptr<Environment> &env) {
   std::shared_ptr<RuntimeValue> lastEvaluated = std::make_shared<NullValue>();
 
-  std::vector<std::unique_ptr<Stmt>> stmts = std::move(program->GetStmts());
+  ArrayList<std::unique_ptr<Stmt>> stmts = std::move(program->GetStmts());
 
-  int stmtCount = stmts.size();
+  int stmtCount = stmts.Count();
 
   for (int i = 0; i < stmtCount; i++) {
-    lastEvaluated = evaluateStmt(stmts[i], env);
+    lastEvaluated = evaluateStmt(stmts.At(i), env);
   }
 
   return lastEvaluated;

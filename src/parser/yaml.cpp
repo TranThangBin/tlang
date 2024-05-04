@@ -14,10 +14,10 @@ std::string ProgramNode::Yaml(int indentLevel) {
   ss << getIndent(indentLevel) << "ProgramNode:" << std::endl
      << getIndent(indentLevel + 1) << "Body:" << std::endl;
 
-  int stmtCount = stmts.size();
+  int stmtCount = stmts.Count();
 
   for (int i = 0; i < stmtCount; i++) {
-    ss << stmts[i]->Yaml(indentLevel + 2) << std::endl;
+    ss << stmts.At(i)->Yaml(indentLevel + 2) << std::endl;
   }
 
   return ss.str();
