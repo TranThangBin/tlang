@@ -1,3 +1,4 @@
+#include "datastructure/array-list.h"
 #include "parser/ast.h"
 #include "runtime/environment.h"
 #include "runtime/interpreter.h"
@@ -186,12 +187,13 @@ Interpreter::evaluateArrayExpr(std::unique_ptr<ArrayExprNode> &arr,
 
   ArrayList<std::unique_ptr<Expr>> &values = arr->GetValues();
 
-  std::vector<std::shared_ptr<RuntimeValue>> arrayValues;
+  ArrayList<std::shared_ptr<RuntimeValue>> arrayValues =
+      ArrayList<std::shared_ptr<RuntimeValue>>(10);
 
   int valueCount = values.Count();
 
   for (int i = 0; i < valueCount; i++) {
-    arrayValues.push_back(evaluateExpr(values.At(i), env));
+    arrayValues.Push(evaluateExpr(values.At(i), env));
   }
 
   return std::make_shared<ArrayValue>(std::move(arrayValues));

@@ -1,6 +1,7 @@
 #ifndef VALUE_H
 #define VALUE_H
 
+#include "datastructure/array-list.h"
 #include <iostream>
 #include <map>
 #include <memory>
@@ -92,31 +93,31 @@ public:
 
 class ArrayValue : public IndexAbleValue {
 private:
-  std::vector<std::shared_ptr<RuntimeValue>> values;
+  ArrayList<std::shared_ptr<RuntimeValue>> values;
 
 public:
   DataType DataTypeID() override { return DataType::Array; }
 
-  ArrayValue(std::vector<std::shared_ptr<RuntimeValue>> values)
-      : values(values) {}
+  ArrayValue(ArrayList<std::shared_ptr<RuntimeValue>> values)
+      : values(std::move(values)) {}
 
   std::string str() override {
-    return "Array[" + std::to_string(values.size()) + "]";
+    return "Array[" + std::to_string(values.Count()) + "]";
   }
 
   void out() override {
     std::cout << "[ ";
 
-    int valueCount = values.size();
+    int valueCount = values.Count();
 
     if (valueCount > 0) {
       int i = 0;
 
-      values[i]->out();
+      values.At(i)->out();
 
       for (i++; i < valueCount; i++) {
         std::cout << ", ";
-        values[i]->out();
+        values.At(i)->out();
       }
     }
 
@@ -136,12 +137,7 @@ public:
 
     int indexNumber = indexValue->GetValue();
 
-    if (indexNumber < 0 || indexNumber >= values.size()) {
-      throw std::runtime_error("Index " + indexValue->str() +
-                               " is out of range of the array");
-    }
-
-    return values[indexNumber];
+    return values.At(indexNumber);
   }
 
   std::shared_ptr<RuntimeValue>
@@ -153,7 +149,7 @@ public:
                                " is not a valid index for array");
     }
 
-    return values[std::static_pointer_cast<NumberValue>(index)->GetValue()] =
+    return values.At(std::static_pointer_cast<NumberValue>(index)->GetValue()) =
                value;
   }
 };
