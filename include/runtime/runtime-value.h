@@ -8,7 +8,6 @@
 #include <stdexcept>
 #include <string>
 #include <utility>
-#include <vector>
 
 struct Environment;
 
@@ -221,21 +220,20 @@ class NativeFunctionValue : public RuntimeValue {
 private:
   std::string name;
   std::shared_ptr<RuntimeValue> (*call)(
-      std::vector<std::shared_ptr<RuntimeValue>>,
-      std::unique_ptr<Environment> &);
+      ArrayList<std::shared_ptr<RuntimeValue>>, std::unique_ptr<Environment> &);
 
 public:
   DataType DataTypeID() override { return DataType::NativeFunction; }
 
   std::shared_ptr<RuntimeValue>
-  Call(std::vector<std::shared_ptr<RuntimeValue>> args,
+  Call(ArrayList<std::shared_ptr<RuntimeValue>> args,
        std::unique_ptr<Environment> &env) {
-    return call(args, env);
+    return call(std::move(args), env);
   }
 
   NativeFunctionValue(std::string name,
                       std::shared_ptr<RuntimeValue> (*call)(
-                          std::vector<std::shared_ptr<RuntimeValue>>,
+                          ArrayList<std::shared_ptr<RuntimeValue>>,
                           std::unique_ptr<Environment> &))
       : name(name), call(call) {}
 

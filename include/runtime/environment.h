@@ -1,6 +1,7 @@
 #ifndef ENVIRONMENT_H
 #define ENVIRONMENT_H
 
+#include "datastructure/array-list.h"
 #include "parser/ast.h"
 #include "runtime-value.h"
 #include <iostream>
@@ -9,7 +10,6 @@
 #include <set>
 #include <string>
 #include <utility>
-#include <vector>
 
 enum class EnvironmentContext {
   Global,
@@ -36,13 +36,13 @@ public:
     DeclareVariable("print",
                     std::make_shared<NativeFunctionValue>(
                         "print",
-                        [](std::vector<std::shared_ptr<RuntimeValue>> args,
+                        [](ArrayList<std::shared_ptr<RuntimeValue>> args,
                            std::unique_ptr<Environment> &env)
                             -> std::shared_ptr<RuntimeValue> {
-                          int argCount = args.size();
+                          int argCount = args.Count();
 
                           for (int i = 0; i < argCount; i++) {
-                            args[i]->out();
+                            args.At(i)->out();
                           }
 
                           return std::make_shared<NullValue>();
@@ -52,13 +52,13 @@ public:
     DeclareVariable("println",
                     std::make_shared<NativeFunctionValue>(
                         "println",
-                        [](std::vector<std::shared_ptr<RuntimeValue>> args,
+                        [](ArrayList<std::shared_ptr<RuntimeValue>> args,
                            std::unique_ptr<Environment> &env)
                             -> std::shared_ptr<RuntimeValue> {
-                          int argCount = args.size();
+                          int argCount = args.Count();
 
                           for (int i = 0; i < argCount; i++) {
-                            args[i]->out();
+                            args.At(i)->out();
                           }
                           std::cout << std::endl;
 

@@ -37,39 +37,6 @@ Lexer::Lexer(std::string src) : src(src), literal(50), reserve(50) {
   literal.Insert(":", Token(":", TokenType::Colon));
   literal.Insert(",", Token(",", TokenType::Comma));
 
-  // {
-  //     {".", Token(".", TokenType::Dot)},
-  //     {"&&", Token("&&", TokenType::And)},
-  //     {"||", Token("||", TokenType::Or)},
-  //     {">=", Token(">=", TokenType::GreaterEqual)},
-  //     {"<=", Token("<=", TokenType::LowerEqual)},
-  //     {">", Token(">", TokenType::Greater)},
-  //     {"<", Token("<", TokenType::Lower)},
-  //     {"==", Token("==", TokenType::Equality)},
-  //     {"!=", Token("!=", TokenType::InEquality)},
-  //     {"[", Token("[", TokenType::OpenSquare)},
-  //     {"]", Token("]", TokenType::ClosingSquare)},
-  //     {"!", Token("!", TokenType::Exclamation)},
-  //     {"%=", Token("%=", TokenType::Assignment)},
-  //     {"/=", Token("/=", TokenType::Assignment)},
-  //     {"*=", Token("*=", TokenType::Assignment)},
-  //     {"-=", Token("-=", TokenType::Assignment)},
-  //     {"+=", Token("+=", TokenType::Assignment)},
-  //     {"%", Token("%", TokenType::Percent)},
-  //     {"/", Token("/", TokenType::FowardSlash)},
-  //     {"*", Token("*", TokenType::Asterisk)},
-  //     {"-", Token("-", TokenType::Minus)},
-  //     {"+", Token("+", TokenType::Plus)},
-  //     {";", Token(";", TokenType::SemiColon)},
-  //     {"{", Token("{", TokenType::OpenCurly)},
-  //     {"}", Token("}", TokenType::ClosingCurly)},
-  //     {")", Token(")", TokenType::ClosingParen)},
-  //     {"(", Token("(", TokenType::OpenParen)},
-  //     {"=", Token("=", TokenType::Equal)},
-  //     {":", Token(":", TokenType::Colon)},
-  //     {",", Token(",", TokenType::Comma)},
-  // };
-
   reserve.Insert("var", Token("var", TokenType::Var));
   reserve.Insert("mut", Token("mut", TokenType::Mut));
   reserve.Insert("fun", Token("fun", TokenType::Fun));
@@ -79,18 +46,6 @@ Lexer::Lexer(std::string src) : src(src), literal(50), reserve(50) {
   reserve.Insert("for", Token("for", TokenType::For));
   reserve.Insert("continue", Token("continue", TokenType::Continue));
   reserve.Insert("break", Token("break", TokenType::Break));
-
-  // {
-  //     {"var", Token("var", TokenType::Var)},
-  //     {"mut", Token("mut", TokenType::Mut)},
-  //     {"fun", Token("fun", TokenType::Fun)},
-  //     {"return", Token("return", TokenType::Return)},
-  //     {"if", Token("if", TokenType::If)},
-  //     {"else", Token("else", TokenType::Else)},
-  //     {"for", Token("for", TokenType::For)},
-  //     {"continue", Token("continue", TokenType::Continue)},
-  //     {"break", Token("break", TokenType::Break)},
-  // };
 }
 
 Token Lexer::getLiteral() {

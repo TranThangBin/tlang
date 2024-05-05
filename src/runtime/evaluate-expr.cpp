@@ -9,7 +9,6 @@
 #include <stdexcept>
 #include <string>
 #include <utility>
-#include <vector>
 
 std::shared_ptr<RuntimeValue>
 Interpreter::evaluateIdentifier(std::unique_ptr<IdentifierNode> &ident,
@@ -231,20 +230,21 @@ Interpreter::evaluateCallExpr(std::unique_ptr<CallExpr> &callExpr,
 
   std::shared_ptr<RuntimeValue> fn = evaluateExpr(callExpr->GetCaller(), env);
 
-  std::vector<std::shared_ptr<RuntimeValue>> argValues;
+  ArrayList<std::shared_ptr<RuntimeValue>> argValues =
+      ArrayList<std::shared_ptr<RuntimeValue>>(10);
 
   ArrayList<std::unique_ptr<Expr>> &args = callExpr->GetArgs();
 
   int argCount = args.Count();
 
   for (int i = 0; i < argCount; i++) {
-    argValues.push_back(evaluateExpr(args.At(i), env));
+    argValues.Push(evaluateExpr(args.At(i), env));
   }
 
   switch (fn->DataTypeID()) {
   case DataType::NativeFunction: {
-    return std::static_pointer_cast<NativeFunctionValue>(fn)->Call(argValues,
-                                                                   env);
+    return std::static_pointer_cast<NativeFunctionValue>(fn)->Call(
+        std::move(argValues), env);
   }
 
   case DataType::Function: {
@@ -264,7 +264,7 @@ Interpreter::evaluateCallExpr(std::unique_ptr<CallExpr> &callExpr,
         std::move(func->GetDeclaredEnv()), EnvironmentContext::Function);
 
     for (int i = 0; i < argCount; i++) {
-      functionScope->DeclareVariable(params.At(i), argValues[i], true);
+      functionScope->DeclareVariable(params.At(i), argValues.At(i), true);
     }
 
     std::shared_ptr<RuntimeValue> returnValue =
